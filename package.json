@@ -1,0 +1,33 @@
+{
+  "name": "fonofone",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start-dev": "python3 -m http.server 8080 --bind 127.0.0.1",
+    "build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hub-0-1/fonofone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hub-0-1/fonofone/issues"
+  },
+  "homepage": "https://github.com/hub-0-1/fonofone#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.10",
+    "babel-loader": "^8.2.2",
+    "nodemon": "^2.0.6",
+    "webpack": "^5.10.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "dependencies": {
+    "i18n": "^0.13.2",
+    "lodash": "^4.17.20"
+  }
+}
