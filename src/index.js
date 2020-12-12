@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import template_fnfn from './partials/fonofone';
-import './style.css';
+import './style.less';
 
 window.Fonofone = class Fonofone {
   constructor (element, seed) {
@@ -23,7 +23,7 @@ window.Fonofone = class Fonofone {
     // Crer l'instance Vue
     this.instance = new Vue({
       el: "#" + app.id,
-      template: "<div>1</div>",
+      template: template_fnfn,
       data: {
         message: 'Hello Vue!'
       }

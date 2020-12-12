@@ -1,5 +1,5 @@
 let template_fnfn = `
-  <span id="fnfn">{{ message }}</span>;
+  <span class="fonofone">{{ message }}</span>;
 `;
 
 export default template_fnfn;
