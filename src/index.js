@@ -1,8 +1,13 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+
 import template_fnfn from './partials/fonofone';
 import i18n from './traductions.js';
+
+import * as FilePond from 'filepond';
+import 'filepond/dist/filepond.min.css';
+
 import './style.less';
 import './gestionnaire_fonofone.js';
 
@@ -42,6 +47,16 @@ window.Fonofone = class Fonofone {
         message: 'Fonofone'
       },
       i18n
+    });
+
+    // Upload de fichier
+    const pond = FilePond.create({
+      name: 'filepond'
+    });
+    document.body.appendChild(pond.element);
+    let ponde = document.querySelector('.filepond--root');
+    ponde.addEventListener('FilePond:init', e => { // TODO : Filepond : faire marcher evenement upload. Refactoriser dans un fichier.
+      console.log('File added', e.detail);
     });
   }
 
