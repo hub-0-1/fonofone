@@ -1,8 +1,12 @@
 import _ from 'lodash';
 import Vue from 'vue';
+import VueI18n from 'vue-i18n';
 import template_fnfn from './partials/fonofone';
+import i18n from './traductions.js';
 import './style.less';
 import './gestionnaire_fonofone.js';
+
+Vue.use(VueI18n);
 
 /*
  * Classe parente du module en tant que tel.
@@ -36,7 +40,8 @@ window.Fonofone = class Fonofone {
       template: template_fnfn,
       data: {
         message: 'Fonofone'
-      }
+      },
+      i18n
     });
   }
 
