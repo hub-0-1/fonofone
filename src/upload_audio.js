@@ -17,25 +17,10 @@ let init_filepond = function (fonofone) {
       throw "type de fichier non valide";
     }
 
-    fonofone.audio = new Audio(e.detail.file.file);
-    console.log(e.detail.file, e.detail.file.file);
-    console.log(fonofone.audio);
+    fonofone.update_fichier_audio(e.detail.file.file);
 
-    var audioCtx = new (AudioContext || webkitAudioContext)();
-    var reader1 = new FileReader();
-    reader1.onload = function(file) {
-          
-      // Decode audio
-      audioCtx.decodeAudioData(file).then(function(buffer) {
-
-        var soundSource = audioCtx.createBufferSource();
-        soundSource.buffer = buffer;
-      }).then(function(res) {
-        console.log(res);
-      });
-    };
-    reader1.readAsArrayBuffer(e.detail.file.file);
-    fonofone.export();
+    // Utiliser des medias pour enregistrer live
+    //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices
   });
 }
 

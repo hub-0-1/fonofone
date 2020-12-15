@@ -43,18 +43,37 @@ window.Fonofone = class Fonofone {
       el: "#" + app.id,
       template: template_fnfn,
       data: {
-        message: 'Fonofone'
+        fichier_audio: null // Ou definit si chargement
+      },
+      computed: {
+        url_fichier_audio: function () {
+          return this.fichier_audio ? URL.createObjectURL(this.fichier_audio) : null;
+        }
+      },
+      mounted: function () {
+        this.wavesurfer = WaveSurfer.create({
+          container: '#waveform',
+          waveColor: 'violet',
+          progressColor: 'purple'
+        });
+        console.log(this);
+        if(this.url_fichier_audio) this.wavesurfer.load(this.url_fichier_audio);
       },
       i18n
     });
 
     // Upload de fichier
-    // TODO : Attacher un objet filepond au Fonofone pour pouvoir interagir
     this.selecteur_son = init_filepond(this);
   }
 
-  export () {
+  export () { // TODO expoter le fichier audio + json config
     let blob = new Blob([this.audio], {type : 'audio/ogg'});
     saveAs(blob, "export.fnfn");
+  }
+
+  update_fichier_audio (fichier) {
+    let vue = this.instance;
+    vue.fichier_audio = fichier;
+    vue.wavesurfer.load(vue.url_fichier_audio);
   }
 }
