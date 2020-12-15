@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/fonofone.js',
   output: {
     filename: 'fonofone.js',
     path: path.resolve(__dirname, 'dist'),
@@ -35,7 +35,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'wavesurfer': 'wavesurfer/dist/wavesurfer.js'
     }
   },
   optimization: {

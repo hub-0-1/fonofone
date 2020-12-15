@@ -1,7 +1,8 @@
 let template_fnfn = `
-  <div id="waveform"></div>
   <div class="fonofone">
-  {{ url_fichier_audio }}test{{ $t("titre") }}
+    <header>{{ $t("titre") }}</header>
+    <div id="waveform"></div>
+    <footer>Footer</footer>
   </div>
 `;
 
