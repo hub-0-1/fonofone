@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import { saveAs } from 'file-saver';
 
 import template_fnfn from './partials/fonofone';
 import i18n from './traductions.js';
@@ -49,10 +50,11 @@ window.Fonofone = class Fonofone {
 
     // Upload de fichier
     // TODO : Attacher un objet filepond au Fonofone pour pouvoir interagir
-    this.selecteur_son = init_filepond();
+    this.selecteur_son = init_filepond(this);
   }
 
   export () {
-    return {};
+    let blob = new Blob([this.audio], {type : 'audio/ogg'});
+    saveAs(blob, "export.fnfn");
   }
 }
