@@ -42,4 +42,5 @@ module.exports = {
   optimization: {
     minimize: false
   },
+  stats: { warnings: false }
 };
