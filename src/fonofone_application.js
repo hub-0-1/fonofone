@@ -10,11 +10,12 @@ import 'filepond/dist/filepond.min.css';
 
 Vue.use(VueI18n);
 
-let ApplicationFonofone = function (id) {
+let ApplicationFonofone = function (id, fonofone) {
   return new Vue({
     el: "#" + id,
     template: template_fnfn,
     data: {
+      fonofone: fonofone,
       fichier_audio: null // Ou definit si chargement
     },
     methods: {
@@ -22,6 +23,9 @@ let ApplicationFonofone = function (id) {
         let blob = new Blob([this.fichier_audio], {type : 'audio/ogg'});
         console.log(blob);
         return blob;
+      },
+      exporter: function () {
+        this.fonofone.exporter(this.emballer());
       },
       update_fichier_audio (fichier) {
         this.fichier_audio = fichier;

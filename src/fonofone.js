@@ -32,14 +32,14 @@ window.Fonofone = class Fonofone {
     this.containerElement.appendChild(app);
 
     // Crer l'instance Vue
-    this.instance = ApplicationFonofone(app.id);
+    this.instance = ApplicationFonofone(app.id, this);
   }
 
   save_to_server () {
     let fichier = this.instance.emballer();
   }
 
-  export () {
-    saveAs(this.instance.emballer(), "export.fnfn");
+  exporter (blob) {
+    saveAs(blob, "export.fnfn");
   }
 }
