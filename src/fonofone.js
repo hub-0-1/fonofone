@@ -35,11 +35,9 @@ window.Fonofone = class Fonofone {
     this.instance = ApplicationFonofone(app.id, this);
   }
 
-  save_to_server () {
-    let fichier = this.instance.emballer();
-  }
+  save_to_server () { }
 
   exporter (blob) {
-    saveAs(blob, "export.fnfn");
+    saveAs(blob, "export.fnfn.json");
   }
 }

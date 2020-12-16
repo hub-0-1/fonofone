@@ -16,16 +16,21 @@ let ApplicationFonofone = function (id, fonofone) {
     template: template_fnfn,
     data: {
       fonofone: fonofone,
+      configuration: { triangle: 0 },
       fichier_audio: null // Ou definit si chargement
     },
     methods: {
-      emballer: function () { // TODO expoter le fichier audio + json config
-        let blob = new Blob([this.fichier_audio], {type : 'audio/ogg'});
-        console.log(blob);
-        return blob;
+      serialiser: async function () { // TODO expoter le fichier audio + json config
+        let audio_base64 = await new Promise((resolve) => {
+          let fileReader = new FileReader();
+          fileReader.onload = (e) => resolve(fileReader.result);
+          fileReader.readAsDataURL(this.fichier_audio);
+        });
+        let serialisation = JSON.stringify( { config: this.configuration, fichier: audio_base64 });
+        return serialisation;
       },
       exporter: function () {
-        this.fonofone.exporter(this.emballer());
+        this.fonofone.exporter(this.serialiser());
       },
       update_fichier_audio (fichier) {
         this.fichier_audio = fichier;
@@ -38,7 +43,7 @@ let ApplicationFonofone = function (id, fonofone) {
       }
     },
     mounted: function () {
-      
+
       // init Upload fichiers
       let pond = FilePond.create({ name: 'filepond' });
       this.$refs.filepond.appendChild(pond.element);
@@ -68,3 +73,4 @@ let ApplicationFonofone = function (id, fonofone) {
 }
 
 export default ApplicationFonofone;
+
