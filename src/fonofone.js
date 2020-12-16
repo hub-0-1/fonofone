@@ -44,7 +44,7 @@ window.Fonofone = class Fonofone {
   exporter (serialisation) {
     serialisation.then((fnfn) => {
       let blob = new Blob([fnfn])
-      saveAs(blob, "export.fnfn.json");
+      saveAs(blob, "archive.fnfn");
     })
   }
 }
