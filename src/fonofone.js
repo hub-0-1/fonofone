@@ -45,9 +45,7 @@ window.Fonofone = class Fonofone {
     });
 
     let archive = JSON.parse(archive_serialisee);
-    console.log(archive);
     archive.fichier = await (await fetch(archive.fichier)).blob(); // https://stackoverflow.com/questions/12168909/blob-from-dataurl#12300351
-    console.log(archive);
 
     this.instance.configurer(archive);
   }
