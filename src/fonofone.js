@@ -37,13 +37,24 @@ window.Fonofone = class Fonofone {
 
   save_to_server () { }
 
-  importer (blob) { // TODO Lire le blob, JSON.parse, dataURI en blob
+  async importer (blob) {
+    let archive_serialisee = await new Promise((resolve) => {
+      let fileReader = new FileReader();
+      fileReader.onload = (e) => resolve(fileReader.result);
+      fileReader.readAsText(blob);
+    });
 
+    let archive = JSON.parse(archive_serialisee);
+    console.log(archive);
+    archive.fichier = await (await fetch(archive.fichier)).blob(); // https://stackoverflow.com/questions/12168909/blob-from-dataurl#12300351
+    console.log(archive);
+
+    this.instance.configurer(archive);
   }
 
   exporter (serialisation) {
-    serialisation.then((fnfn) => {
-      let blob = new Blob([fnfn])
+    serialisation.then((archive) => {
+      let blob = new Blob([archive])
       saveAs(blob, "archive.fnfn");
     })
   }
