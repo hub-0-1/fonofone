@@ -26,7 +26,12 @@ let ApplicationFonofone = function (id, fonofone) {
           fileReader.onload = (e) => resolve(fileReader.result);
           fileReader.readAsDataURL(this.fichier_audio);
         });
-        let serialisation = JSON.stringify( { config: this.configuration, fichier: audio_base64 });
+
+        let serialisation = JSON.stringify( { 
+          config: this.configuration, 
+          fichier: audio_base64 
+        });
+
         return serialisation;
       },
       exporter: function () {

@@ -37,7 +37,14 @@ window.Fonofone = class Fonofone {
 
   save_to_server () { }
 
-  exporter (blob) {
-    saveAs(blob, "export.fnfn.json");
+  importer (blob) { // TODO Lire le blob, JSON.parse, dataURI en blob
+
+  }
+
+  exporter (serialisation) {
+    serialisation.then((fnfn) => {
+      let blob = new Blob([fnfn])
+      saveAs(blob, "export.fnfn.json");
+    })
   }
 }
