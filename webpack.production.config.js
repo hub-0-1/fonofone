@@ -1,13 +1,11 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
   entry: './src/fonofone.js',
   output: {
     filename: 'fonofone.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -45,5 +43,4 @@ module.exports = {
       'wavesurfer': 'wavesurfer/dist/wavesurfer.js'
     }
   },
-  stats: { warnings: false }
 };

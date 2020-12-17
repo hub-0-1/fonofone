@@ -4,12 +4,14 @@ import Hamburger from '../images/icons/square.svg'
 let template_fnfn = `
   <div class="fonofone">
     <header>{{ $t("titre") }}</header>
-    <div id="waveform"></div>
-    <button v-on:click="exporter()">Exporter</button>
-    <div ref="filepond"></div>
+    <main>
+      <div id="waveform"></div>
+      <div ref="filepond"></div>
+    </main>
     <footer>
       <img class="logo" src="${Logo}">
       <div class="menu">
+        <button v-on:click="exporter()">Exporter</button>
         <img class="hamburger" src="${Hamburger}">
       </div>
     </footer>
