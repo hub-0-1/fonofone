@@ -55,7 +55,11 @@ let ApplicationFonofone = function (id, fonofone) {
     mounted: function () {
 
       // init Upload fichiers
-      let pond = FilePond.create({ name: 'filepond' });
+      let pond = FilePond.create({ 
+        name: 'filepond',
+        credits: false
+      });
+
       this.$refs.filepond.appendChild(pond.element);
 
       let filepond = this.$refs.filepond.firstChild;

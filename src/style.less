@@ -6,11 +6,31 @@
   color: white;
 
   header {
+    background-color: black;
     text-transform: uppercase;
   }
 
   footer {
     position: absolute;
     bottom: 0;
+    width: inherit;
+
+    display: flex;
+    justify-content: space-between;
+
+    background-color: white;
+    border-bottom: 1px solid black;
+
+    .logo {
+      margin: 5px;
+      height: 25px;
+    }
+
+    .menu {
+      .hamburger {
+        margin: 5px;
+        height: 25px;
+      }
+    }
   }
 }
