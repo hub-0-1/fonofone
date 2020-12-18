@@ -21,6 +21,55 @@ let ApplicationFonofone = function (id, fonofone) {
       fichier_audio: null // Ou definit si chargement
     },
     methods: {
+      init_filepond: function () {
+
+        // Upload fichiers
+        let pond = FilePond.create({ 
+          name: 'filepond',
+          credits: false
+        });
+
+        this.$refs.filepond.appendChild(pond.element);
+
+        let filepond = this.$refs.filepond.firstChild;
+        filepond.addEventListener('FilePond:addfile', e => { 
+
+          if(e.detail.file.fileType.match(/audio/)) {
+            this.update_fichier_audio(e.detail.file.file);
+          } else if (e.detail) { // TODO Changer la condition
+            this.fonofone.importer (e.detail.file.file);
+          } else {
+            throw "type de fichier non valide";
+          }
+        });
+      },
+      init_wavesurfer: function () {
+        
+        // Representation graphique du son
+        this.wavesurfer = WaveSurfer.create({
+          container: '#waveform',
+          waveColor: 'violet',
+          progressColor: 'purple'
+        });
+
+        // Si configure
+        if(this.url_fichier_audio) this.wavesurfer.load(this.url_fichier_audio); // TODO Pas beau ici, amener dans configurer
+      },
+      init_fabric: function () { // Style https://github.com/pixolith/fabricjs-customise-controls-extension
+
+        // Grille de manipulation
+        this.canvas = new fabric.Canvas('grille', {});
+        this.update_canvas_width();
+
+        var rect = new fabric.Rect({
+          left: 100,
+          top: 100,
+          fill: 'red',
+          width: 20,
+          height: 20
+        });
+        this.canvas.add(rect);
+      },
       configurer: function (archive) {
         this.update_fichier_audio(archive.fichier);
         // TODO appliquer la configuration
@@ -43,9 +92,15 @@ let ApplicationFonofone = function (id, fonofone) {
       exporter: function () {
         this.fonofone.exporter(this.serialiser());
       },
-      update_fichier_audio (fichier) {
+      update_fichier_audio: function (fichier) {
         this.fichier_audio = fichier;
         this.wavesurfer.load(this.url_fichier_audio);
+      },
+      update_canvas_width: function () {
+        this.canvas.setWidth(this.$refs.grille_wrapper.offsetWidth);
+      },
+      repaint: function () {
+        this.update_canvas_width();
       }
     },
     computed: {
@@ -54,50 +109,10 @@ let ApplicationFonofone = function (id, fonofone) {
       }
     },
     mounted: function () {
-
-      // TODO : Creer des fonctions "init..."
-
-      // init Upload fichiers
-      let pond = FilePond.create({ 
-        name: 'filepond',
-        credits: false
-      });
-
-      this.$refs.filepond.appendChild(pond.element);
-
-      let filepond = this.$refs.filepond.firstChild;
-      filepond.addEventListener('FilePond:addfile', e => { 
-
-        if(e.detail.file.fileType.match(/audio/)) {
-          this.update_fichier_audio(e.detail.file.file);
-        } else if (e.detail) { // TODO Changer la condition
-          this.fonofone.importer (e.detail.file.file);
-        } else {
-          throw "type de fichier non valide";
-        }
-
-      });
-
-      // Init son
-      this.wavesurfer = WaveSurfer.create({
-        container: '#waveform',
-        waveColor: 'violet',
-        progressColor: 'purple'
-      });
-
-      // Init Grille
-      this.canvas = new fabric.Canvas('grille');
-      var rect = new fabric.Rect({
-          left: 100,
-          top: 100,
-          fill: 'red',
-          width: 20,
-          height: 20
-      });
-      this.canvas.add(rect);
-
-      // Si configure
-      if(this.url_fichier_audio) this.wavesurfer.load(this.url_fichier_audio);
+      this.init_filepond();
+      this.init_wavesurfer();
+      this.init_fabric();
+      //this.configurer(); // TODO
     },
     i18n
   });

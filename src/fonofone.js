@@ -33,6 +33,10 @@ window.Fonofone = class Fonofone {
 
     // Crer l'instance Vue
     this.instance = ApplicationFonofone(app.id, this);
+
+    window.onresize = function () {
+      this.instance.repaint();
+    }.bind(this);
   }
 
   save_to_server () { }
