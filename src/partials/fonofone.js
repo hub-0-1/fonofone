@@ -6,6 +6,9 @@ let template_fnfn = `
     <header>{{ $t("titre") }}</header>
     <main>
       <div id="waveform"></div>
+      <div id="grille-wrapper">
+        <canvas id="grille"></canvas>
+      </div>
       <div ref="filepond"></div>
     </main>
     <footer>

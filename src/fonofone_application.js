@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import WaveSurfer from 'wavesurfer';
 import * as FilePond from 'filepond';
+import { fabric } from "fabric";
 
 import template_fnfn from './partials/fonofone';
 
@@ -54,6 +55,8 @@ let ApplicationFonofone = function (id, fonofone) {
     },
     mounted: function () {
 
+      // TODO : Creer des fonctions "init..."
+
       // init Upload fichiers
       let pond = FilePond.create({ 
         name: 'filepond',
@@ -81,6 +84,17 @@ let ApplicationFonofone = function (id, fonofone) {
         waveColor: 'violet',
         progressColor: 'purple'
       });
+
+      // Init Grille
+      this.canvas = new fabric.Canvas('grille');
+      var rect = new fabric.Rect({
+          left: 100,
+          top: 100,
+          fill: 'red',
+          width: 20,
+          height: 20
+      });
+      this.canvas.add(rect);
 
       // Si configure
       if(this.url_fichier_audio) this.wavesurfer.load(this.url_fichier_audio);
