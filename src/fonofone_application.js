@@ -16,6 +16,7 @@ let ApplicationFonofone = function (id, fonofone) {
     el: "#" + id,
     template: template_fnfn,
     data: {
+      id: id,
       fonofone: fonofone,
       configuration: { triangle: 0 },
       panneaux: {
@@ -53,7 +54,7 @@ let ApplicationFonofone = function (id, fonofone) {
         
         // Representation graphique du son
         this.wavesurfer = WaveSurfer.create({
-          container: '#waveform',
+          container: `#${this.waveform_id}`,
           waveColor: 'violet',
           progressColor: 'purple',
           height: 100
@@ -65,7 +66,7 @@ let ApplicationFonofone = function (id, fonofone) {
       init_fabric: function () { // Style https://github.com/pixolith/fabricjs-customise-controls-extension
 
         // Grille de manipulation
-        this.canvas = new fabric.Canvas('grille', {});
+        this.canvas = new fabric.Canvas(this.grille_id, {});
         this.update_canvas_width();
 
         var rect = new fabric.Rect({
@@ -118,6 +119,15 @@ let ApplicationFonofone = function (id, fonofone) {
       }
     },
     computed: {
+      grille_id: function () {
+        return `grille-${this.id}`;
+      },
+      grille_wrapper_id: function () {
+        return `grille-wrapper-${this.id}`;
+      },
+      waveform_id: function () {
+        return `waveform-${this.id}`;
+      },
       url_fichier_audio: function () {
         return this.fichier_audio ? URL.createObjectURL(this.fichier_audio) : null;
       }

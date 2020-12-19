@@ -3,12 +3,12 @@ import Hamburger from '../images/icons/square.svg'
 
 // TODO Enlever tous les ids, ou ajouter id fonofone (multi-fonofones)
 let template_fnfn = `
-  <div class="fonofone">
+  <div v-bind:id="id"class="fonofone">
     <header>{{ $t("titre") }}</header>
     <main>
-      <div v-show="panneaux.waveform" id="waveform"></div>
-      <div v-show="panneaux.grille" ref="grille_wrapper" id="grille-wrapper">
-        <canvas id="grille"></canvas>
+      <div v-show="panneaux.waveform" v-bind:id="waveform_id"></div>
+      <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id">
+        <canvas :id="grille_id"></canvas>
       </div>
       <div v-show="panneaux.importation" ref="filepond"></div>
     </main>
