@@ -18,6 +18,12 @@ let ApplicationFonofone = function (id, fonofone) {
     data: {
       fonofone: fonofone,
       configuration: { triangle: 0 },
+      panneaux: {
+        importation: false,
+        grille: true,
+        waveform: true,
+        menu: false,
+      },
       fichier_audio: null // Ou definit si chargement
     },
     methods: {
@@ -49,7 +55,8 @@ let ApplicationFonofone = function (id, fonofone) {
         this.wavesurfer = WaveSurfer.create({
           container: '#waveform',
           waveColor: 'violet',
-          progressColor: 'purple'
+          progressColor: 'purple',
+          height: 100
         });
 
         // Si configure
@@ -69,6 +76,12 @@ let ApplicationFonofone = function (id, fonofone) {
           height: 20
         });
         this.canvas.add(rect);
+      },
+      toggle_menu: function () {
+        this.panneaux.menu = !this.panneaux.menu;
+      },
+      toggle_importation: function () {
+        this.panneaux.importation = !this.panneaux.importation;
       },
       configurer: function (archive) {
         this.update_fichier_audio(archive.fichier);
@@ -98,6 +111,7 @@ let ApplicationFonofone = function (id, fonofone) {
       },
       update_canvas_width: function () {
         this.canvas.setWidth(this.$refs.grille_wrapper.offsetWidth);
+        this.canvas.setHeight(this.$refs.grille_wrapper.offsetHeight);
       },
       repaint: function () {
         this.update_canvas_width();
