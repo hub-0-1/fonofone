@@ -24,6 +24,12 @@ let ApplicationFonofone = function (id, fonofone) {
         grille: true,
         waveform: true,
         menu: false,
+        valeurs_modules: true,
+      },
+      modules: {
+        volume: 50,
+        arpegiateur: {},
+        selecteur: {}
       },
       fichier_audio: null // Ou definit si chargement
     },
@@ -43,8 +49,8 @@ let ApplicationFonofone = function (id, fonofone) {
 
           if(e.detail.file.fileType.match(/audio/)) {
             this.update_fichier_audio(e.detail.file.file);
-          } else if (e.detail) { // TODO Changer la condition
-            this.fonofone.importer (e.detail.file.file);
+          } else if (e.detail.file.fileExtension == "fnfn") {
+            this.fonofone.importer(e.detail.file.file);
           } else {
             throw "type de fichier non valide";
           }
@@ -59,9 +65,6 @@ let ApplicationFonofone = function (id, fonofone) {
           progressColor: 'purple',
           height: 100
         });
-
-        // Si configure
-        if(this.url_fichier_audio) this.wavesurfer.load(this.url_fichier_audio); // TODO Pas beau ici, amener dans configurer
       },
       init_fabric: function () { // Style https://github.com/pixolith/fabricjs-customise-controls-extension
 
@@ -85,8 +88,13 @@ let ApplicationFonofone = function (id, fonofone) {
         this.panneaux.importation = !this.panneaux.importation;
       },
       configurer: function (archive) {
-        this.update_fichier_audio(archive.fichier);
-        // TODO appliquer la configuration
+        if(!archive) {
+          // TODO : Charger la configuration par defaut
+
+        } else {
+          this.update_fichier_audio(archive.fichier);
+          // TODO appliquer la configuration
+        }
       },
       serialiser: async function () {
         let audio_base64 = await new Promise((resolve) => {

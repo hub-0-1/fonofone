@@ -1,16 +1,19 @@
 import Logo from '../images/logo_fonofone.svg'
 import Hamburger from '../images/icons/square.svg'
 
-// TODO Enlever tous les ids, ou ajouter id fonofone (multi-fonofones)
 let template_fnfn = `
-  <div v-bind:id="id"class="fonofone">
+  <div :id="id" class="fonofone">
     <header>{{ $t("titre") }}</header>
     <main>
-      <div v-show="panneaux.waveform" v-bind:id="waveform_id"></div>
+      <div v-show="panneaux.waveform" :id="waveform_id"></div>
       <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id">
         <canvas :id="grille_id"></canvas>
       </div>
       <div v-show="panneaux.importation" ref="filepond"></div>
+      <div v-show="panneaux.valeurs_modules" class="valeurs-modules">
+        <label for="volume">Volume</label>
+        <input v-model="modules.volume" type="number"> 
+      </div>
     </main>
     <footer>
       <img class="logo" src="${Logo}">
