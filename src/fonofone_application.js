@@ -10,6 +10,7 @@ import i18n from './traductions.js';
 import 'filepond/dist/filepond.min.css';
 
 Vue.use(VueI18n);
+// Interessant : https://vuetifyjs.com/en/components/lazy/#usage
 
 let ApplicationFonofone = function (id, fonofone) {
   return new Vue({
