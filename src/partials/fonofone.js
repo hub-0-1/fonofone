@@ -6,7 +6,7 @@ let template_fnfn = `
     <header>{{ $t("titre") }}</header>
     <main>
       <div v-show="panneaux.waveform" :id="waveform_id"></div>
-      <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id">
+      <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id" class="grille-wrapper">
         <canvas :id="grille_id"></canvas>
       </div>
       <div v-show="panneaux.importation" ref="filepond"></div>

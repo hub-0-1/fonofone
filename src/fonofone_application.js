@@ -9,6 +9,8 @@ import template_fnfn from './partials/fonofone';
 import i18n from './traductions.js';
 import 'filepond/dist/filepond.min.css';
 
+import FNFNSelecteur from './components/selecteur.js';
+
 Vue.use(VueI18n);
 // Interessant : https://vuetifyjs.com/en/components/lazy/#usage
 
@@ -16,6 +18,9 @@ let ApplicationFonofone = function (id, fonofone) {
   return new Vue({
     el: "#" + id,
     template: template_fnfn,
+    components: {
+      'fnfn-selecteur': FNFNSelecteur,
+    },
     data: {
       id: id,
       fonofone: fonofone,
@@ -25,7 +30,7 @@ let ApplicationFonofone = function (id, fonofone) {
         grille: true,
         waveform: true,
         menu: false,
-        valeurs_modules: true,
+        valeurs_modules: false,
       },
       modules: {
         volume: 50,
@@ -97,6 +102,9 @@ let ApplicationFonofone = function (id, fonofone) {
           // TODO appliquer la configuration
         }
       },
+      charger_widgets: function () { // TODO Creer le selecteur
+        this.$refs.grille_wrapper.innerHTML = "<fnfn-selecteur style='width: 10px; height: 10px;'></fnfn-selecteur>";
+      },
       serialiser: async function () {
         let audio_base64 = await new Promise((resolve) => {
           let fileReader = new FileReader();
@@ -144,8 +152,9 @@ let ApplicationFonofone = function (id, fonofone) {
     mounted: function () {
       this.init_filepond();
       this.init_wavesurfer();
-      this.init_fabric();
+      //this.init_fabric();
       //this.configurer(); // TODO
+      this.charger_widgets();
     },
     i18n
   });
