@@ -8,7 +8,6 @@ import './fonofone_gestion.js'; // Contient GFonofone
 /*
  * Classe parente du module en tant que tel.
  * Elle permet d'intergir avec la page
- * - Drag N Drop fichier
  * - Export
  * parametre 1 : HTML Node auquel on ajoutera le module fonofone
  * parametre 2 : id de scenario ou objet de configuration

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueDraggableResizable from 'vue-draggable-resizable';
+import VueDraggableResizable from 'vue-draggable-resizable'; // https://github.com/mauricius/vue-draggable-resizable
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 
 export default {

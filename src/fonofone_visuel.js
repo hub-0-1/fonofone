@@ -110,13 +110,7 @@ let ApplicationFonofone = function (id, fonofone) {
         this.fichier_audio = fichier;
         this.wavesurfer.load(this.url_fichier_audio);
       },
-      update_canvas_width: function () {
-        this.canvas.setWidth(this.$refs.grille_wrapper.offsetWidth);
-        this.canvas.setHeight(this.$refs.grille_wrapper.offsetHeight);
-      },
-      repaint: function () {
-        this.update_canvas_width();
-      }
+      repaint: function () { } // Appele lorsque la fenetre change de dimension
     },
     computed: {
       grille_id: function () {
