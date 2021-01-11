@@ -3,12 +3,12 @@ import VueI18n from 'vue-i18n';
 import WaveSurfer from 'wavesurfer';
 import * as FilePond from 'filepond';
 
-import template_fnfn from './partials/fonofone';
+import template_fnfn from './templates/fonofone';
 
 import i18n from './traductions.js';
 import 'filepond/dist/filepond.min.css';
 
-import FNFNSelecteur from './components/selecteur.js';
+import FNFNSelecteur from './modules/selecteur.js';
 
 Vue.use(VueI18n);
 // Interessant : https://vuetifyjs.com/en/components/lazy/#usage

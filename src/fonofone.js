@@ -1,9 +1,9 @@
 import { saveAs } from 'file-saver';
 
-import ApplicationFonofone from './fonofone_application';
+import ApplicationFonofone from './fonofone_visuel';
 
 import './style.less';
-import './gestionnaire_fonofone.js';
+import './fonofone_gestion.js'; // Contient GFonofone
 
 /*
  * Classe parente du module en tant que tel.
