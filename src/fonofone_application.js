@@ -18,7 +18,7 @@ let ApplicationFonofone = function (id, fonofone) {
     el: "#" + id,
     template: template_fnfn,
     components: {
-      "fnfn-selecteu": FNFNSelecteur
+      "fnfn-selecteur": FNFNSelecteur
     },
     data: {
       id: id,
@@ -32,9 +32,11 @@ let ApplicationFonofone = function (id, fonofone) {
         valeurs_modules: false,
       },
       modules: {
-        volume: 50,
+        volume: {},
         arpegiateur: {},
-        selecteur: {}
+        selecteur: {
+          actif: true,
+        }
       },
       fichier_audio: null // Ou definit si chargement
     },

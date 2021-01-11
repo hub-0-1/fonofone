@@ -7,7 +7,7 @@ let template_fnfn = `
     <main>
       <div v-show="panneaux.waveform" :id="waveform_id"></div>
       <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id" class="grille-wrapper">
-        <fnfn-selecteu class="fnfn-selecteur"></fnfn-selecteu>
+        <fnfn-selecteur v-if="modules.selecteur.actif" class="fnfn-selecteur"></fnfn-selecteur>
       </div>
       <div v-show="panneaux.importation" ref="filepond"></div>
       <div v-show="panneaux.valeurs_modules" class="valeurs-modules">
