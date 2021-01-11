@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import WaveSurfer from 'wavesurfer';
 import * as FilePond from 'filepond';
-import { fabric } from "fabric";
 
 import template_fnfn from './partials/fonofone';
 
@@ -19,7 +18,7 @@ let ApplicationFonofone = function (id, fonofone) {
     el: "#" + id,
     template: template_fnfn,
     components: {
-      'fnfn-selecteur': FNFNSelecteur,
+      "fnfn-selecteu": FNFNSelecteur
     },
     data: {
       id: id,
@@ -72,21 +71,6 @@ let ApplicationFonofone = function (id, fonofone) {
           height: 100
         });
       },
-      init_fabric: function () { // Style https://github.com/pixolith/fabricjs-customise-controls-extension
-
-        // Grille de manipulation
-        this.canvas = new fabric.Canvas(this.grille_id, {});
-        this.update_canvas_width();
-
-        var rect = new fabric.Rect({
-          left: 100,
-          top: 100,
-          fill: 'red',
-          width: 20,
-          height: 20
-        });
-        this.canvas.add(rect);
-      },
       toggle_menu: function () {
         this.panneaux.menu = !this.panneaux.menu;
       },
@@ -101,9 +85,6 @@ let ApplicationFonofone = function (id, fonofone) {
           this.update_fichier_audio(archive.fichier);
           // TODO appliquer la configuration
         }
-      },
-      charger_widgets: function () { // TODO Creer le selecteur
-        this.$refs.grille_wrapper.innerHTML = "<fnfn-selecteur style='width: 10px; height: 10px;'></fnfn-selecteur>";
       },
       serialiser: async function () {
         let audio_base64 = await new Promise((resolve) => {
@@ -152,9 +133,7 @@ let ApplicationFonofone = function (id, fonofone) {
     mounted: function () {
       this.init_filepond();
       this.init_wavesurfer();
-      //this.init_fabric();
       //this.configurer(); // TODO
-      this.charger_widgets();
     },
     i18n
   });
