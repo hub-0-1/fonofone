@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import WaveSurfer from 'wavesurfer';
 import * as FilePond from 'filepond';
+import { ToggleButton } from 'vue-js-toggle-button'
 
 import template_fnfn from './templates/fonofone';
 
@@ -11,19 +12,20 @@ import 'filepond/dist/filepond.min.css';
 import FNFNSelecteur from './modules/selecteur.js';
 
 Vue.use(VueI18n);
-// Interessant : https://vuetifyjs.com/en/components/lazy/#usage
 
 let ApplicationFonofone = function (id, fonofone) {
   return new Vue({
     el: "#" + id,
     template: template_fnfn,
     components: {
-      "fnfn-selecteur": FNFNSelecteur
+      "fnfn-selecteur": FNFNSelecteur,
+      "toggle-button": ToggleButton
     },
     data: {
       id: id,
       fonofone: fonofone,
-      configuration: { triangle: 0 },
+      configuration: { triangle: 0 }, // TODO refact a supprimer. Modules devrait faire l'affaire
+      mode_edition: true,
       panneaux: {
         importation: false,
         grille: true,
