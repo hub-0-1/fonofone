@@ -30,13 +30,12 @@ export default {
     }
   },
   template: `
-    <vue-draggable-resizable :draggable="this.can_edit" :resizable="this.can_edit" style='color: black' :parent='true'>
+    <vue-draggable-resizable :draggable="this.can_edit" :resizable="this.can_edit" :parent='true'>
       <h3>Sélecteur</h3>
       Position X
       <input v-model.number="x" v-on:input="this.update" type="number">
       Position Y
       <input v-model.number="y" v-on:input="this.update" type="number">
-      <p>{{ this.plage.debut }} - {{ this.plage.fin }}</p>
     </vue-draggable-resizable>
   `
 };

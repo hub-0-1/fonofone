@@ -23,14 +23,13 @@ let ApplicationFonofone = function (id, fonofone) {
     },
     data: {
       id, fonofone,
-      configuration: { triangle: 0 }, // TODO refact a supprimer. Modules devrait faire l'affaire
       mode_edition: true,
       panneaux: {
         importation: false,
         grille: true,
         waveform: true,
         menu: false,
-        valeurs_modules: true,
+        valeurs_modules: false,
       },
       modules: {
         volume: {},
@@ -78,12 +77,6 @@ let ApplicationFonofone = function (id, fonofone) {
           height: 100
         });
       },
-      toggle_menu: function () {
-        this.panneaux.menu = !this.panneaux.menu;
-      },
-      toggle_importation: function () {
-        this.panneaux.importation = !this.panneaux.importation;
-      },
       configurer: function (archive) {
         if(!archive) {
           // TODO : Charger la configuration par defaut
@@ -102,7 +95,7 @@ let ApplicationFonofone = function (id, fonofone) {
 
         let serialisation = JSON.stringify( { 
           version_api: 1,
-          config: this.configuration, 
+          config: this.modules, 
           fichier: audio_base64 
         });
 
@@ -114,8 +107,7 @@ let ApplicationFonofone = function (id, fonofone) {
       update_fichier_audio: function (fichier) {
         this.fichier_audio = fichier;
         this.wavesurfer.load(this.url_fichier_audio);
-      },
-      repaint: function () { } // Appele lorsque la fenetre change de dimension
+      }
     },
     computed: {
       grille_id: function () {

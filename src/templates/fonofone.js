@@ -13,8 +13,8 @@ let template_fnfn = `
           </div>
         </div>
         <div v-show="panneaux.valeurs_modules" class="valeurs-modules">
-          <label for="selecteur">Sélecteur</label>
-          <input :value="modules.selecteur.valeur.debut" type="number"> 
+          <h3>Selecteur</h3>
+          <p>{{ modules.selecteur.valeur.debut }} - {{ modules.selecteur.valeur.fin }}</p>
         </div>
       </div>
       <div v-show="panneaux.importation" ref="filepond"></div>
@@ -24,10 +24,11 @@ let template_fnfn = `
       <div class="menu">
         <div v-show="panneaux.menu" class="container-menu">
           <button v-on:click="exporter()">Exporter</button>
-          <button v-on:click="toggle_importation()">Importer</button>
+          <button v-on:click="panneaux.importation = !panneaux.importation">Importer</button>
           <toggle-button v-model="mode_edition" :labels="{checked: $t('menu.modes.edition'), unchecked: $t('menu.modes.mixage')}" :width="100" :color="{checked: '#00FF00', unchecked: '#FF0000'}"/>
+          <toggle-button v-model="panneaux.valeurs_modules" :width="100"/>
         </div>
-        <img v-on:click="toggle_menu()" class="hamburger" src="${Hamburger}">
+        <img v-on:click="panneaux.menu = !panneaux.menu" class="hamburger" src="${Hamburger}">
       </div>
     </footer>
   </div>
