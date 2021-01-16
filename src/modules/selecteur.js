@@ -13,14 +13,19 @@ export default {
       y: null
     }
   }, 
+  methods: {
+    update: function () {
+      this.$emit('update', this.plage);
+    }
+  },
   computed: {
     can_edit: function () {
       return this.modeEdition;
     },
-    plage: function () {
+    plage: function () { // TODO faire le calcul
       return {
-        debut: 0,
-        fin: 100
+        debut: this.x, 
+        fin: this.y
       };
     }
   },
@@ -28,9 +33,9 @@ export default {
     <vue-draggable-resizable :draggable="this.can_edit" :resizable="this.can_edit" style='color: black' :parent='true'>
       <h3>Sélecteur</h3>
       Position X
-      <input v-model="x" type="number">
+      <input v-model.number="x" v-on:input="this.update" type="number">
       Position Y
-      <input v-model="y" type="number">
+      <input v-model.number="y" v-on:input="this.update" type="number">
       <p>{{ this.plage.debut }} - {{ this.plage.fin }}</p>
     </vue-draggable-resizable>
   `

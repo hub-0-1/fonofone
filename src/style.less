@@ -7,10 +7,9 @@
   display: flex;
   flex-direction: column;
 
-  background-color: grey;
-  color: white;
 
   header {
+    color: white;
     background-color: black;
     text-transform: uppercase;
     height: 50px;
@@ -34,25 +33,35 @@
       }
     }
 
-    .grille-wrapper {
-      position: relative;
-      background-color: white;
-      flex: 1;
-
-      .fnfn-selecteur {
-        background-color: red;
-      }
-    }
-
-    .valeurs-modules {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100px;
+    .interface-creation {
       height: 100%;
+      display: flex;
 
-      input {
-        width: 50px;
+      .mixer {
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+
+        .grille-wrapper {
+          position: relative;
+          flex: 1;
+
+          .fnfn-selecteur {
+            background-color: red;
+          }
+        }
+      }
+
+      .valeurs-modules {
+        width: 100px;
+        height: 100%;
+
+        border: 1px solid black;
+
+        input {
+          width: 50px;
+        }
       }
     }
   }

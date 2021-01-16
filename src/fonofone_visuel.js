@@ -22,8 +22,7 @@ let ApplicationFonofone = function (id, fonofone) {
       "toggle-button": ToggleButton
     },
     data: {
-      id: id,
-      fonofone: fonofone,
+      id, fonofone,
       configuration: { triangle: 0 }, // TODO refact a supprimer. Modules devrait faire l'affaire
       mode_edition: true,
       panneaux: {
@@ -31,13 +30,17 @@ let ApplicationFonofone = function (id, fonofone) {
         grille: true,
         waveform: true,
         menu: false,
-        valeurs_modules: false,
+        valeurs_modules: true,
       },
       modules: {
         volume: {},
         arpegiateur: {},
         selecteur: {
           actif: true,
+          valeur: {
+            debut: null,
+            fin: null
+          }
         }
       },
       fichier_audio: null // Ou definit si chargement
