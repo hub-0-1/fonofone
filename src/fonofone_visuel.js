@@ -18,7 +18,7 @@ let ApplicationFonofone = function (id, fonofone) {
     el: "#" + id,
     template: template_fnfn,
     components: {
-      "fnfn-selecteur": FNFNSelecteur,
+      "selecteur": FNFNSelecteur,
       "toggle-button": ToggleButton
     },
     data: {
@@ -107,6 +107,13 @@ let ApplicationFonofone = function (id, fonofone) {
       update_fichier_audio: function (fichier) {
         this.fichier_audio = fichier;
         this.wavesurfer.load(this.url_fichier_audio);
+      },
+      repaint: function () {
+        window.setTimeout(() => {
+          var evt = document.createEvent('UIEvents');
+          evt.initUIEvent('resize', true, false,window,0);
+          window.dispatchEvent(evt);
+        }, 0);
       }
     },
     computed: {
@@ -127,6 +134,8 @@ let ApplicationFonofone = function (id, fonofone) {
       this.init_filepond();
       this.init_wavesurfer();
       //this.configurer(); // TODO
+
+      this.repaint(); // Hack pour vue-draggable-resizable
     },
     i18n
   });

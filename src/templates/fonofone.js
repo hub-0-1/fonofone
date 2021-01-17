@@ -9,7 +9,7 @@ let template_fnfn = `
         <div class="mixer">
           <div v-show="panneaux.waveform" :id="waveform_id"></div>
           <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id" class="grille-wrapper">
-            <fnfn-selecteur v-if="modules.selecteur.actif" v-on:update="modules.selecteur.valeur = $event" :mode-edition="mode_edition" class="fnfn-selecteur"></fnfn-selecteur>
+            <selecteur v-if="modules.selecteur.actif" v-on:update="modules.selecteur.valeur = $event" :mode-edition="mode_edition" class="fnfn-selecteur" ref="selecteur"></selecteur>
           </div>
         </div>
         <div v-show="panneaux.valeurs_modules" class="valeurs-modules">
@@ -26,7 +26,7 @@ let template_fnfn = `
           <button v-on:click="exporter()">Exporter</button>
           <button v-on:click="panneaux.importation = !panneaux.importation">Importer</button>
           <toggle-button v-model="mode_edition" :labels="{checked: $t('menu.modes.edition'), unchecked: $t('menu.modes.mixage')}" :width="100" :color="{checked: '#00FF00', unchecked: '#FF0000'}"/>
-          <toggle-button v-model="panneaux.valeurs_modules" :width="100"/>
+          <toggle-button v-model="panneaux.valeurs_modules" :width="100" @input="repaint()"/>
         </div>
         <img v-on:click="panneaux.menu = !panneaux.menu" class="hamburger" src="${Hamburger}">
       </div>
