@@ -36,7 +36,7 @@ let ApplicationFonofone = function (id, fonofone) {
         arpegiateur: {},
         selecteur: {
           actif: true,
-          position: {},
+          position: {}, // En % de la grille
           valeur: {
             debut: null,
             fin: null
