@@ -1,6 +1,6 @@
 import { saveAs } from 'file-saver';
 
-import ApplicationFonofone from './fonofone_visuel';
+import ApplicationFonofone from './fonofone_core';
 
 import './style.less';
 import './fonofone_gestion.js'; // Contient GFonofone

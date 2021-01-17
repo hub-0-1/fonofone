@@ -9,7 +9,7 @@ let template_fnfn = `
         <div class="mixer">
           <div v-show="panneaux.waveform" :id="waveform_id"></div>
           <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id" class="grille-wrapper">
-            <selecteur v-if="modules.selecteur.actif" v-on:update="modules.selecteur.valeur = $event" :mode-edition="mode_edition" class="fnfn-selecteur" ref="selecteur"></selecteur>
+            <selecteur v-if="modules.selecteur.actif" @update="modules.selecteur.valeur = $event" @moved="modules.selecteur.position = $event" :mode-edition="mode_edition" class="fnfn-selecteur" ref="selecteur"></selecteur>
           </div>
         </div>
         <div v-show="panneaux.valeurs_modules" class="valeurs-modules">

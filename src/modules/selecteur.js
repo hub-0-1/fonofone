@@ -17,8 +17,8 @@ export default {
     update: function () {
       this.$emit('update', this.plage);
     },
-    afficher_position: function () {
-      console.log(this.position());
+    moved: function () {
+      this.$emit('moved', this.position());
     },
     position: function () {
       let parent_box = this.$el.parentNode.getBoundingClientRect();
@@ -44,7 +44,7 @@ export default {
     }
   },
   template: `
-    <vue-draggable-resizable :draggable="this.can_edit" :resizable="this.can_edit" :parent='true' @dragging="this.afficher_position">
+    <vue-draggable-resizable :draggable="this.can_edit" :resizable="this.can_edit" :parent='true' @dragging="this.moved" @resizing="this.moved">
       <h3>Sélecteur</h3>
       Position X
       <input v-model.number="x" v-on:input="this.update" type="number">
