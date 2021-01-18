@@ -5,6 +5,8 @@ import ApplicationFonofone from './fonofone_core';
 import './style.less';
 import './fonofone_gestion.js'; // Contient GFonofone
 
+const configuration_1 = require("./configurations/configuration_1.fnfn");
+
 /*
  * Classe parente du module en tant que tel.
  * Elle permet d'intergir avec la page
@@ -30,8 +32,8 @@ window.Fonofone = class Fonofone {
     app.id = "fnfn-" + window.GFonofone.getProchainIndex();
     this.containerElement.appendChild(app);
 
-    // Crer l'instance Vue
-    this.instance = ApplicationFonofone(app.id, this);
+    // Creer l'instance Vue, l'application elle-meme
+    this.instance = ApplicationFonofone(app.id, this, configuration_1);
   }
 
   save_to_server () { }

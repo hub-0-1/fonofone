@@ -13,7 +13,7 @@ import FNFNSelecteur from './modules/selecteur.js';
 
 Vue.use(VueI18n);
 
-let ApplicationFonofone = function (id, fonofone) {
+let ApplicationFonofone = function (id, fonofone, archive) {
   return new Vue({
     el: "#" + id,
     template: template_fnfn,
@@ -22,7 +22,7 @@ let ApplicationFonofone = function (id, fonofone) {
       "toggle-button": ToggleButton
     },
     data: {
-      id, fonofone,
+      id, fonofone, archive
       mode_edition: true,
       panneaux: {
         importation: false,
