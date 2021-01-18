@@ -40,8 +40,16 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         wavesurfer: null
       },
       modules: {
-      /*  volume: {},
-        arpegiateur: {},
+        volume: {
+          actif: false,
+          position: {},
+          valeur: null
+        },
+        arpegiateur: {
+          actif: false,
+          position: {},
+          valeur: null
+        },
         selecteur: {
           actif: true,
           position: {}, // En % de la grille
@@ -49,7 +57,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
             debut: null,
             fin: null
           }
-        } */
+        }
       }
     },
     methods: {
@@ -86,7 +94,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
           height: 100
         });
       },
-      init_audio: async function () {
+      configurer_audio: async function () {
         this.fichier_audio = await (await fetch(archive.fichier)).blob();
         this.outils.wavesurfer.load(this.url_fichier_audio);
       },
@@ -123,7 +131,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
           this.archive = archive;
           console.log(this);
           this.configurer_modules();
-          this.init_audio();
+          this.configurer_audio();
         });
       },
       exporter: function () {
@@ -161,7 +169,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
     mounted: function () {
       this.init_filepond();
       this.init_wavesurfer();
-      this.init_audio();
+      this.configurer_audio();
       this.repaint();
     },
     i18n
