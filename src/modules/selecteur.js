@@ -6,19 +6,30 @@ import positionnement from "./mixins/positionnement.js";
 
 export default {
   mixins: [positionnement],
-  props: ['modeEdition'],
+  props: ['modeEdition', 'positionInitiale'],
   components: {
     "vue-draggable-resizable": VueDraggableResizable
   },
   data: function () {
     return {
-      x: null,
-      y: null
+      h: 1,
+      w: 1,
+      x: 0,
+      y: 0,
+      debut: null,
+      fin: null
     }
   }, 
   methods: {
     update: function () {
       this.$emit('update', this.plage);
+    },
+    reposition: function () {
+      let box = this.$el.parentNode.getBoundingClientRect();
+      this.w = this.positionInitiale.width * box.width; 
+      this.h = this.positionInitiale.height * box.height; 
+      this.x = this.positionInitiale.left * box.width; 
+      this.y = this.positionInitiale.top * box.height; 
     }
   },
   computed: {
@@ -27,18 +38,21 @@ export default {
     },
     plage: function () { // TODO faire le calcul
       return {
-        debut: this.x, 
-        fin: this.y
+        debut: this.debut, 
+        fin: this.fin
       };
     }
   },
+  mounted: function () {
+    window.setTimeout(this.reposition, 0); // Hack, pourquoi?
+  },
   template: `
-    <vue-draggable-resizable :draggable="this.can_edit" :resizable="this.can_edit" :parent='true' @dragging="this.moved" @resizing="this.moved">
+    <vue-draggable-resizable :draggable="can_edit" :resizable="can_edit" :parent="true" :w="w" :h="h" :x="x" :y="y" @dragging="this.moved" @resizing="this.moved">
       <h3>Sélecteur</h3>
       Position X
-      <input v-model.number="x" v-on:input="this.update" type="number">
+      <input v-model.number="debut" v-on:input="this.update" type="number">
       Position Y
-      <input v-model.number="y" v-on:input="this.update" type="number">
+      <input v-model.number="fin" v-on:input="this.update" type="number">
     </vue-draggable-resizable>
   `
 };

@@ -5,7 +5,7 @@ import ApplicationFonofone from './fonofone_core';
 import './style.less';
 import './fonofone_gestion.js'; // Contient GFonofone
 
-const configuration_1 = require("./configurations/configuration_1.fnfn");
+const CONFIG = require("./configurations/dauphin.fnfn");
 
 /*
  * Classe parente du module en tant que tel.
@@ -33,7 +33,7 @@ window.Fonofone = class Fonofone {
     this.containerElement.appendChild(app);
 
     // Creer l'instance Vue, l'application elle-meme
-    this.instance = ApplicationFonofone(app.id, this, configuration_1);
+    this.instance = ApplicationFonofone(app.id, this, CONFIG);
   }
 
   save_to_server () { }
@@ -48,7 +48,8 @@ window.Fonofone = class Fonofone {
     let archive = JSON.parse(archive_serialisee);
     archive.fichier = await (await fetch(archive.fichier)).blob(); // https://stackoverflow.com/questions/12168909/blob-from-dataurl#12300351
 
-    this.instance.configurer(archive);
+    this.instance.archive = archive;
+    this.instance.configurer();
   }
 
   exporter (serialisation) {

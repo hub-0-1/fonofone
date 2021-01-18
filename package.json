@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start-dev": "python3 -m http.server 8080 --bind 127.0.0.1",
-    "build": "nodemon --exec 'webpack --config webpack.config.js' -e js,less --watch src",
+    "build": "nodemon --exec 'webpack --config webpack.config.js' -e js,less,fnfn --watch src",
     "build-production": "webpack --config webpack.production.config.js"
   },
   "repository": {

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import WaveSurfer from 'wavesurfer';
@@ -13,6 +14,8 @@ import FNFNSelecteur from './modules/selecteur.js';
 
 Vue.use(VueI18n);
 
+// TODO BRIS IMPORTATION ...
+
 let ApplicationFonofone = function (id, fonofone, archive) {
   return new Vue({
     el: "#" + id,
@@ -22,7 +25,8 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       "toggle-button": ToggleButton
     },
     data: {
-      id, fonofone, archive
+      id, fonofone, archive,
+      fichier_audio: null,
       mode_edition: true,
       panneaux: {
         importation: false,
@@ -31,8 +35,12 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         menu: false,
         valeurs_modules: false,
       },
+      outils: {
+        filepond: null,
+        wavesurfer: null
+      },
       modules: {
-        volume: {},
+      /*  volume: {},
         arpegiateur: {},
         selecteur: {
           actif: true,
@@ -41,20 +49,19 @@ let ApplicationFonofone = function (id, fonofone, archive) {
             debut: null,
             fin: null
           }
-        }
-      },
-      fichier_audio: null // Ou definit si chargement
+        } */
+      }
     },
     methods: {
       init_filepond: function () {
 
         // Upload fichiers
-        let pond = FilePond.create({ 
+        this.outils.filepond = FilePond.create({ 
           name: 'filepond',
           credits: false
         });
 
-        this.$refs.filepond.appendChild(pond.element);
+        this.$refs.filepond.appendChild(this.outils.filepond.element);
 
         let filepond = this.$refs.filepond.firstChild;
         filepond.addEventListener('FilePond:addfile', e => { 
@@ -62,7 +69,8 @@ let ApplicationFonofone = function (id, fonofone, archive) {
           if(e.detail.file.fileType.match(/audio/)) {
             this.update_fichier_audio(e.detail.file.file);
           } else if (e.detail.file.fileExtension == "fnfn") {
-            this.fonofone.importer(e.detail.file.file);
+            //this.fonofone.importer(e.detail.file.file);
+            this.importer(e.detail.file.file);
           } else {
             throw "type de fichier non valide";
           }
@@ -71,21 +79,21 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       init_wavesurfer: function () {
         
         // Representation graphique du son
-        this.wavesurfer = WaveSurfer.create({
+        this.outils.wavesurfer = WaveSurfer.create({
           container: `#${this.waveform_id}`,
           waveColor: 'violet',
           progressColor: 'purple',
           height: 100
         });
       },
-      configurer: function (archive) {
-        if(!archive) {
-          // TODO : Charger la configuration par defaut
-
-        } else {
-          this.update_fichier_audio(archive.fichier);
-          // TODO appliquer la configuration
-        }
+      init_audio: async function () {
+        this.fichier_audio = await (await fetch(archive.fichier)).blob();
+        this.outils.wavesurfer.load(this.url_fichier_audio);
+      },
+      configurer_modules: function () {
+        _.each(this.archive.config, (value, key) => {
+          this.modules[key] = this.archive.config[key];
+        });
       },
       serialiser: async function () {
         let audio_base64 = await new Promise((resolve) => {
@@ -102,12 +110,28 @@ let ApplicationFonofone = function (id, fonofone, archive) {
 
         return serialisation;
       },
+      importer: function (blob) {
+        let archive_serialisee = new Promise((resolve) => {
+          let fileReader = new FileReader();
+          fileReader.onload = (e) => resolve(fileReader.result);
+          fileReader.readAsText(blob);
+        });
+
+        // TODO terminer importation
+        archive_serialisee.then((archive) => {
+          archive = JSON.parse(archive);
+          this.archive = archive;
+          console.log(this);
+          this.configurer_modules();
+          this.init_audio();
+        });
+      },
       exporter: function () {
         this.fonofone.exporter(this.serialiser());
       },
       update_fichier_audio: function (fichier) {
         this.fichier_audio = fichier;
-        this.wavesurfer.load(this.url_fichier_audio);
+        this.outils.wavesurfer.load(this.url_fichier_audio);
       },
       repaint: function () {
         window.setTimeout(() => {
@@ -128,15 +152,17 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         return `waveform-${this.id}`;
       },
       url_fichier_audio: function () {
-        return this.fichier_audio ? URL.createObjectURL(this.fichier_audio) : null;
+        return URL.createObjectURL(this.fichier_audio);
       }
+    },
+    created: function () {
+      this.configurer_modules();
     },
     mounted: function () {
       this.init_filepond();
       this.init_wavesurfer();
-      //this.configurer(); // TODO
-
-      this.repaint(); // Hack pour vue-draggable-resizable
+      this.init_audio();
+      this.repaint();
     },
     i18n
   });
