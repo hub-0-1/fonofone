@@ -85,6 +85,8 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         });
       },
       init_wavesurfer: function () {
+
+        // TODO connexion a un audio context : https://stackoverflow.com/questions/61967312/using-a-separate-audiocontext-scriptprocessor-node-in-wavesurfer#62187178
         
         // Representation graphique du son
         this.outils.wavesurfer = WaveSurfer.create({
