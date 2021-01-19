@@ -23,6 +23,7 @@ let template_fnfn = `
       <img class="logo" src="${Logo}">
       <div class="menu">
         <div v-show="panneaux.menu" class="container-menu">
+          <button v-on:click="jouer()">jouer</button>
           <button v-on:click="exporter()">Exporter</button>
           <button v-on:click="panneaux.importation = !panneaux.importation">Importer</button>
           <toggle-button v-model="mode_edition" :labels="{checked: $t('menu.modes.edition'), unchecked: $t('menu.modes.mixage')}" :width="100" :color="{checked: '#00FF00', unchecked: '#FF0000'}"/>

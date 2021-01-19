@@ -137,6 +137,9 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       exporter: function () {
         this.fonofone.exporter(this.serialiser());
       },
+      jouer: function () {
+        this.outils.wavesurfer.play();
+      },
       update_fichier_audio: function (fichier) {
         this.fichier_audio = fichier;
         this.outils.wavesurfer.load(this.url_fichier_audio);
