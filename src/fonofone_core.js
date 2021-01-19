@@ -14,8 +14,6 @@ import FNFNSelecteur from './modules/selecteur.js';
 
 Vue.use(VueI18n);
 
-// TODO BRIS IMPORTATION ...
-
 let ApplicationFonofone = function (id, fonofone, archive) {
   return new Vue({
     el: "#" + id,
@@ -73,12 +71,13 @@ let ApplicationFonofone = function (id, fonofone, archive) {
 
         let filepond = this.$refs.filepond.firstChild;
         filepond.addEventListener('FilePond:addfile', e => { 
+          let fichier = e.detail.file;
 
-          if(e.detail.file.fileType.match(/audio/)) {
-            this.update_fichier_audio(e.detail.file.file);
+          if(fichier.fileType.match(/audio/)) {
+            this.update_fichier_audio(fichier.file);
             this.panneaux.importation = false;
-          } else if (e.detail.file.fileExtension == "fnfn") {
-            this.importer(e.detail.file.file);
+          } else if (fichier.fileExtension == "fnfn") {
+            this.importer(fichier.file);
           } else {
             throw "type de fichier non valide";
           }
@@ -96,11 +95,11 @@ let ApplicationFonofone = function (id, fonofone, archive) {
           height: 100
         });
       },
-      configurer_audio: async function () {
+      charger_audio: async function () {
         this.fichier_audio = await (await fetch(archive.fichier)).blob();
         this.outils.wavesurfer.load(this.url_fichier_audio);
       },
-      configurer_modules: function () {
+      charger_modules: function () {
         _.each(this.archive.config, (value, key) => {
           this.modules[key] = this.archive.config[key];
         });
@@ -132,8 +131,8 @@ let ApplicationFonofone = function (id, fonofone, archive) {
           archive = JSON.parse(archive);
           this.archive = archive;
           console.log(this);
-          this.configurer_modules();
-          this.configurer_audio();
+          this.charger_modules();
+          this.charger_audio();
         });
       },
       exporter: function () {
@@ -169,12 +168,12 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       }
     },
     created: function () {
-      this.configurer_modules();
+      this.charger_modules();
     },
     mounted: function () {
       this.init_filepond();
       this.init_wavesurfer();
-      this.configurer_audio();
+      this.charger_audio();
       this.repaint();
     },
     i18n
