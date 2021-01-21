@@ -8,7 +8,7 @@ let template_fnfn = `
       <div class="interface-creation">
         <div class="mixer">
           <div v-show="panneaux.waveform" :id="waveform_id"></div>
-          <div v-show="panneaux.grille" ref="grille_wrapper" :id="grille_wrapper_id" class="grille-wrapper">
+          <div v-show="panneaux.grille" ref="grille_wrapper" class="grille-wrapper">
             <selecteur v-if="modules.selecteur.actif" @update="modules.selecteur.valeur = $event" @moved="modules.selecteur.position = $event" :mode-edition="mode_edition" :position-initiale="modules.selecteur.position" class="fnfn-selecteur" ref="selecteur"></selecteur>
           </div>
         </div>

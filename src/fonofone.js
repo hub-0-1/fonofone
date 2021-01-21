@@ -29,7 +29,7 @@ window.Fonofone = class Fonofone {
     // Creer l'element pour le Vue
     let app = document.createElement("div");
     app.className = "fonofone";
-    app.id = "fnfn-" + window.GFonofone.getProchainIndex();
+    app.id = "fnfn-" + window.GestionnaireFonofone.prochainIndex();
     this.containerElement.appendChild(app);
 
     // Creer l'instance Vue, l'application elle-meme

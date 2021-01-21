@@ -154,12 +154,6 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       }
     },
     computed: {
-      grille_id: function () {
-        return `grille-${this.id}`;
-      },
-      grille_wrapper_id: function () {
-        return `grille-wrapper-${this.id}`;
-      },
       waveform_id: function () {
         return `waveform-${this.id}`;
       },
