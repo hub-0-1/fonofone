@@ -50,10 +50,10 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         },
         selecteur: {
           actif: true,
-          position: {}, // En % de la grille
+          disposition: {}, // En % de la grille
           valeur: {
-            debut: null,
-            fin: null
+            x: null,
+            y: null
           }
         }
       }

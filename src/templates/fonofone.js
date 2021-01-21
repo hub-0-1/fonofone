@@ -9,12 +9,12 @@ let template_fnfn = `
         <div class="mixer">
           <div v-show="panneaux.waveform" :id="waveform_id"></div>
           <div v-show="panneaux.grille" ref="grille_wrapper" class="grille-wrapper">
-            <selecteur v-if="modules.selecteur.actif" @update="modules.selecteur.valeur = $event" @moved="modules.selecteur.position = $event" :mode-edition="mode_edition" :position-initiale="modules.selecteur.position" class="fnfn-selecteur" ref="selecteur"></selecteur>
+            <selecteur v-if="modules.selecteur.actif" :valeur.sync="modules.selecteur.valeur" :disposition.sync="modules.selecteur.disposition" :modifiable="mode_edition" class="fnfn-selecteur" ref="selecteur"></selecteur>
           </div>
         </div>
         <div v-show="panneaux.valeurs_modules" class="valeurs-modules">
           <h3>Selecteur</h3>
-          <p>{{ modules.selecteur.valeur.debut }} - {{ modules.selecteur.valeur.fin }}</p>
+          <p>{{ modules.selecteur.valeur.x }} - {{ modules.selecteur.valeur.y }}</p>
         </div>
       </div>
       <div v-show="panneaux.importation" ref="filepond"></div>
