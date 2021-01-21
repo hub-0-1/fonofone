@@ -3,9 +3,10 @@ import VueDraggableResizable from 'vue-draggable-resizable'; // https://github.c
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 
 import Disposition from "./mixins/disposition.js";
+import Modifiable from "./mixins/modifiable.js";
 
 export default {
-  mixins: [Disposition],
+  mixins: [Disposition, Modifiable],
   props: ['valeur'],
   components: {
     "vue-draggable-resizable": VueDraggableResizable

@@ -1,5 +1,5 @@
-let Disposition = {
-  props: ['disposition', 'modifiable'],
+export default {
+  props: ['disposition'],
   data: function () {
     return { 
       element: { x: 0, y: 0, w: 1, h: 1 }
@@ -32,6 +32,4 @@ let Disposition = {
     disposition: function () { this.redisposer(); }    
   },
   mounted: function () { window.setTimeout(this.redisposer, 0); }
-}
-
-export default Disposition;
+};
