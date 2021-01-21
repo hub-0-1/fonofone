@@ -17,6 +17,14 @@ Vue.use(VueI18n);
 // TODO Fusionner dans une classe avec Fonofone
 // Creer fonction encode_audio_64, decode_audio_64
 
+// TODO creer une configuration 0 qui contient tous les modules, mais pas les sons
+/* 
+ * Format standard des modules : {
+ *  actif: true,
+ *  disposition: { top, left, width, height }, // Notee en pourcentage
+ *  valeur: null
+ * }
+ */
 let ApplicationFonofone = function (id, fonofone, archive) {
   return new Vue({
     el: "#" + id,
@@ -40,23 +48,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         filepond: null,
         wavesurfer: null
       },
-      modules: {
-        volume: {
-          actif: false,
-          position: {},
-          valeur: null
-        },
-        arpegiateur: {
-          actif: false,
-          position: {},
-          valeur: null
-        },
-        selecteur: {
-          actif: true,
-          disposition: {}, // En % de la grille
-          valeur: { x: 0, y: 0 }
-        }
-      }
+      modules: {}
     },
     methods: {
       init_filepond: function () {
