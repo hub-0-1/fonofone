@@ -6,7 +6,7 @@ import Disposition from "./mixins/disposition.js";
 
 export default {
   mixins: [Disposition],
-  props: ['disposition', 'valeur'],
+  props: ['valeur'],
   components: {
     "vue-draggable-resizable": VueDraggableResizable
   },

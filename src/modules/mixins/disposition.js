@@ -1,5 +1,5 @@
 let Disposition = {
-  props: ['modifiable'],
+  props: ['disposition', 'modifiable'],
   data: function () {
     return { 
       element: { x: 0, y: 0, w: 1, h: 1 }
@@ -28,9 +28,10 @@ let Disposition = {
       this.element.y = this.disposition.top * box.height; 
     }
   },
-  mounted: function () {
-    window.setTimeout(this.redisposer, 0); // Hack, pourquoi?
-  }
+  watch: {
+    disposition: function () { this.redisposer(); }    
+  },
+  mounted: function () { window.setTimeout(this.redisposer, 0); }
 }
 
 export default Disposition;

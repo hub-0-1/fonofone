@@ -14,6 +14,9 @@ import FNFNSelecteur from './modules/selecteur.js';
 
 Vue.use(VueI18n);
 
+// TODO Fusionner dans une classe avec Fonofone
+// Creer fonction encode_audio_64, decode_audio_64
+
 let ApplicationFonofone = function (id, fonofone, archive) {
   return new Vue({
     el: "#" + id,
@@ -30,7 +33,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         importation: false,
         grille: true,
         waveform: true,
-        menu: false,
+        menu: true,
         valeurs_modules: false,
       },
       outils: {
@@ -51,10 +54,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         selecteur: {
           actif: true,
           disposition: {}, // En % de la grille
-          valeur: {
-            x: null,
-            y: null
-          }
+          valeur: { x: 0, y: 0 }
         }
       }
     },
@@ -78,6 +78,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
             this.panneaux.importation = false;
           } else if (fichier.fileExtension == "fnfn") {
             this.importer(fichier.file);
+            this.panneaux.importation = false;
           } else {
             throw "type de fichier non valide";
           }
@@ -93,15 +94,6 @@ let ApplicationFonofone = function (id, fonofone, archive) {
           waveColor: 'violet',
           progressColor: 'purple',
           height: 100
-        });
-      },
-      charger_audio: async function () {
-        this.fichier_audio = await (await fetch(archive.fichier)).blob();
-        this.outils.wavesurfer.load(this.url_fichier_audio);
-      },
-      charger_modules: function () {
-        _.each(this.archive.config, (value, key) => {
-          this.modules[key] = this.archive.config[key];
         });
       },
       serialiser: async function () {
@@ -130,10 +122,18 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         archive_serialisee.then((archive) => {
           archive = JSON.parse(archive);
           this.archive = archive;
-          console.log(this);
           this.charger_modules();
           this.charger_audio();
         });
+      },
+      charger_modules: function () {
+        _.each(this.archive.config, (value, key) => {
+          this.modules[key] = this.archive.config[key];
+        });
+      },
+      charger_audio: async function () {
+        this.fichier_audio = await (await fetch(archive.fichier)).blob();
+        this.outils.wavesurfer.load(this.url_fichier_audio);
       },
       exporter: function () {
         this.fonofone.exporter(this.serialiser());
