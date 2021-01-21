@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: './src/fonofone.js',
   output: {
-    filename: 'fonofone.js',
+    filename: 'fonofone.min.js',
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
@@ -35,6 +35,10 @@ module.exports = {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
+      { 
+        test: /\.fnfn$/, 
+        use: 'json-loader'
+      }
     ],
   },
   resolve: {
