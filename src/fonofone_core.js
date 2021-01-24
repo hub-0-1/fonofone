@@ -1,17 +1,18 @@
 import _ from 'lodash';
 import Vue from 'vue';
-import VueI18n from 'vue-i18n';
-import WaveSurfer from 'wavesurfer';
-import * as FilePond from 'filepond';
+
 import { ToggleButton } from 'vue-js-toggle-button'
 
 import template_fnfn from './templates/fonofone';
+import Filepond from './mixins/filepond.js';
 
-import i18n from './traductions.js';
-import 'filepond/dist/filepond.min.css';
+import Mixer from './mixer.js';
 
 import FNFNSelecteur from './modules/selecteur.js';
 
+// Traduction
+import VueI18n from 'vue-i18n';
+import i18n from './traductions.js';
 Vue.use(VueI18n);
 
 // TODO Fusionner dans une classe avec Fonofone
@@ -28,6 +29,7 @@ Vue.use(VueI18n);
 let ApplicationFonofone = function (id, fonofone, archive) {
   return new Vue({
     el: "#" + id,
+    mixins: [Filepond],
     template: template_fnfn,
     components: {
       "selecteur": FNFNSelecteur,
@@ -51,52 +53,14 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       modules: {}
     },
     methods: {
-      init_filepond: function () {
-
-        // Upload fichiers
-        this.outils.filepond = FilePond.create({ 
-          name: 'filepond',
-          credits: false
-        });
-
-        this.$refs.filepond.appendChild(this.outils.filepond.element);
-
-        let filepond = this.$refs.filepond.firstChild;
-        filepond.addEventListener('FilePond:addfile', e => { 
-          let fichier = e.detail.file;
-
-          if(fichier.fileType.match(/audio/)) {
-            this.update_fichier_audio(fichier.file);
-            this.panneaux.importation = false;
-          } else if (fichier.fileExtension == "fnfn") {
-            this.importer(fichier.file);
-            this.panneaux.importation = false;
-          } else {
-            throw "type de fichier non valide";
-          }
-        });
-      },
-      init_wavesurfer: function () {
-
-        // TODO connexion a un audio context : https://stackoverflow.com/questions/61967312/using-a-separate-audiocontext-scriptprocessor-node-in-wavesurfer#62187178
-        
-        // Representation graphique du son
-        this.outils.wavesurfer = WaveSurfer.create({
-          container: `#${this.waveform_id}`,
-          waveColor: 'violet',
-          progressColor: 'purple',
-          height: 100
-        });
-      },
       serialiser: async function () {
         let audio_base64 = await new Promise((resolve) => {
           let fileReader = new FileReader();
           fileReader.onload = (e) => resolve(fileReader.result);
-          fileReader.readAsDataURL(this.fichier_audio);
+          fileReader.readAsDataURL(this.fichier_audio); // TODO utiliser this.mixer.blob
         });
 
         let serialisation = JSON.stringify( { 
-          version_api: 1,
           config: this.modules, 
           fichier: audio_base64 
         });
@@ -110,32 +74,25 @@ let ApplicationFonofone = function (id, fonofone, archive) {
           fileReader.readAsText(blob);
         });
 
-        // TODO terminer importation
         archive_serialisee.then((archive) => {
           archive = JSON.parse(archive);
           this.archive = archive;
           this.charger_modules();
-          this.charger_audio();
+          Mixer.handle_to_blob(archive.fichier).then((blob) => { this.mixer.charger(blob); })
         });
       },
       charger_modules: function () {
         _.each(this.archive.config, (value, key) => {
           this.modules[key] = this.archive.config[key];
+
+          // https://vuejs.org/v2/api/#vm-watch
+          this.$watch(`modules.${key}.valeur`, (val) => {
+            this.mixer.setGain(val.x);
+          }, {deep: true}); // TODO Passer immediate: true s'il y a une valeur predefinie
         });
-      },
-      charger_audio: async function () {
-        this.fichier_audio = await (await fetch(archive.fichier)).blob();
-        this.outils.wavesurfer.load(this.url_fichier_audio);
       },
       exporter: function () {
         this.fonofone.exporter(this.serialiser());
-      },
-      jouer: function () {
-        this.outils.wavesurfer.play();
-      },
-      update_fichier_audio: function (fichier) {
-        this.fichier_audio = fichier;
-        this.outils.wavesurfer.load(this.url_fichier_audio);
       },
       repaint: function () {
         window.setTimeout(() => {
@@ -153,13 +110,22 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         return URL.createObjectURL(this.fichier_audio);
       }
     },
+    watch: {
+      modules: function (modules) {
+        console.log(modules);
+      }
+    },
     created: function () {
       this.charger_modules();
     },
     mounted: function () {
-      this.init_filepond();
-      this.init_wavesurfer();
-      this.charger_audio();
+
+      // Initialisation des modules par les mixins
+      // Filepond 
+
+      this.mixer = new Mixer(this.waveform_id);
+      Mixer.handle_to_blob(archive.fichier).then((blob) => { this.mixer.charger(blob); })
+
       this.repaint();
     },
     i18n
