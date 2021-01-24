@@ -26,6 +26,7 @@ Vue.use(VueI18n);
  *  valeur: null
  * }
  */
+
 let ApplicationFonofone = function (id, fonofone, archive) {
   return new Vue({
     el: "#" + id,
@@ -39,6 +40,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       id, fonofone, archive,
       fichier_audio: null,
       mode_edition: true,
+      mixer: null,
       panneaux: {
         importation: false,
         grille: true,
@@ -87,8 +89,8 @@ let ApplicationFonofone = function (id, fonofone, archive) {
 
           // https://vuejs.org/v2/api/#vm-watch
           this.$watch(`modules.${key}.valeur`, (val) => {
-            this.mixer.setGain(val.x);
-          }, {deep: true}); // TODO Passer immediate: true s'il y a une valeur predefinie
+            this.mixer[`set_${key}`](val);
+          }, {deep: true});
         });
       },
       exporter: function () {
@@ -105,14 +107,11 @@ let ApplicationFonofone = function (id, fonofone, archive) {
     computed: {
       waveform_id: function () {
         return `waveform-${this.id}`;
-      },
-      url_fichier_audio: function () {
-        return URL.createObjectURL(this.fichier_audio);
       }
     },
     watch: {
       loop: function (val) {
-        this.mixer.setLoop(val);
+        this.mixer.set_loop(val);
       }
     },
     created: function () {

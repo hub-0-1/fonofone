@@ -1,5 +1,6 @@
 import WaveSurfer from 'wavesurfer';
-import * as Regions from '../node_modules/wavesurfer/dist/plugin/wavesurfer.regions.min.js';
+import '../node_modules/wavesurfer/dist/plugin/wavesurfer.regions.min.js'; // Note : S'ajoute automatiquement a wavesurfer.regions
+import '../node_modules/wavesurfer/dist/plugin/wavesurfer.cursor.min.js'; // TODO Marche pas
 
 class Mixer {
   constructor (waveform_element_id) {
@@ -12,15 +13,11 @@ class Mixer {
     this.nodes.stereoPannerNode = this.contexte.createStereoPanner();
 
     // Representation graphique du son
-    //console.log(Regions);
     this.wavesurfer = WaveSurfer.create({
       container: `#${waveform_element_id}`,
       waveColor: 'violet',
       progressColor: 'purple',
-      height: 100,
-      plugins: [/*
-          Regions.create()
-          */]
+      height: 100
     });
   }
 
@@ -41,6 +38,9 @@ class Mixer {
       .connect(this.contexte.destination); // Envoyer vers la sortie standard
 
     // Affichage
+    this.wavesurfer.on('ready', () => {
+      //this.wavesurfer.addRegion({start: 0, end: 1, color: 'black'});
+    });
     this.wavesurfer.load(url_source_audio);
   }
 
@@ -48,20 +48,24 @@ class Mixer {
     this.source.play();
   }
 
-  setGain (valeur) {
+  set_selecteur (valeur) {
+    this.wavesurfer.clearRegions();
+    this.wavesurfer.addRegion({start: valeur.x, end: valeur.y, color: 'black'});
+  }
+
+  set_volume (valeur) {
     this.nodes.gainNode.gain.setValueAtTime(valeur, this.contexte.currentTime);
   }
 
-  setPan (valeur) {
+  set_pan (valeur) {
     this.nodes.stereoPannerNode.pan.setValueAtTime(valeur, this.contexte.currentTime);
   }
 
-  setLoop (valeur) {
+  set_loop (valeur) {
     this.source.loop = valeur;
   }
 
   static async handle_to_blob (fichier) {
-    //return URL.createObjectURL(await (await fetch(fichier)).blob());
     return await (await fetch(fichier)).blob();
   }
 }
