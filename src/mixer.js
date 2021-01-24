@@ -6,8 +6,10 @@ class Mixer {
     this.blob = null;
     this.source = null;
     this.nodes = {};
+
     this.contexte = new (window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext);
     this.nodes.gainNode = this.contexte.createGain();
+    this.nodes.stereoPannerNode = this.contexte.createStereoPanner();
 
     // Representation graphique du son
     //console.log(Regions);
@@ -35,6 +37,7 @@ class Mixer {
     // https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API
     this.media_source // Envoyer la source
       .connect(this.nodes.gainNode) // Dans le modificateur de gain (volume) 
+      .connect(this.nodes.stereoPannerNode) // Dans le modificateur de pan (gauche / droite) 
       .connect(this.contexte.destination); // Envoyer vers la sortie standard
 
     // Affichage
@@ -46,7 +49,15 @@ class Mixer {
   }
 
   setGain (valeur) {
-    this.nodes.gainNode.gain.value = valeur;
+    this.nodes.gainNode.gain.setValueAtTime(valeur, this.contexte.currentTime);
+  }
+
+  setPan (valeur) {
+    this.nodes.stereoPannerNode.pan.setValueAtTime(valeur, this.contexte.currentTime);
+  }
+
+  setLoop (valeur) {
+    this.source.loop = valeur;
   }
 
   static async handle_to_blob (fichier) {

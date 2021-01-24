@@ -28,6 +28,7 @@ let template_fnfn = `
           <button v-on:click="panneaux.importation = !panneaux.importation">Importer</button>
           <toggle-button v-model="mode_edition" :labels="{checked: $t('menu.modes.edition'), unchecked: $t('menu.modes.mixage')}" :width="100" :color="{checked: '#00FF00', unchecked: '#FF0000'}"/>
           <toggle-button v-model="panneaux.valeurs_modules" :width="100" @input="repaint()"/>
+          <toggle-button v-model="loop" :width="25"/>
         </div>
         <img v-on:click="panneaux.menu = !panneaux.menu" class="hamburger" src="${Hamburger}">
       </div>

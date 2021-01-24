@@ -46,9 +46,9 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         menu: true,
         valeurs_modules: false,
       },
+      loop: false,
       outils: {
-        filepond: null,
-        wavesurfer: null
+        filepond: null
       },
       modules: {}
     },
@@ -111,8 +111,8 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       }
     },
     watch: {
-      modules: function (modules) {
-        console.log(modules);
+      loop: function (val) {
+        this.mixer.setLoop(val);
       }
     },
     created: function () {
