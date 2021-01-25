@@ -8,10 +8,6 @@ class Mixer {
     this.source = null;
     this.nodes = {};
 
-    this.contexte = new (window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext);
-    this.nodes.gainNode = this.contexte.createGain();
-    this.nodes.stereoPannerNode = this.contexte.createStereoPanner();
-
     // Representation graphique du son
     this.wavesurfer = WaveSurfer.create({
       container: `#${waveform_element_id}`,
@@ -23,38 +19,30 @@ class Mixer {
         Cursor.create()
       ]
     });
+
+    // Initialisation
+    this.contexte = this.wavesurfer.backend.getAudioContext();
+    this.nodes.gainNode = this.contexte.createGain();
+
+    // Appliquer les filtres
+    this.wavesurfer.backend.setFilter(this.nodes.gainNode);
   }
 
   charger (blob_audio) {
-
     this.blob = blob_audio;
-    let url_source_audio = URL.createObjectURL(this.blob);
-
-    // Charger
-    this.source = new Audio(url_source_audio);
-    this.media_source = this.contexte.createMediaElementSource(this.source);
-
-    // Mixer
-    // https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API
-    this.media_source // Envoyer la source
-      .connect(this.nodes.gainNode) // Dans le modificateur de gain (volume) 
-      .connect(this.nodes.stereoPannerNode) // Dans le modificateur de pan (gauche / droite) 
-      .connect(this.contexte.destination); // Envoyer vers la sortie standard
-
-    // Affichage
-    this.wavesurfer.on('ready', () => {
-      //this.wavesurfer.addRegion({start: 0, end: 1, color: 'black'});
-    });
-    this.wavesurfer.load(url_source_audio);
+    this.wavesurfer.load(URL.createObjectURL(this.blob));
+    this.set_selecteur({x: 0, y: 300});
   }
 
   jouer () {
-    this.source.play();
+    this.wavesurfer.regions.list.selected.play();
   }
 
   set_selecteur (valeur) {
+
+    // TODO Valeurs a utiliser : milieu, longueur en pct
     this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({start: valeur.x, end: valeur.y, color: 'black'});
+    this.wavesurfer.addRegion({id: "selected", start: valeur.x, end: valeur.y, color: 'rgba(200,0,0,0.2)'});
   }
 
   set_volume (valeur) {
@@ -66,7 +54,7 @@ class Mixer {
   }
 
   set_loop (valeur) {
-    this.source.loop = valeur;
+    this.wavesurfer.regions.list.selected.loop = valeur;
   }
 
   static async handle_to_blob (fichier) {
