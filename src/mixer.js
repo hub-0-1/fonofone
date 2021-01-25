@@ -22,7 +22,7 @@ class Mixer {
     // Initialisation
     this.contexte = this.wavesurfer.backend.getAudioContext();
     this.nodes.gainNode = this.contexte.createGain();
-    this.nodes.convolver = this.contexte.createConvolver(); // TODO Reverb
+    //this.nodes.convolver = this.contexte.createConvolver(); // TODO Reverb
 
     // Appliquer les filtres
     this.wavesurfer.backend.setFilters(_.map(this.nodes, (val) => { return val }));
