@@ -5,7 +5,6 @@ import Cursor from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js'; // TODO
 class Mixer {
   constructor (waveform_element_id) {
     this.blob = null;
-    this.source = null;
     this.nodes = {};
 
     // Representation graphique du son
@@ -25,7 +24,7 @@ class Mixer {
     this.nodes.gainNode = this.contexte.createGain();
 
     // Appliquer les filtres
-    this.wavesurfer.backend.setFilter(this.nodes.gainNode);
+    this.wavesurfer.backend.setFilters(_.map(this.nodes, (val) => { return val }));
   }
 
   charger (blob_audio) {

@@ -22,9 +22,9 @@ export default {
   template: `
     <vue-draggable-resizable :draggable="modifiable" :resizable="modifiable" :parent="true" :w="element.w" :h="element.h" :x="element.x" :y="element.y" @dragging="this.moved" @resizing="this.moved">
       <h3>Sélecteur</h3>
-      Position X
+      Debut
       <input v-model.number="x" v-on:input="this.update" type="number">
-      Position Y
+      Fin
       <input v-model.number="y" v-on:input="this.update" type="number">
     </vue-draggable-resizable>
   `
