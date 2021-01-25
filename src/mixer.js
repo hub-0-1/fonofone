@@ -1,6 +1,6 @@
-import WaveSurfer from 'wavesurfer';
-import '../node_modules/wavesurfer/dist/plugin/wavesurfer.regions.min.js'; // Note : S'ajoute automatiquement a wavesurfer.regions
-import '../node_modules/wavesurfer/dist/plugin/wavesurfer.cursor.min.js'; // TODO Marche pas
+import WaveSurfer from 'wavesurfer.js';
+import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js'; // Note : S'ajoute automatiquement a wavesurfer.regions
+import Cursor from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js'; // TODO Marche pas
 
 class Mixer {
   constructor (waveform_element_id) {
@@ -17,7 +17,11 @@ class Mixer {
       container: `#${waveform_element_id}`,
       waveColor: 'violet',
       progressColor: 'purple',
-      height: 100
+      height: 100,
+      plugins: [
+        Regions.create(),
+        Cursor.create()
+      ]
     });
   }
 
