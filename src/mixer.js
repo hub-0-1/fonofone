@@ -45,7 +45,7 @@ class Mixer {
   }
 
   set_volume (valeur) {
-    this.nodes.gainNode.gain.setValueAtTime(valeur, this.contexte.currentTime);
+    this.nodes.gainNode.gain.setValueAtTime(valeur.volume, this.contexte.currentTime);
   }
 
   set_pan (valeur) {

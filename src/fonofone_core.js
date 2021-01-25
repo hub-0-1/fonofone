@@ -8,7 +8,9 @@ import Filepond from './mixins/filepond.js';
 
 import Mixer from './mixer.js';
 
+// Filtres
 import FNFNSelecteur from './modules/selecteur.js';
+import FNFNVolume from './modules/volume.js';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -34,6 +36,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
     template: template_fnfn,
     components: {
       "selecteur": FNFNSelecteur,
+      "volume": FNFNVolume,
       "toggle-button": ToggleButton
     },
     data: {
