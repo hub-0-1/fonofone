@@ -22,6 +22,7 @@ class Mixer {
     // Initialisation
     this.contexte = this.wavesurfer.backend.getAudioContext();
     this.nodes.gainNode = this.contexte.createGain();
+    this.nodes.convolver = this.contexte.createConvolver(); // TODO Reverb
 
     // Appliquer les filtres
     this.wavesurfer.backend.setFilters(_.map(this.nodes, (val) => { return val }));
@@ -48,9 +49,13 @@ class Mixer {
     this.nodes.gainNode.gain.setValueAtTime(valeur.volume, this.contexte.currentTime);
   }
 
-  set_pan (valeur) {
-    this.nodes.stereoPannerNode.pan.setValueAtTime(valeur, this.contexte.currentTime);
+  set_reverb (valeur) {
+    throw 'pas encore implemente';
   }
+
+  /*set_pan (valeur) {
+    this.nodes.stereoPannerNode.pan.setValueAtTime(valeur, this.contexte.currentTime);
+  }*/
 
   set_loop (valeur) {
     this.wavesurfer.regions.list.selected.loop = valeur;
