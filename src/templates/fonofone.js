@@ -9,8 +9,9 @@ let template_fnfn = `
         <div class="mixer">
           <div v-show="panneaux.waveform" :id="waveform_id"></div>
           <div v-show="panneaux.grille" ref="grille_wrapper" class="grille-wrapper" :class="{colonne: mode_colonne}">
-            <selecteur v-if="modules.selecteur.actif" :valeur.sync="modules.selecteur.valeur" :disposition.sync="modules.selecteur.disposition" :modifiable="mode_edition" class="fnfn-selecteur" ref="selecteur"></selecteur>
-            <volume v-if="modules.volume.actif" :valeur.sync="modules.volume.valeur" :disposition.sync="modules.volume.disposition" :modifiable="mode_edition" class="fnfn-volume" ref="volume"></volume>
+            <template v-for="(module, key) in modules">
+              <component :is="key" :valeur.sync="module.valeur" :disposition.sync="module.disposition" :modifiable="mode_edition" class="module" :class="key" :ref="key"></component>
+            </template>
           </div>
         </div>
         <div v-show="panneaux.valeurs_modules" class="valeurs-modules">
