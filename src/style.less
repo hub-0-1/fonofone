@@ -47,6 +47,13 @@
           position: relative;
           flex: 1;
 
+          &.colonne > * { // En mode colonne, laisser tomber le positionnement absolu
+            position: relative !important;
+            transform: none !important;
+            width: 90% !important;
+            margin: 10px auto !important;
+          }
+
           .fnfn-selecteur {
             background-color: red;
           }

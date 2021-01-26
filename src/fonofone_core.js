@@ -42,6 +42,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
     data: {
       id, fonofone, archive,
       fichier_audio: null,
+      mode_colonne: false,
       mode_edition: true,
       mixer: null,
       panneaux: {

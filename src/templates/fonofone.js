@@ -8,7 +8,7 @@ let template_fnfn = `
       <div class="interface-creation">
         <div class="mixer">
           <div v-show="panneaux.waveform" :id="waveform_id"></div>
-          <div v-show="panneaux.grille" ref="grille_wrapper" class="grille-wrapper">
+          <div v-show="panneaux.grille" ref="grille_wrapper" class="grille-wrapper" :class="{colonne: mode_colonne}">
             <selecteur v-if="modules.selecteur.actif" :valeur.sync="modules.selecteur.valeur" :disposition.sync="modules.selecteur.disposition" :modifiable="mode_edition" class="fnfn-selecteur" ref="selecteur"></selecteur>
             <volume v-if="modules.volume.actif" :valeur.sync="modules.volume.valeur" :disposition.sync="modules.volume.disposition" :modifiable="mode_edition" class="fnfn-volume" ref="volume"></volume>
           </div>
@@ -30,6 +30,7 @@ let template_fnfn = `
           <toggle-button v-model="mode_edition" :labels="{checked: $t('menu.modes.edition'), unchecked: $t('menu.modes.mixage')}" :width="100" :color="{checked: '#00FF00', unchecked: '#FF0000'}"/>
           <toggle-button v-model="panneaux.valeurs_modules" :width="100" @input="repaint()"/>
           <toggle-button v-model="loop" :width="25"/>
+          <toggle-button v-model="mode_colonne" :labels="{checked: 'colonne', unchecked: 'grille'}" :width="100" :color="{checked: '#00FF00', unchecked: '#FF0000'}"/>
         </div>
         <img v-on:click="panneaux.menu = !panneaux.menu" class="hamburger" src="${Hamburger}">
       </div>
