@@ -50,6 +50,7 @@ class Mixer {
   }
 
   set_reverb (valeur) {
+    //https://blog.gskinner.com/archives/2019/02/reverb-web-audio-api.html
     throw 'pas encore implemente';
   }
 

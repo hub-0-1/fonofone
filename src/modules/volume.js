@@ -20,7 +20,7 @@ export default {
     },
   },
   template: `
-    <vue-draggable-resizable :draggable="modifiable" :resizable="modifiable" :parent="true" :w="element.w" :h="element.h" :x="element.x" :y="element.y" @dragging="this.moved" @resizing="this.moved">
+    <vue-draggable-resizable :draggable="modifiable" :resizable="modifiable" :parent="true" :w="element.w" :h="element.h" :x="element.x" :y="element.y" @dragging="this.moving" :onDragStart="this.update_siblings_disposition" @resizing="this.moved">
       <h3>Volume</h3>
       <input v-model.number="volume" v-on:input="this.update" type="number" step="0.1">
     </vue-draggable-resizable>
