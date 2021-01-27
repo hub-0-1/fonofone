@@ -8,6 +8,10 @@ let traductions = {
           edition: "Mode édition",
           mixage: "Mode mixage"
         }
+      },
+      modules: {
+        selecteur: "Sélecteur",
+        volume: "Volume"
       }
     }
   }

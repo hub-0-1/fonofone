@@ -7,14 +7,14 @@
   flex-direction: column;
 
 
-  header {
+  & > header {
     color: white;
     background-color: black;
     text-transform: uppercase;
     height: 50px;
   }
 
-  main {
+  & > main {
     position: relative;
     flex: 1;
     display: flex;
@@ -51,11 +51,40 @@
             position: relative !important;
             transform: none !important;
             width: 90% !important;
-            margin: 10px auto !important;
+            margin: 20px auto !important;
+          }
+
+          .module {
+            padding: 5px;
+
           }
 
           .selecteur {
             background-color: red;
+          }
+
+          .generique {
+            transition: height 0.5s;
+
+            &.collapsed {
+              height: 35px !important;
+            }
+
+            header {
+              display: flex;
+              justify-content: space-between;
+              height: 35px;
+
+              margin-bottom: 10px;
+              border-bottom: 1px solid black;
+
+              h2 {
+                font-size: 25px;
+                display: flex;
+                align-items: center;
+                text-transform: uppercase;
+              }
+            }
           }
         }
       }
@@ -73,7 +102,7 @@
     }
   }
 
-  footer {
+  & > footer {
     height: 50px;
 
     display: flex;
@@ -97,4 +126,11 @@
       }
     }
   }
+}
+
+.height-enter-active, .height-leave-active {
+    transition: height .5s;
+}
+.height-enter, .height-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    height: 0;
 }
