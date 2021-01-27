@@ -15,8 +15,10 @@ export default {
   },
   template: `
     <generique class="generique" :class="{collapsed: collapsed}" :collapsed.sync="collapsed" :module="$t('modules.selecteur')" :disposition="disposition" :modifiable="modifiable" @redispose="this.update_disposition">
-      Debut <input v-model.number="x" v-on:input="this.update" type="number">
-      Fin <input v-model.number="y" v-on:input="this.update" type="number">
+      <div>
+        Debut <input v-model.number="x" v-on:input="this.update" type="number">
+        Fin <input v-model.number="y" v-on:input="this.update" type="number">
+      </div>
     </generique>
   `
 };

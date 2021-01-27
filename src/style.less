@@ -64,18 +64,25 @@
           }
 
           .generique {
-            transition: height 0.5s;
+            &, & > main {
+              transition: height 0.5s;
+            }
 
             &.collapsed {
-              height: 35px !important;
+              height: initial !important;
+
+              main {
+                height: 0;
+                & * {
+                  display: none;
+                }
+              }
             }
 
             header {
               display: flex;
               justify-content: space-between;
               height: 35px;
-
-              margin-bottom: 10px;
               border-bottom: 1px solid black;
 
               h2 {

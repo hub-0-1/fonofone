@@ -27,7 +27,7 @@ export default {
         <h2>{{ module }}</h2>
         <img src="#" @click="this.update_collapsed">
       </header>
-        <main v-show="!collapsed">
+        <main>
           <slot></slot>
         </main>
       <footer></footer>
