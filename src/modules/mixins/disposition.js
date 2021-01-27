@@ -37,7 +37,7 @@ export default {
       this.moved();
     },
     moved: function () {
-      this.$emit('update:disposition', this.calculer_disposition());
+      this.$emit('redispose', this.calculer_disposition());
     },
     calculer_disposition: function () {
       let parent_box = this.$el.parentNode.getBoundingClientRect();
