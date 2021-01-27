@@ -1,18 +1,14 @@
-import Generique from "./_generique.js";
+import Utils from "./_utils.js";
 
 export default {
-  props: ['valeur', 'disposition', 'modifiable'],
-  components: {
-    "generique": Generique
-  },
+  mixins: [Utils],
   data: function () {
     return { volume: 1 }
   },
   methods: {
     update: function () {
       this.$emit('update:valeur', this.volume);
-    },
-    update_disposition: function (e) { this.$emit('update:disposition', e); }
+    }
   },
   template: `
     <generique :disposition="disposition" :modifiable="modifiable" @redispose="this.update_disposition">
