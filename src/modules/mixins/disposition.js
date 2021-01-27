@@ -1,5 +1,5 @@
 export default {
-  props: ['disposition'],
+  props: ['disposition', 'modifiable'],
   data: function () {
     return { 
       overlap: false,

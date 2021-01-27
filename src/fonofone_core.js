@@ -130,7 +130,6 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       Mixer.handle_to_blob(archive.fichier).then((blob) => { this.mixer.charger(blob); })
 
       this.repaint();
-      console.log(this.$refs);
     },
     i18n
   });
