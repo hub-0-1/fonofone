@@ -27,6 +27,8 @@ Vue.use(VueI18n);
  *  disposition: { top, left, width, height }, // Notee en pourcentage
  *  valeur: null
  * }
+ *
+ * TODO effacer les vieux blob lors de l'importation : window.URL.revokeObjectURL(url);
  */
 
 let ApplicationFonofone = function (id, fonofone, archive) {
