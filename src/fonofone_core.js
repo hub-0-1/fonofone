@@ -6,7 +6,7 @@ import { ToggleButton } from 'vue-js-toggle-button'
 import template_fnfn from './templates/fonofone';
 import Filepond from './mixins/filepond.js';
 
-import Mixer from './mixer.js';
+import Mixer from './mixer/mixer.js';
 
 // Filtres
 import FNFNSelecteur from './modules/selecteur.js';
