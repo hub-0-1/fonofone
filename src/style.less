@@ -63,15 +63,17 @@
           .generique {
             background-color: @noir;
             border-radius: 10px;
+            padding: 5px;
+            transition: height @temps_transition;
             display: flex;
             flex-direction: column;
-            transition: height @temps_transition;
 
             & > header {
               height: @hauteur_header_module;
 
               display: flex;
               justify-content: space-between;
+              align-items: center;
 
               h2 {
                 color: @gris;
@@ -93,7 +95,7 @@
             }
 
             &.collapsed {
-              height: @hauteur_header_module !important;
+              height: calc(@hauteur_header_module + 10px) !important;
 
               & > header img{
                 transform: none;
@@ -147,8 +149,8 @@
 }
 
 .height-enter-active, .height-leave-active {
-    transition: height .5s;
+  transition: height .5s;
 }
 .height-enter, .height-leave-to /* .fade-leave-active below version 2.1.8 */ {
-    height: 0;
+  height: 0;
 }
