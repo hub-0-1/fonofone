@@ -1,4 +1,9 @@
+@gris: grey;
+@noir: black;
+@hauteur_header_module: 25px; 
+
 .fonofone {
+  font-family: "Arial";
   position: relative;
   width: 100%;
   height: 100%;
@@ -9,7 +14,7 @@
 
   & > header {
     color: white;
-    background-color: black;
+    background-color: @noir;
     text-transform: uppercase;
     height: 50px;
   }
@@ -43,7 +48,7 @@
         flex-direction: column;
 
         .grille-wrapper {
-          background-color: grey;
+          background-color: @gris;
           position: relative;
           flex: 1;
 
@@ -54,42 +59,39 @@
             margin: 20px auto !important;
           }
 
-          .module {
-            padding: 5px;
-
-          }
-
-          .selecteur {
-            background-color: red;
-          }
-
           .generique {
-            &, & > main {
+            box-sizing: content-box;
+            padding: 5px;
+            background-color: @noir;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            transition: height 0.5s;
+
+            & > header {
+              height: @hauteur_header_module;
+
+              display: flex;
+              justify-content: space-between;
+
+              h2 {
+                color: @gris;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+              }
+            }
+
+            & > main {
+              height: calc(100% - @hauteur_header_module);
               transition: height 0.5s;
             }
 
             &.collapsed {
-              height: initial !important;
+              height: @hauteur_header_module !important;
 
-              main {
+              & > main {
                 height: 0;
-                & * {
-                  display: none;
-                }
-              }
-            }
-
-            header {
-              display: flex;
-              justify-content: space-between;
-              height: 35px;
-              border-bottom: 1px solid black;
-
-              h2 {
-                font-size: 25px;
-                display: flex;
-                align-items: center;
-                text-transform: uppercase;
               }
             }
           }
@@ -100,7 +102,7 @@
         width: 100px;
         height: 100%;
 
-        border: 1px solid black;
+        border: 1px solid @noir;
 
         input {
           width: 50px;
@@ -116,7 +118,7 @@
     justify-content: space-between;
 
     background-color: white;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid @noir;
 
     .logo {
       margin: 5px;

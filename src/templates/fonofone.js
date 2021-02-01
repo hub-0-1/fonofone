@@ -9,7 +9,7 @@ let template_fnfn = `
         <div class="mixer">
           <div v-show="panneaux.waveform" :id="waveform_id"></div>
           <div v-show="panneaux.grille" ref="grille_wrapper" class="grille-wrapper" :class="{colonne: mode_colonne}">
-            <component v-for="(module, key) in modules" :is="key" :key="key" :valeur.sync="module.valeur" :disposition.sync="module.disposition" :modifiable="mode_edition" class="module" :class="key" :ref="key"></component>
+            <component v-for="(module, key) in modules" :is="key" :key="key" :valeur.sync="module.valeur" :disposition.sync="module.disposition" :modifiable="mode_edition" :class="key" :ref="key"></component>
           </div>
         </div>
         <div v-show="panneaux.valeurs_modules" class="valeurs-modules">
