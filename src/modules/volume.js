@@ -18,7 +18,7 @@ export default {
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="width: 100%; height: 100%;">
         <rect x="5" width="90" y="5" height="90" rx="5" style="fill:green; fill-opacity:0.5;"/>
         <rect x="49" width="2" y="5" height="90" style="fill:green;"/>
-        <rect x="40" width="20" y="45" height="10" rx="5" style="fill:green; stroke:white; stroke-width:5; fill-opacity:0.5;"/>
+        <rect x="40" width="20" y="45" height="10" rx="5" style="fill:green; stroke:white; stroke-width:5; fill-opacity:0.5;" ref="controlleur"/>
       </svg>
       <input v-model.number="volume" @input="this.update" type="hidden" step="0.1">
     </generique>
