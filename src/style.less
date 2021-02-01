@@ -1,6 +1,7 @@
 @gris: grey;
 @noir: black;
 @hauteur_header_module: 25px; 
+@temps_transition: 0.5s;
 
 .fonofone {
   font-family: "Arial";
@@ -60,13 +61,11 @@
           }
 
           .generique {
-            box-sizing: content-box;
-            padding: 5px;
             background-color: @noir;
             border-radius: 10px;
             display: flex;
             flex-direction: column;
-            transition: height 0.5s;
+            transition: height @temps_transition;
 
             & > header {
               height: @hauteur_header_module;
@@ -80,15 +79,25 @@
                 display: flex;
                 align-items: center;
               }
+
+              img {
+                filter: invert(50%);
+                transform: rotate(180deg);
+                height: 20px;
+              }
             }
 
             & > main {
               height: calc(100% - @hauteur_header_module);
-              transition: height 0.5s;
+              transition: height @temps_transition;
             }
 
             &.collapsed {
               height: @hauteur_header_module !important;
+
+              & > header img{
+                transform: none;
+              }
 
               & > main {
                 height: 0;

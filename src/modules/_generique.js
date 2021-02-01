@@ -3,6 +3,7 @@ import VueDraggableResizable from 'vue-draggable-resizable'; // https://github.c
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 
 import Disposition from "./mixins/disposition.js";
+import Up from "../images/icons/up.png";
 
 export default {
   props: ['module'],
@@ -13,7 +14,7 @@ export default {
     <vue-draggable-resizable class="module" :class="{collapsed: collapsed}" :draggable="modifiable" :resizable="modifiable" :parent="true" :w="element.w" :h="element.h" :x="element.x" :y="element.y" @dragging="this.moving" :onDragStart="this.update_siblings_disposition" @resizing="this.moved">
         <header>
           <h2>{{ module }}</h2>
-          <img src="#" @click="collapsed = !collapsed">
+          <img src="${Up}" @click="collapsed = !collapsed">
         </header>
           <main>
             <slot></slot>
