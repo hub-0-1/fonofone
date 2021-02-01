@@ -73,7 +73,7 @@ class Mixer {
   }
 
   set_volume (valeur) {
-    this.nodes.gainNode.gain.setValueAtTime(valeur, this.contexte.currentTime);
+    this.nodes.master.gain.setValueAtTime(valeur, this.contexte.currentTime);
   }
 
   set_reverb (valeur) {

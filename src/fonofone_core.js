@@ -7,10 +7,8 @@ import template_fnfn from './templates/fonofone';
 import Filepond from './mixins/filepond.js';
 
 import Mixer from './mixer/mixer.js';
-
-// Filtres
-import FNFNSelecteur from './modules/selecteur.js';
-import FNFNVolume from './modules/volume.js';
+import Selecteur from './modules/selecteur.js';
+import Volume from './modules/volume.js';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -29,6 +27,7 @@ Vue.use(VueI18n);
  * }
  *
  * TODO effacer les vieux blob lors de l'importation : window.URL.revokeObjectURL(url);
+ * TODO (sur?) OPtimisation : https://addyosmani.com/blog/import-on-interaction/
  */
 
 let ApplicationFonofone = function (id, fonofone, archive) {
@@ -37,8 +36,11 @@ let ApplicationFonofone = function (id, fonofone, archive) {
     mixins: [Filepond],
     template: template_fnfn,
     components: {
-      "selecteur": FNFNSelecteur,
-      "volume": FNFNVolume,
+      // Import dynamique seulement si necessaire (merci webpack) https://webpack.js.org/guides/code-splitting/
+      //"selecteur": () => { return import('./modules/selecteur.js') },
+      //"volume": () => { return import('./modules/volume.js') },
+      "selecteur": Selecteur,
+      "volume": Volume,
       "toggle-button": ToggleButton
     },
     data: {

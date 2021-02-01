@@ -93,6 +93,15 @@
             & > main {
               height: calc(100% - @hauteur_header_module);
               transition: height @temps_transition;
+
+              svg {
+                width: 100%;
+                height: 100%;
+
+                .controlleur {
+                  cursor: move;
+                }
+              }
             }
 
             &.collapsed {
