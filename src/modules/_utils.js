@@ -1,14 +1,25 @@
+/*
+ * Reference pour le drag n drop : https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
+ *
+ * Pour tous les modules, il faut mettre un ref pour le controlleur, l'element mobile et un ref pour le canvas, celui qui contient l'interaction
+ *
+ */
+
 import Generique from "./_generique.js";
 
 export default {
   props: ['valeur', 'disposition', 'modifiable'],
   components: { "generique": Generique },
+  data: function () {
+    return { is_dragging: false };
+  },
   methods: {
     update_disposition: function (e) { 
       this.$emit('update:disposition', e); 
     },
     start_drag: function (e) {
       this.$refs.canvas.addEventListener('mousemove', this.drag);
+      this.is_dragging = true;
 
       // Pour centrer le drag a la souris
       this.offset = this.get_mouse_position(e);
@@ -24,6 +35,7 @@ export default {
     },
     end_drag: function (e) {
       this.$refs.canvas.removeEventListener('mousemove', this.drag);
+      this.is_dragging = false;
     }
   },
   mounted: function () {
