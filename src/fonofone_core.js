@@ -28,6 +28,8 @@ Vue.use(VueI18n);
  *
  * TODO effacer les vieux blob lors de l'importation : window.URL.revokeObjectURL(url);
  * TODO (sur?) OPtimisation : https://addyosmani.com/blog/import-on-interaction/
+ *
+ * TODO Fusionner Fonofone et ApplicationFonofone
  */
 
 let ApplicationFonofone = function (id, fonofone, archive) {
@@ -46,7 +48,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
     data: {
       id, fonofone, archive,
       fichier_audio: null,
-      mode_colonne: false,
+      mode_colonne: true,
       mode_edition: true,
       mixer: null,
       panneaux: {
