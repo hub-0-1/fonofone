@@ -9,14 +9,16 @@ export default {
     update: function () {
       this.$emit('update:valeur', { x: this.x, y: this.y });
     },
+    drag: function (e) {
+      let coords = this.get_mouse_position(e);
+      this.$refs.controlleur.style.transform = `translate(${coords.x}%, ${coords.y}%)`;
+    }
   },
   template: `
     <generique class="generique" :module="$t('modules.selecteur')" :disposition="disposition" :modifiable="modifiable" @redispose="this.update_disposition">
-      <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-      <div ref="controlleur">
-        Debut <input v-model.number="x" v-on:input="this.update" type="number">
-        Fin <input v-model.number="y" v-on:input="this.update" type="number">
-      </div>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" ref="canvas">
+        <polygon class="triangle" points="5,95 50,5 95,95"/>
+        <polygon class="controlleur" points="0,10 5,0 10,10" ref="controlleur"/>
       </svg>
     </generique>
   `
