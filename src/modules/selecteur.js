@@ -16,33 +16,55 @@ export default {
       cote_droit: {
         pente: (coordonnees_triangle.hauteur - 0) / (coordonnees_triangle.largeur - (coordonnees_triangle.largeur / 2)),
         y0: null
-      }
+      },
+      debut: this.valeur.debut,
+      longueur: this.valeur.longueur
     }
   },
   methods: {
     update: function () {
-      this.$emit('update:valeur', { x: this.x, y: this.y });
+      this.$emit('update:valeur', { debut: this.debut, longueur: this.longueur });
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
+      this.x = coords.x;
+      this.y = coords.y;
+
       if(coords.x < 50) {
-        coords.x = Math.max(coords.x, this.x_cote_gauche(coords.y));
+        this.x = Math.max(coords.x, this.x_cote_gauche(coords.y));
       }
       else if(coords.x > 50) {
-        coords.x = Math.min(coords.x, this.x_cote_droit(coords.y));
+        this.x = Math.min(coords.x, this.x_cote_droit(coords.y));
       }
-      this.$refs.controlleur.style.transform = `translate(${coords.x - coordonnees_triangle.largeur / 2 / ratio_controlleur}%, ${coords.y - coordonnees_triangle.hauteur / 2 / ratio_controlleur}%)`;
+
+      this.update_position_controlleur();
+      this.svg_a_mixer();
+      this.update();
     },
     x_cote_gauche: function (y) {
       return (y - this.cote_gauche.y0) / this.cote_gauche.pente;
     },
     x_cote_droit: function (y) {
       return (y - this.cote_droit.y0) / this.cote_droit.pente;
+    },
+    update_position_controlleur: function () {
+      this.$refs.controlleur.style.transform = `translate(${this.x - coordonnees_triangle.largeur / 2 / ratio_controlleur}%, ${this.y - coordonnees_triangle.hauteur / 2 / ratio_controlleur}%)`;
+    },
+    svg_a_mixer: function () {
+      this.longueur = 100 - this.y;
+      this.debut = this.x - this.longueur / 2;
+    },
+    mixer_a_svg: function () {
+      this.y = 100 - this.longueur;
+      this.x = this.debut + this.longueur / 2;
     }
   },
   mounted: function () {
     this.cote_gauche.y0 = 0 - (this.cote_gauche.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
     this.cote_droit.y0 = 0 - (this.cote_droit.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
+    this.mixer_a_svg();
+    this.update_position_controlleur();
+    this.update();
   },
   template: `
     <generique class="generique" :module="$t('modules.selecteur')" :disposition="disposition" :modifiable="modifiable" @redispose="this.update_disposition">

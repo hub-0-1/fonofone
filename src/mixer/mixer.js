@@ -1,8 +1,6 @@
 import WaveSurfer from 'wavesurfer.js';
 import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 
-//import Cursor from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
-
 import Track from "./track.js";
 
 class Mixer {
@@ -10,8 +8,9 @@ class Mixer {
     this.blob = null;
     this.nodes = {};
     this.parametres = { };
-    this.selection = { debut: 0, duree: 10 };
+    this.selection = { debut: 0, longueur: 10 };
     this.vitesse = 1.5;
+    this.volume = null;
 
     // Representation graphique du son
     this.wavesurfer = WaveSurfer.create({
@@ -21,7 +20,6 @@ class Mixer {
       height: 100, // TODO determiner par CSS si possible
       plugins: [
         Regions.create(),
-//        Cursor.create()
       ]
     });
 
@@ -51,7 +49,7 @@ class Mixer {
   }
 
   jouer () {
-    new Track(this.contexte, this.audio_buffer, this.nodes.master, this.selection.debut, this.selection.duree, this.vitesse, this.nodes.master);
+    new Track(this.contexte, this.audio_buffer, this.nodes.master, this.selection.debut, this.selection.longueur, this.vitesse, this.nodes.master);
   }
 
   set_metronome (valeur) {
@@ -62,12 +60,16 @@ class Mixer {
   set_selecteur (valeur) {
 
     // TODO Valeurs a utiliser : milieu, longueur en pct
-    this.selection.debut = valeur.x;
-    this.selection.duree = valeur.y;
+    this.selection.debut = valeur.debut;
+    this.selection.longueur = valeur.longueur;
+    
+    let duree = valeur.longueur * this.audio_buffer.duration / 100;
+    let debut = valeur.debut * this.audio_buffer.duration / 100;
+    console.log(valeur, debut, duree);
 
     // Visuel
     this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({id: "selected", start: valeur.x, end: valeur.y, color: 'rgba(200,0,0,0.2)'});
+    this.wavesurfer.addRegion({id: "selected", start: debut, end: duree, color: 'rgba(200,0,0,0.2)'});
 
     this.jouer();
   }
@@ -80,10 +82,6 @@ class Mixer {
     //https://blog.gskinner.com/archives/2019/02/reverb-web-audio-api.html
     throw 'pas encore implemente';
   }
-
-  /*set_pan (valeur) {
-    this.nodes.stereoPannerNode.pan.setValueAtTime(valeur, this.contexte.currentTime);
-  }*/
 
   set_loop (valeur) {
     this.wavesurfer.regions.list.selected.loop = valeur;

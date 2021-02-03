@@ -134,7 +134,7 @@ let ApplicationFonofone = function (id, fonofone, archive) {
 
       this.mixer = new Mixer(this.waveform_id);
       Mixer.handle_to_blob(archive.fichier).then((blob) => { this.mixer.charger(blob); })
-
+      
       this.repaint();
     },
     i18n
