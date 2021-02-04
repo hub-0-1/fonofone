@@ -1,4 +1,3 @@
-import { saveAs } from 'file-saver';
 
 import ApplicationFonofone from './fonofone_core';
 
@@ -18,11 +17,7 @@ const CONFIG = require("./configurations/dauphin.fnfn");
 window.Fonofone = class Fonofone {
   constructor (element, configuration) {
 
-    // Determiner si on charge un scenario par id ou par objet de configuration
-    if(element && element.nodeType === Node.ELEMENT_NODE) {
-      this.containerElement = element;
-    }
-    else {
+    if(!element || element.nodeType !== Node.ELEMENT_NODE) {
       throw "Element d'attache non valide";
     }
 
@@ -30,32 +25,11 @@ window.Fonofone = class Fonofone {
     let app = document.createElement("div");
     app.className = "fonofone";
     app.id = "fnfn-" + window.GestionnaireFonofone.prochainIndex();
-    this.containerElement.appendChild(app);
+    element.appendChild(app);
 
-    // Creer l'instance Vue, l'application elle-meme
-    this.instance = ApplicationFonofone(app.id, this, CONFIG);
-  }
-
-  save_to_server () { }
-
-  async importer (blob) {
-    let archive_serialisee = await new Promise((resolve) => {
-      let fileReader = new FileReader();
-      fileReader.onload = (e) => resolve(fileReader.result);
-      fileReader.readAsText(blob);
+    // Importation dynamique de la configuration (merci webpack) https://webpack.js.org/guides/code-splitting/
+    import(`./configurations/${configuration}.fnfn`).then((archive) => {
+      ApplicationFonofone(app.id, CONFIG, this); // TODO Mettre archive
     });
-
-    let archive = JSON.parse(archive_serialisee);
-    archive.fichier = await (await fetch(archive.fichier)).blob(); // https://stackoverflow.com/questions/12168909/blob-from-dataurl#12300351
-
-    this.instance.archive = archive;
-    this.instance.configurer();
-  }
-
-  exporter (serialisation) {
-    serialisation.then((archive) => {
-      let blob = new Blob([archive])
-      saveAs(blob, "archive.fnfn");
-    })
   }
 }

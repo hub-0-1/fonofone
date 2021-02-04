@@ -1,5 +1,6 @@
-import _ from 'lodash';
 import Vue from 'vue';
+import _ from 'lodash';
+import { saveAs } from 'file-saver';
 
 import { ToggleButton } from 'vue-js-toggle-button'
 
@@ -15,38 +16,32 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
-// TODO Fusionner dans une classe avec Fonofone
 // Creer fonction encode_audio_64, decode_audio_64
 
 // TODO creer une configuration 0 qui contient tous les modules, mais pas les sons
 /* 
  * Format standard des modules : {
- *  actif: true,
  *  disposition: { top, left, width, height }, // Notee en pourcentage
  *  valeur: null
  * }
  *
  * TODO effacer les vieux blob lors de l'importation : window.URL.revokeObjectURL(url);
- * TODO (sur?) OPtimisation : https://addyosmani.com/blog/import-on-interaction/
  *
- * TODO Fusionner Fonofone et ApplicationFonofone
  */
 
-let ApplicationFonofone = function (id, fonofone, archive) {
+let ApplicationFonofone = function (id, archive, fonofone) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
     template: template_fnfn,
     components: {
-      // Import dynamique seulement si necessaire (merci webpack) https://webpack.js.org/guides/code-splitting/
-      //"selecteur": () => { return import('./modules/selecteur.js') },
-      //"volume": () => { return import('./modules/volume.js') },
       "selecteur": Selecteur,
       "volume": Volume,
       "toggle-button": ToggleButton
     },
+    i18n,
     data: {
-      id, fonofone, archive,
+      id, archive,
       fichier_audio: null,
       mode_colonne: true,
       mode_edition: true,
@@ -94,17 +89,19 @@ let ApplicationFonofone = function (id, fonofone, archive) {
         });
       },
       charger_modules: function () {
-        _.each(this.archive.config, (value, key) => {
-          this.modules[key] = this.archive.config[key];
-
-          // https://vuejs.org/v2/api/#vm-watch
-          this.$watch(`modules.${key}.valeur`, (val) => {
-            this.mixer[`set_${key}`](val);
-          }, {deep: true});
+        _.each(this.archive.config, (v, key) => { this.modules[key] = this.archive.config[key]; });
+      },
+      synchroniser_modules: function () {
+        _.each(this.modules, (v, key) => {
+          this.$watch(`modules.${key}.valeur`, (valeur) => { // https://vuejs.org/v2/api/#vm-watch
+            this.mixer[`set_${key}`](valeur);
+          }, {deep: true, immediate: true});
         });
       },
       exporter: function () {
-        this.fonofone.exporter(this.serialiser());
+        this.serialiser().then((archive) => { 
+          saveAs(new Blob([archive]), "archive.fnfn"); 
+        });
       },
       repaint: function () {
         window.setTimeout(() => {
@@ -133,11 +130,13 @@ let ApplicationFonofone = function (id, fonofone, archive) {
       // Filepond 
 
       this.mixer = new Mixer(this.waveform_id);
-      Mixer.handle_to_blob(archive.fichier).then((blob) => { this.mixer.charger(blob); })
-      
-      this.repaint();
-    },
-    i18n
+      Mixer.handle_to_blob(archive.fichier).then((blob) => { 
+        return this.mixer.charger(blob); 
+      }).then(() => {
+        this.synchroniser_modules();
+        this.repaint();
+      })
+    }
   });
 }
 

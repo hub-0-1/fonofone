@@ -18,9 +18,7 @@ class Mixer {
       waveColor: 'violet',
       progressColor: 'purple',
       height: 100, // TODO determiner par CSS si possible
-      plugins: [
-        Regions.create(),
-      ]
+      plugins: [ Regions.create() ]
     });
 
     // Initialisation
@@ -35,16 +33,19 @@ class Mixer {
   }
 
   charger (blob_audio) {
-    this.blob = blob_audio;
-    this.wavesurfer.load(URL.createObjectURL(this.blob));
+    return new Promise ((resolve) => { // TODO Reject
+      this.blob = blob_audio;
+      this.wavesurfer.load(URL.createObjectURL(this.blob));
 
-    // OU this.source.buffer = this.wavesurfer.backend.buffer;
-    new Response(this.blob).arrayBuffer()
-      .then((buffer) => {
-        this.contexte.decodeAudioData(buffer)
-      .then((audio_buffer) => {
-        this.audio_buffer = audio_buffer;
-      })
+      new Response(this.blob).arrayBuffer()
+        .then((buffer) => {
+          this.contexte.decodeAudioData(buffer)
+            .then((audio_buffer) => {
+              this.audio_buffer = audio_buffer;
+              resolve(true);
+            })
+        });
+
     });
   }
 
@@ -62,7 +63,7 @@ class Mixer {
     // TODO Valeurs a utiliser : milieu, longueur en pct
     this.selection.debut = valeur.debut;
     this.selection.longueur = valeur.longueur;
-    
+
     let duree = valeur.longueur * this.audio_buffer.duration / 100;
     let debut = valeur.debut * this.audio_buffer.duration / 100;
     console.log(valeur, debut, duree);
