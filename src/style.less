@@ -21,13 +21,14 @@
     color: white;
     background-color: @noir;
     text-transform: uppercase;
+    padding: 10px;
+    border-radius: 10px;
   }
 
   & > main {
     position: relative;
     flex: 1;
     overflow: auto;
-    margin: 20px 0;
 
     .filepond--root {
       position: absolute;
@@ -43,28 +44,9 @@
   }
 
   & > footer {
-    height: 10px;
-
     display: flex;
-    justify-content: space-between;
-
+    height: 10px;
+    margin-top: 10px;
     background-color: @noir;
-
-    .menu {
-      display: flex;
-      align-items: center;
-
-      .hamburger {
-        margin: 5px;
-        height: 25px;
-      }
-    }
   }
-}
-
-.height-enter-active, .height-leave-active {
-  transition: height .5s;
-}
-.height-enter, .height-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  height: 0;
 }
