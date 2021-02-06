@@ -1,15 +1,10 @@
+@hauteur_header_module: 25px; 
+@temps_transition: 0.5s;
+
 .fonofone {
   .mixer {
     position: relative;
     flex: 1;
-
-    &.colonne > * { // En mode colonne, laisser tomber le positionnement absolu
-      position: relative !important;
-      transform: none !important;
-      width: 100% !important;
-      margin: 20px auto !important;
-      height: initial !important;
-    }
 
     .generique {
       background-color: @noir;
@@ -63,7 +58,6 @@
       }
 
       & > main {
-        //height: calc(100% - @hauteur_header_module);
         height: 150px;
         transition: height @temps_transition;
 
@@ -89,6 +83,20 @@
           height: 0;
         }
       }
+    }
+
+    // En mode colonne, laisser tomber le positionnement absolu
+    &.colonne > .generique {
+      position: relative !important;
+      transform: none !important;
+      width: 100% !important;
+      margin: 20px auto !important;
+      height: initial !important;
+    }
+
+    // En mode grille
+    &.grille > .generique {
+
     }
   }
 }
