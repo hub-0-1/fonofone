@@ -87,11 +87,19 @@
 
     // En mode colonne, laisser tomber le positionnement absolu
     &.colonne > .module {
-      position: relative !important;
+      position: relative;
+      margin: 20px auto;
       transform: none !important;
       width: 100% !important;
-      margin: 20px auto !important;
       height: initial !important;
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
     }
 
     // En mode grille
