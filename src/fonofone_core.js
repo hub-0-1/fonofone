@@ -43,13 +43,8 @@ let ApplicationFonofone = function (id, archive, fonofone) {
       fichier_audio: null,
       mode_colonne: true,
       mode_edition: true,
+      mode_importation: false,
       mixer: null,
-      panneaux: {
-        importation: false,
-        grille: true,
-        waveform: true,
-        menu: true
-      },
       loop: false,
       outils: {
         filepond: null

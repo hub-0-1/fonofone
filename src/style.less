@@ -10,23 +10,24 @@
   position: relative;
   width: 100%;
   height: 100%;
+  padding: 20px;
 
   display: flex;
   flex-direction: column;
+
+  background-color: @gris;
 
   & > header {
     color: white;
     background-color: @noir;
     text-transform: uppercase;
-    height: 50px;
   }
 
   & > main {
     position: relative;
     flex: 1;
-    display: flex;
-    flex-direction: column;
     overflow: auto;
+    margin: 20px 0;
 
     .filepond--root {
       position: absolute;
@@ -39,35 +40,15 @@
         height: inherit;
       }
     }
-
-    .interface-creation {
-      height: 100%;
-      display: flex;
-
-      .mixer {
-        flex: 1;
-
-        display: flex;
-        flex-direction: column;
-
-        
-      }
-    }
   }
 
   & > footer {
-    height: 50px;
+    height: 10px;
 
     display: flex;
     justify-content: space-between;
 
-    background-color: white;
-    border-bottom: 1px solid @noir;
-
-    .logo {
-      margin: 5px;
-      height: 25px;
-    }
+    background-color: @noir;
 
     .menu {
       display: flex;
