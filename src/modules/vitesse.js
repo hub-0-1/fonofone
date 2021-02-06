@@ -20,7 +20,7 @@ export default {
     }
   },
   template: `
-    <generique class="generique" :module="$t('modules.vitesse')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
+    <generique :module="$t('modules.vitesse')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect x="0" width="1" y="0" height="1" style="fill:purple; fill-opacity:0.5;"/>
         <rect x="0" width="1" y="0.49" height="0.02" style="fill:purple;"/>
