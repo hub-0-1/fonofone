@@ -1,5 +1,6 @@
 @hauteur_header_module: 25px; 
 @temps_transition: 0.5s;
+@padding_module: 10px;
 
 .fonofone {
   .mixer {
@@ -16,7 +17,7 @@
     .module {
       background-color: @noir;
       border-radius: 10px;
-      padding: 10px;
+      padding: @padding_module;
       transition: height @temps_transition;
       display: flex;
       flex-direction: column;
@@ -79,7 +80,7 @@
       }
 
       &.collapsed {
-        height: calc(@hauteur_header_module + 10px) !important;
+        height: calc(@hauteur_header_module + (2 * @padding_module)) !important;
 
         & > header img{
           transform: none;
