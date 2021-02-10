@@ -20,6 +20,7 @@ export default {
     }
   },
   // http://xahlee.info/js/svg_circle_arc.html
+  // Deplacement du point : https://bl.ocks.org/mbostock/1705868
   template: `
     <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
