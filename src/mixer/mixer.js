@@ -76,8 +76,9 @@ class Mixer {
   }
 
   set_metronome (valeur) {
+    console.log(valeur);
     // TODO annuler les autres;
-    setInterval (this.jouer, valeur);
+    //setInterval (this.jouer, valeur);
   }
 
   set_reverb (valeur) {

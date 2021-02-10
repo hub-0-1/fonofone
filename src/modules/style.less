@@ -4,7 +4,14 @@
 .fonofone {
   .mixer {
     position: relative;
-    flex: 1;
+
+    &.grille {
+      height: 100%;
+
+      .module > main {
+        height: calc(100% - @hauteur_header_module);
+      }
+    }
 
     .module {
       background-color: @noir;
@@ -73,7 +80,6 @@
 
       &.collapsed {
         height: calc(@hauteur_header_module + 10px) !important;
-        transition-delay: calc(@temps_transition * 0.4);
 
         & > header img{
           transform: none;
@@ -100,11 +106,6 @@
       &:last-of-type {
         margin-bottom: 0;
       }
-    }
-
-    // En mode grille
-    &.grille > .module {
-
     }
   }
 }
