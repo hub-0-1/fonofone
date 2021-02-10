@@ -2,7 +2,6 @@ let traductions = {
   locale: 'fr',
   messages: {
     fr: {
-      titre: "Titre Fonofone",
       menu: {
         modes: {
           edition: "Mode édition",
@@ -10,6 +9,7 @@ let traductions = {
         }
       },
       modules: {
+        metronome: "Métronome",
         selecteur: "Sélecteur",
         volume: "Volume",
         vitesse: "Vitesse"

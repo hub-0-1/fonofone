@@ -8,6 +8,7 @@ import template_fnfn from './templates/fonofone';
 import Filepond from './mixins/filepond.js';
 
 import Mixer from './mixer/mixer.js';
+import Metronome from './modules/metronome.js';
 import Selecteur from './modules/selecteur.js';
 import Volume from './modules/volume.js';
 import Vitesse from './modules/vitesse.js';
@@ -32,6 +33,7 @@ let ApplicationFonofone = function (id, archive, fonofone) {
     mixins: [Filepond],
     template: template_fnfn,
     components: {
+      "metronome": Metronome,
       "selecteur": Selecteur,
       "volume": Volume,
       "vitesse": Vitesse,
