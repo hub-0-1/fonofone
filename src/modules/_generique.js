@@ -11,7 +11,7 @@ export default {
   data: function () { return { collapsed: false } },
   components: { "vue-draggable-resizable": VueDraggableResizable },
   template: `
-    <vue-draggable-resizable class="module" :class="{collapsed: collapsed}" :draggable="modifiable" :resizable="modifiable" :parent="true" :w="element.w" :h="element.h" :x="element.x" :y="element.y" @dragging="this.moving" :onDragStart="this.update_siblings_disposition" @resizing="this.moved">
+    <vue-draggable-resizable class="module" :class="{collapsed: collapsed}" :draggable="modifiable" :resizable="modifiable" :parent="true" :w="element.w" :h="element.h" :x="element.x" :y="element.y" @dragging="this.moving" :onDragStart="this.update_siblings_rect" @resizing="this.moved">
         <header>
           <h2>{{ module }}</h2>
           <img src="${Up}" @click="collapsed = !collapsed">

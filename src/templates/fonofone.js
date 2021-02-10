@@ -1,5 +1,5 @@
 export default `
-  <div :id="id" class="fonofone">
+  <div :id="id" class="fonofone" ref="fonofone">
     <header>
       <div class="nom-archive">Archive</div>
       <div :id="waveform_id"></div>

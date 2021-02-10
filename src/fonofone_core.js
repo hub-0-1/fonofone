@@ -18,6 +18,11 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
+// TODO extraire dans un fichier de config
+const Configuration = {
+  min_width_grille: 600
+};
+
 // TODO creer une configuration 0 qui contient tous les modules, mais pas les sons
 /* 
  * Format standard des modules : {
@@ -116,6 +121,11 @@ let ApplicationFonofone = function (id, archive, fonofone) {
     mounted: function () {
 
       // Initialisation de Filepond par les mixins
+
+      // Mode affichage
+      if(this.$refs.fonofone.offsetWidth > Configuration.min_width_grille) {
+        this.mode_affichage = "grille";
+      }
 
       this.mixer = new Mixer(this.waveform_id, this.id);
       this.importer(this.archive).then(() => {
