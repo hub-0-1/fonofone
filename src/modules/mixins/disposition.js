@@ -32,16 +32,19 @@ export default {
 
         // Si overlap, regarder le cote qui overlap le moins et ajuster
         let deltas = _.sortBy([
-          ["x", sibling.rect.left - moving_rect.right], // trop a gauche
-          ["x", sibling.rect.right - moving_rect.left], // trop a droite
-          ["y", sibling.rect.top - moving_rect.bottom], // trop a haut
-          ["y", sibling.rect.bottom - moving_rect.top] // trop a bas
+          ["left", sibling.rect.left - moving_rect.right], // trop a gauche
+          ["left", sibling.rect.right - moving_rect.left], // trop a droite
+          ["top", sibling.rect.top - moving_rect.bottom], // trop a haut
+          ["top", sibling.rect.bottom - moving_rect.top] // trop a bas
         ], x => Math.abs(x[1]));
 
         let ajustement = _.first(deltas);
         console.log(ajustement);
 
         // TODO ajuster la top et left en fonction
+        console.log(moving_rect[ajustement[0]]);
+        let translate = this.$el.style.transform.match(/(\d+)/g);
+        console.log(translate[1] + ajustement[1]);
         
       });
       this.moved();
