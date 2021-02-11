@@ -19,7 +19,9 @@ export default {
       return Math.min(Math.max(this.metronome, 0.05), 0.85)
     }
   },
-  // http://xahlee.info/js/svg_circle_arc.html
+  mounted: function () {
+    this.$refs.arc.setAttribute("d", describeArc(0.5, 0.4, 0.3, -135, 135));
+  },
   // Deplacement du point : https://bl.ocks.org/mbostock/1705868
   template: `
     <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
@@ -27,10 +29,35 @@ export default {
         <circle cx="0.5" cy="0.4" r="0.2" style="fill: orange; fill-opacity: 0.5;" />
         <circle cx="0.5" cy="0.4" r="0.15" style="fill: orange; fill-opacity: 0.5;" />
         <circle cx="0.5" cy="0.4" r="0.1" style="fill: orange; fill-opacity: 0.5;" />
-        <path d ="M0.2,0.4 A 0.50 0.50 0 1 1 0.8,0.4 Z" fill="none" stroke="red" stroke-width="0.01" />
+        <path stroke="red" fill="none" stroke-width="0.01" ref="arc"/>
         <rect x="0.2" width="0.6" y="0.8" height="0.01" rx="0.02" style="fill: orange;" />
         <rect class="controlleur" :x="x" width="0.05" y="0.7" height="0.2" rx="0.02" style="fill: white" ref="controlleur"/>
       </svg>
     </generique>
   `
 };
+
+// https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle#18473154
+function describeArc(x, y, radius, startAngle, endAngle){
+  var start = polarToCartesian(x, y, radius, endAngle);
+  var end = polarToCartesian(x, y, radius, startAngle);
+
+  var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+  var d = [
+    "M", start.x, start.y, 
+    "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+  ].join(" ");
+  return d;       
+}
+
+function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+  var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+
+  return {
+    x: centerX + (radius * Math.cos(angleInRadians)),
+    y: centerY + (radius * Math.sin(angleInRadians))
+  };
+}
+
+
