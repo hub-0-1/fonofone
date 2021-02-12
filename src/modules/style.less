@@ -1,6 +1,8 @@
 @hauteur_header_module: 25px; 
 @temps_transition: 0.5s;
 @padding_module: 10px;
+@vert: green;
+@mauve: purple;
 
 .fonofone {
   .mixer {
@@ -27,11 +29,38 @@
       }
 
       &.volume {
+        .bg {
+          fill: @vert;
+          fill-opacity: 0.5;
+        }
+
+        .centre {
+          fill: @vert;
+        }
+
         .controlleur {
-          fill:green;
-          stroke:white;
+          fill: @vert;
+          stroke: white;
           stroke-width: 0.02;
-          fill-opacity:0.5;
+          fill-opacity: 0.5;
+        }
+      }
+
+      &.vitesse {
+        .bg {
+          fill: @mauve;
+          fill-opacity: 0.5;
+        }
+
+        .centre {
+          fill: @mauve;
+        }
+
+        .controlleur {
+          fill: @mauve;
+          stroke: white;
+          stroke-width: 0.02;
+          fill-opacity: 0.5;
         }
       }
 

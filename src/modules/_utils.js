@@ -42,5 +42,7 @@ export default {
     this.$refs.controlleur.addEventListener('mousedown', this.start_drag);
     this.$refs.canvas.addEventListener('mouseup', this.end_drag);
     this.$refs.canvas.addEventListener('mouseleave', this.end_drag);
+    
+    //document.body.addEventListener('mouseup', this.end_drag);
   }
 }
