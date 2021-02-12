@@ -3,6 +3,8 @@
 @padding_module: 10px;
 @vert: green;
 @mauve: purple;
+@orange: orange;
+@rouge: red;
 
 .fonofone {
   .mixer {
@@ -74,6 +76,19 @@
 
         .controlleur {
           fill: red;
+        }
+      }
+
+      &.metronome {
+        .concentrique {
+          fill: @orange;
+          fill-opacity: 0.5;
+        }
+
+        .arc {
+          stroke: @rouge;
+          fill: none;
+          stroke-width: 0.01;
         }
       }
 

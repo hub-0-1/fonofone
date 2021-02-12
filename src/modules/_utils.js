@@ -26,6 +26,7 @@ export default {
       this.offset.x -= parseFloat(this.$refs.controlleur.getAttributeNS(null, "x"));
       this.offset.y -= parseFloat(this.$refs.controlleur.getAttributeNS(null, "y"));
     },
+    // TODO si on est a l'exterieur du svg, quoi faire
     get_mouse_position: function getMousePosition(evt) {
       var CTM = this.$refs.canvas.getScreenCTM();
       return {
