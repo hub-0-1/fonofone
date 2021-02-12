@@ -22,8 +22,8 @@ export default {
   template: `
     <generique :module="$t('modules.vitesse')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-        <rect x="0" width="1" y="0" height="1"/>
-        <rect x="0" width="1" y="0.49" height="0.02"/>
+        <rect class="bg" x="0" width="1" y="0" height="1"/>
+        <rect class="centre" x="0" width="1" y="0.49" height="0.02"/>
         <rect class="controlleur" :x="x" width="0.1" y="0.4" height="0.2" rx="0.02" ref="controlleur"/>
       </svg>
     </generique>

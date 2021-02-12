@@ -11,20 +11,21 @@ export default {
   props: ['valeur', 'disposition', 'modifiable'],
   components: { "generique": Generique },
   data: function () {
-    return { is_dragging: false };
+    return { is_dragging: false, controlleur_actif: null };
   },
   methods: {
     update_disposition: function (e) { 
       this.$emit('update:disposition', e); 
     },
     start_drag: function (e) {
+      this.controlleur_actif = e.target;
       this.$refs.canvas.addEventListener('mousemove', this.drag);
       this.is_dragging = true;
 
       // Pour centrer le drag a la souris
       this.offset = this.get_mouse_position(e);
-      this.offset.x -= parseFloat(this.$refs.controlleur.getAttributeNS(null, "x"));
-      this.offset.y -= parseFloat(this.$refs.controlleur.getAttributeNS(null, "y"));
+      this.offset.x -= parseFloat(this.controlleur_actif.getAttributeNS(null, "x"));
+      this.offset.y -= parseFloat(this.controlleur_actif.getAttributeNS(null, "y"));
     },
     // TODO si on est a l'exterieur du svg, quoi faire
     get_mouse_position: function getMousePosition(evt) {
@@ -36,14 +37,21 @@ export default {
     },
     end_drag: function (e) {
       this.$refs.canvas.removeEventListener('mousemove', this.drag);
+      this.controlleur_actif = null;
       this.is_dragging = false;
     }
   },
   mounted: function () {
-    this.$refs.controlleur.addEventListener('mousedown', this.start_drag);
+    // Ajouter un listener a tous les controlleurs
+    _.each(this.$refs, (ref) => {
+      if(ref.className.baseVal.match(/controlleur/)) { 
+        ref.addEventListener('mousedown', this.start_drag);
+      }
+    });
+
+    // Ajouter des listeners pour la fin du drag
     this.$refs.canvas.addEventListener('mouseup', this.end_drag);
     this.$refs.canvas.addEventListener('mouseleave', this.end_drag);
-    
     //document.body.addEventListener('mouseup', this.end_drag);
   }
 }
