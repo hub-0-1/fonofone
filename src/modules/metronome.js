@@ -11,18 +11,27 @@ export default {
   methods: {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
+
+      // Potentimetre horizontal
       if(this.controlleur_actif.className.baseVal.match(/controlleur_2/)) {
         this.metronome = coords.x;
       }
+      // Potentimetre rotatif
       else {
+        
+        // Recentrer les coordonnees de drag
         let x = coords.x - centre_cercle.x;
         let y = coords.y - centre_cercle.y;
 
         // Hack, aucune idée pourquoi il faut inverser x et y et multiplier y par -1.
         // Donne les bonnes coordonnes
         let angle = cartesianToPolar(-y, x).degrees;
-        console.log(angle);
-        this.haut = coords.x;
+
+        // Reporter l'angle sur l'arc
+        let segment_arc = angle / (taille_arc / 2);
+
+        // Projeter sur l'interval [0..1]
+        this.haut = (segment_arc / 2) + 0.5;
         this.update_position_point_arc();
       }
       this.update();
