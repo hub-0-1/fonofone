@@ -30,22 +30,15 @@ export default {
     // TODO si on est a l'exterieur du svg, quoi faire
     // Erreur en mode grille : ne fonctionne qui si top = 0 et left = 0;
     // Solution ici : https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement
-    // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg
-    // Essayer de soustraire la translation a e.clentX
+    // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
     get_mouse_position: function getMousePosition(evt) {
+      // TODO faire beau code si pas translate
       let canvas = this.$refs.canvas;
       var pt = canvas.createSVGPoint();
-      function cursorPoint(evt){
-        pt.x = evt.clientX; pt.y = evt.clientY;
-        return pt.matrixTransform(canvas.getScreenCTM().inverse());
-      }
-      console.log(cursorPoint(evt));
-      //console.log(canvas.getBBox(), canvas.getCTM(), canvas.getScreenCTM());
-      var CTM = this.$refs.canvas.getScreenCTM();
-      return {
-        x: (evt.clientX - CTM.e) / CTM.a,
-        y: (evt.clientY - CTM.f) / CTM.d
-      };
+      let translate = this.$el.style.transform;
+      let coords_translate = translate.match(/(\d+)/g);
+      pt.x = evt.clientX - coords_translate[0]; pt.y = evt.clientY - coords_translate[1];
+      return pt.matrixTransform(canvas.getScreenCTM().inverse());
     },
     end_drag: function (e) {
       this.$refs.canvas.removeEventListener('mousemove', this.drag);
