@@ -28,17 +28,22 @@ export default {
       this.offset.y -= parseFloat(this.controlleur_actif.getAttributeNS(null, "y"));
     },
     // TODO si on est a l'exterieur du svg, quoi faire
-    // Erreur en mode grille : ne fonctionne qui si top = 0 et left = 0;
-    // Solution ici : https://developer.mozilla.org/en-US/docs/Web/API/SVGGraphicsElement
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
-    get_mouse_position: function getMousePosition(evt) {
-      // TODO faire beau code si pas translate
-      let canvas = this.$refs.canvas;
-      var pt = canvas.createSVGPoint();
-      let translate = this.$el.style.transform;
-      let coords_translate = translate.match(/(\d+)/g);
-      pt.x = evt.clientX - coords_translate[0]; pt.y = evt.clientY - coords_translate[1];
-      return pt.matrixTransform(canvas.getScreenCTM().inverse());
+    get_mouse_position: function (evt) {
+      var pt = this.$refs.canvas.createSVGPoint();
+      pt.x = evt.clientX;
+      pt.y = evt.clientY;
+
+      let transform = this.$el.style.transform;
+      let translate = transform.match(/(\d+)/g);
+      
+      // Translate ne s'applique en mode colonne. Pourquoi? Je ne le sais pas
+      if(translate && !this.$el.parentElement.classList.contains("colonne")) {
+        pt.x -= translate[0];
+        pt.y -= (translate[1] || 0);
+      }
+
+      return pt.matrixTransform(this.$refs.canvas.getScreenCTM().inverse());
     },
     end_drag: function (e) {
       this.$refs.canvas.removeEventListener('mousemove', this.drag);
