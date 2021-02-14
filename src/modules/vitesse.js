@@ -1,5 +1,7 @@
 import Utils from "./_utils.js";
 
+const largeur_vitesse = 0.1;
+
 export default {
   mixins: [Utils],
   data: function () {
@@ -16,7 +18,7 @@ export default {
   },
   computed: {
     x: function () {
-      return Math.min(Math.max(this.vitesse, 0.05), 0.85)
+      return this.vitesse - (largeur_vitesse / 2);
     }
   },
   template: `
@@ -24,7 +26,7 @@ export default {
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
         <rect class="centre" x="0" width="1" y="0.49" height="0.02"/>
-        <rect class="controlleur" :x="x" width="0.1" y="0.4" height="0.2" rx="0.02" ref="controlleur"/>
+        <rect class="controlleur" :x="x" width="${largeur_vitesse}" y="0.4" height="0.2" rx="0.02" ref="controlleur"/>
       </svg>
     </generique>
   `
