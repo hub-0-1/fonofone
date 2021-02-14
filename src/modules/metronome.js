@@ -17,8 +17,11 @@ export default {
       else {
         let x = coords.x - centre_cercle.x;
         let y = coords.y - centre_cercle.y;
-        console.log(x, y, cartesianToPolar(x, y).degrees);
-        // TODO trouver comment avoir 0 degrees au centre
+
+        // Hack, aucune idée pourquoi il faut inverser x et y et multiplier y par -1.
+        // Donne les bonnes coordonnes
+        let angle = cartesianToPolar(-y, x).degrees;
+        console.log(angle);
         this.haut = coords.x;
         this.update_position_point_arc();
       }
