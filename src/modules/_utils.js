@@ -25,7 +25,6 @@ export default {
       this.$el.addEventListener('mousemove', this.drag);
       this.is_dragging = true;
     },
-    // TODO si on est a l'exterieur du svg, quoi faire
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
     get_mouse_position: function (evt) {
       var pt = this.$refs.canvas.createSVGPoint();

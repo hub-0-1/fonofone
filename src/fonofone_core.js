@@ -32,7 +32,7 @@ const Configuration = {
  *
  */
 
-let ApplicationFonofone = function (id, archive, fonofone) {
+let ApplicationFonofone = function (id, archive) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],

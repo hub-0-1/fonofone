@@ -3,8 +3,6 @@ import Utils from "./_utils.js";
 const coordonnees_triangle = { hauteur: 1, largeur: 1 };
 const ratio_controlleur = 10;
 
-// TODO erreur lors du debut de drag
-
 export default {
   mixins: [Utils],
   data: function () {

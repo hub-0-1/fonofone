@@ -1,10 +1,7 @@
-
 import ApplicationFonofone from './fonofone_core';
 
 import './style.less';
 import './fonofone_gestion.js'; // Contient GFonofone
-
-const CONFIG = require("./configurations/dauphin.fnfn");
 
 /*
  * Classe parente du module en tant que tel.
@@ -31,7 +28,7 @@ window.Fonofone = class Fonofone {
       .then((response) => {
         return response.blob()})
       .then((archive) => {
-        ApplicationFonofone(app.id, archive, this); // TODO Mettre archive
+        ApplicationFonofone(app.id, archive);
       });
   }
 }
