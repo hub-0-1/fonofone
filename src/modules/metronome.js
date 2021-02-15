@@ -13,7 +13,7 @@ export default {
       let coords = this.get_mouse_position(e);
 
       // Potentimetre horizontal
-      if(this.controlleur_actif.className.baseVal.match(/controlleur_2/)) {
+      if(this.controlleur_actif.className.baseVal.match(/controlleur-2/)) {
         this.metronome = coords.x;
       }
       // Potentimetre rotatif
