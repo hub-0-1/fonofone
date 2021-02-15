@@ -9,7 +9,7 @@ export default {
   },
   methods: {
     drag: function (e) {
-      this.volume = 1 - this.get_mouse_position(e).y;
+      this.volume = this.borner_0_1(1 - this.get_mouse_position(e).y);
       this.update();
     },
     update: function () {
@@ -19,7 +19,6 @@ export default {
   computed: {
     y: function () {
       return 1 - this.volume - (hauteur_controlleur / 2);
-      //return Math.min(Math.max(1 - this.volume, 0.05), 0.85)
     }
   },
   template: `

@@ -14,7 +14,7 @@ export default {
 
       // Potentimetre horizontal
       if(this.controlleur_actif.className.baseVal.match(/controlleur-2/)) {
-        this.metronome = coords.x;
+        this.metronome = this.borner_0_1(coords.x);
       }
       // Potentimetre rotatif
       else {

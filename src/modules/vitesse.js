@@ -9,7 +9,7 @@ export default {
   },
   methods: {
     drag: function (e) {
-      this.vitesse = this.get_mouse_position(e).x;
+      this.vitesse = this.borner_0_1(this.get_mouse_position(e).x);
       this.update();
     },
     update: function () {

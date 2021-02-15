@@ -14,12 +14,15 @@ export default {
     return { is_dragging: false, controlleur_actif: null };
   },
   methods: {
+    borner_0_1: function (valeur) {
+      return Math.min(Math.max(valeur, 0), 1);
+    },
     update_disposition: function (e) { 
       this.$emit('update:disposition', e); 
     },
     start_drag: function (e) {
       this.controlleur_actif = e.target;
-      this.$refs.canvas.addEventListener('mousemove', this.drag);
+      this.$el.addEventListener('mousemove', this.drag);
       this.is_dragging = true;
     },
     // TODO si on est a l'exterieur du svg, quoi faire
@@ -31,7 +34,7 @@ export default {
 
       let transform = this.$el.style.transform;
       let translate = transform.match(/(\d+)/g);
-      
+
       // Translate ne s'applique en mode colonne. Pourquoi? Je ne le sais pas
       if(translate && !this.$el.parentElement.classList.contains("colonne")) {
         pt.x -= translate[0];
@@ -41,7 +44,7 @@ export default {
       return pt.matrixTransform(this.$refs.canvas.getScreenCTM().inverse());
     },
     end_drag: function (e) {
-      this.$refs.canvas.removeEventListener('mousemove', this.drag);
+      this.$el.removeEventListener('mousemove', this.drag);
       this.controlleur_actif = null;
       this.is_dragging = false;
     }
@@ -55,8 +58,9 @@ export default {
     });
 
     // Ajouter des listeners pour la fin du drag
-    this.$refs.canvas.addEventListener('mouseup', this.end_drag);
-    this.$refs.canvas.addEventListener('mouseleave', this.end_drag);
-    //document.body.addEventListener('mouseup', this.end_drag);
+    // On peut dragger dans tout le module
+    this.$el.addEventListener('mouseup', this.end_drag);
+    this.$el.addEventListener('mouseleave', this.end_drag);
   }
 }
+

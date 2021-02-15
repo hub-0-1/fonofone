@@ -29,16 +29,17 @@ export default {
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
-      this.x = coords.x;
-      this.y = coords.y;
 
+      this.y = this.borner_0_1(coords.y);
+      this.x = this.borner_0_1(coords.x);
       if(coords.x < 0.5) {
-        this.x = Math.max(coords.x, this.x_cote_gauche(coords.y));
+        this.x = Math.max(this.x, this.x_cote_gauche(this.y));
       }
       else if(coords.x > 0.5) {
-        this.x = Math.min(coords.x, this.x_cote_droit(coords.y));
+        this.x = Math.min(this.x, this.x_cote_droit(this.y));
       }
 
+      //console.log(this.x, this.y);
       this.update_position_controlleur();
       this.svg_a_mixer();
       this.update();
@@ -57,7 +58,7 @@ export default {
       let x_droit  = this.x_cote_droit(this.y);
 
       this.longueur = 1 - this.y;
-      this.debut = (1 - this.longueur) * ((this.x - x_gauche) / (x_droit - x_gauche));
+      this.debut = ((1 - this.longueur) * ((this.x - x_gauche) / (x_droit - x_gauche)) || 0);
     },
     mixer_a_svg: function () {
       this.y = 1 - this.longueur;
