@@ -6,14 +6,14 @@ const centre_cercle = { x: 0.5, y: 0.4 };
 export default {
   mixins: [Utils],
   data: function () {
-    return { metronome: this.valeur, haut: this.valeur } // TODO nommer le 2e parametre
+    return { metronome: this.valeur.metronome, haut: this.valeur.haut } // TODO nommer le 2e parametre
   },
   methods: {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
       // Potentimetre horizontal
-      if(this.controlleur_actif.className.baseVal.match(/controlleur-2/)) {
+      if(this.controlleur_actif == this.$refs.controlleur_2) {
         this.metronome = this.borner_0_1(coords.x);
       }
       // Potentimetre rotatif

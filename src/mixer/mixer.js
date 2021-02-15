@@ -84,6 +84,10 @@ class Mixer {
     console.log("metronome", valeur);
   }
 
+  set_reverberation (valeur) {
+    console.log("reverberation", valeur);
+  }
+
   set_loop (valeur) {
     console.log("loop", valeur);
     //this.wavesurfer.regions.list.selected.loop = valeur;

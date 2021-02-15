@@ -10,6 +10,7 @@ let traductions = {
       },
       modules: {
         metronome: "Métronome",
+        reverberation: "Réverberation",
         selecteur: "Sélecteur",
         volume: "Volume",
         vitesse: "Vitesse"
