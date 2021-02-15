@@ -3,7 +3,7 @@ import Utils from "./_utils.js";
 const coordonnees_triangle = { hauteur: 1, largeur: 1 };
 const ratio_controlleur = 10;
 
-// TODO ne fonctionne pas en version grille
+// TODO erreur lors du debut de drag
 
 export default {
   mixins: [Utils],
@@ -31,7 +31,6 @@ export default {
       let coords = this.get_mouse_position(e);
       this.x = coords.x;
       this.y = coords.y;
-      console.log(coords);
 
       if(coords.x < 0.5) {
         this.x = Math.max(coords.x, this.x_cote_gauche(coords.y));
@@ -71,7 +70,6 @@ export default {
   mounted: function () {
     this.cote_gauche.y0 = 0 - (this.cote_gauche.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
     this.cote_droit.y0 = 0 - (this.cote_droit.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
-    console.log(this.valeur, this.x, this.y);
     this.mixer_a_svg();
     this.update_position_controlleur();
   },

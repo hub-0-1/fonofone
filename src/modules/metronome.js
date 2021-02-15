@@ -45,7 +45,7 @@ export default {
       this.$refs.controlleur_1.setAttribute('cy', point.y);
     },
     update: function () {
-      this.$emit('update:valeur', this.metronome);
+      this.$emit('update:valeur', { metronome: this.metronome, haut: this.haut });
     }
   },
   computed: {

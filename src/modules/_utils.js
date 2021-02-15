@@ -21,11 +21,6 @@ export default {
       this.controlleur_actif = e.target;
       this.$refs.canvas.addEventListener('mousemove', this.drag);
       this.is_dragging = true;
-
-      // Pour centrer le drag a la souris
-      this.offset = this.get_mouse_position(e);
-      this.offset.x -= parseFloat(this.controlleur_actif.getAttributeNS(null, "x"));
-      this.offset.y -= parseFloat(this.controlleur_actif.getAttributeNS(null, "y"));
     },
     // TODO si on est a l'exterieur du svg, quoi faire
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
