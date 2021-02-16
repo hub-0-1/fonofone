@@ -54,7 +54,6 @@ export default {
     }
   },
   mounted: function () {
-    this.$refs.arc.setAttribute("d", describeArc(0.5, 0.4, 0.3, (taille_arc / -2), (taille_arc / 2)));
     this.update_position_point_arc();
   },
   template: `
@@ -63,7 +62,7 @@ export default {
         <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.2"/>
         <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.15"/>
         <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.1"/>
-        <path class="arc" ref="arc"/>
+        <path d="${describeArc(0.5, 0.4, 0.3, (taille_arc / -2), (taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-1" r="0.02" ref="controlleur_1"/>
         <rect class="ligne-2" x="0.2" width="0.6" y="0.8" height="0.01" rx="0.02"/>
         <rect class="controlleur-2" :x="x_controlleur_2" width="0.05" y="0.7" height="0.2" rx="0.02" ref="controlleur_2"/>
