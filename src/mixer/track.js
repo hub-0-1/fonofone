@@ -21,7 +21,7 @@ class Track {
     enveloppe.gain.linearRampToValueAtTime(1, now + attack + longueur);
     enveloppe.gain.linearRampToValueAtTime(0, now + attack + longueur + release);
 
-    source.start(context.currentTime, debut, attack + longueur + release)
+    source.start(context.currentTime, debut, attack + longueur + release);
   }
 }
 

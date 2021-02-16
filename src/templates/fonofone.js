@@ -1,3 +1,5 @@
+import Logo from '../images/logo_fonofone.svg';
+
 export default `
   <div :id="id" class="fonofone" ref="fonofone">
     <header>
@@ -5,7 +7,7 @@ export default `
       <div :id="waveform_id"></div>
       <div class="menu">
         <div class="menu-gauche">
-          <button @click="mixer.jouer()">jouer</button>
+          <bouton src="${Logo}" @click="mixer.jouer()"></bouton>
           <button @click="exporter()">Exporter</button>
           <button @click="mode_importation = !mode_importation">Importer</button>
           <toggle-button v-model="mode_edition" :labels="{checked: $t('menu.modes.edition'), unchecked: $t('menu.modes.mixage')}" :width="100" :color="{checked: '#00FF00', unchecked: '#FF0000'}"/>

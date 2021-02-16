@@ -4,9 +4,11 @@ import { saveAs } from 'file-saver';
 
 import { ToggleButton } from 'vue-js-toggle-button'
 
-import template_fnfn from './templates/fonofone';
+import Bouton from './bouton.js';
+import Template from './templates/fonofone';
 import Filepond from './mixins/filepond.js';
 
+import Filtre from './mixer/filtre.js';
 import Mixer from './mixer/mixer.js';
 import Metronome from './modules/metronome.js';
 import Reverberation from './modules/reverberation.js';
@@ -37,8 +39,10 @@ let ApplicationFonofone = function (id, archive) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
-    template: template_fnfn,
+    template: Template,
     components: {
+      "Bouton": Bouton,
+      "filtre": Filtre,
       "metronome": Metronome,
       "reverberation": Reverberation,
       "selecteur": Selecteur,

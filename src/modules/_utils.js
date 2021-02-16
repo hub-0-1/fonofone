@@ -1,8 +1,8 @@
 /*
- * Reference pour le drag n drop : https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
+ * Utils
+ * Fonctions utilitaires pour la manipulation des modules
  *
  * Pour tous les modules, il faut mettre un ref pour le controlleur, l'element mobile et un ref pour le canvas, celui qui contient l'interaction
- *
  */
 
 import Generique from "./_generique.js";
@@ -26,6 +26,7 @@ export default {
       this.is_dragging = true;
     },
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
+    // Reference pour le drag n drop : https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
     get_mouse_position: function (evt) {
       var pt = this.$refs.canvas.createSVGPoint();
       pt.x = evt.clientX;
@@ -60,6 +61,7 @@ export default {
     // On peut dragger dans tout le module
     this.$el.addEventListener('mouseup', this.end_drag);
     this.$el.addEventListener('mouseleave', this.end_drag);
+    console.log(this);
   }
 }
 

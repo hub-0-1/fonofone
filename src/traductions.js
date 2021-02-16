@@ -1,4 +1,4 @@
-let traductions = {
+export default {
   locale: 'fr',
   messages: {
     fr: {
@@ -9,6 +9,7 @@ let traductions = {
         }
       },
       modules: {
+        filtre: "Filtre",
         metronome: "Métronome",
         reverberation: "Réverberation",
         selecteur: "Sélecteur",
@@ -18,5 +19,3 @@ let traductions = {
     }
   }
 };
-
-export default traductions;
