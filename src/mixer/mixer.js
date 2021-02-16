@@ -8,6 +8,7 @@ import Track from "./track.js";
 class Mixer {
   constructor (waveform_element_id, fnfn_id) {
     this.fnfn_id = fnfn_id;
+    this.chargement = true;
     this.blob = null;
     this.nodes = {};
     this.parametres = { 
@@ -54,7 +55,8 @@ class Mixer {
   }
 
   jouer () {
-    new Track(this.contexte, this.audio_buffer, this.nodes.master, this.parametres.debut, this.parametres.longueur, this.parametres.vitesse);
+    if(!this.chargement)
+      new Track(this.contexte, this.audio_buffer, this.nodes.master, this.parametres.debut, this.parametres.longueur, this.parametres.vitesse);
   }
 
   set_volume (valeur) {

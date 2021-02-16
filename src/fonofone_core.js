@@ -27,6 +27,8 @@ const Configuration = {
 };
 
 // TODO creer une configuration 0 qui contient tous les modules, mais pas les sons
+// TODO Fonction mixer.jouer() dans template ne fonctionne pas
+
 /* 
  * Format standard des modules : {
  *  disposition: { top, left, width, height }, // Notee en pourcentage
@@ -137,6 +139,7 @@ let ApplicationFonofone = function (id, archive) {
       this.importer(this.archive).then(() => {
         this.synchroniser_modules();
         this.repaint();
+        this.mixer.chargement = false;
       });
     }
   });
