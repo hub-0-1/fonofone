@@ -8,8 +8,8 @@ import Bouton from './bouton.js';
 import Template from './templates/fonofone';
 import Filepond from './mixins/filepond.js';
 
-import Filtre from './mixer/filtre.js';
 import Mixer from './mixer/mixer.js';
+import Filtre from './modules/filtre.js';
 import Metronome from './modules/metronome.js';
 import Reverberation from './modules/reverberation.js';
 import Selecteur from './modules/selecteur.js';

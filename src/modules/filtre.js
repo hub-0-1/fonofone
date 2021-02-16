@@ -1,7 +1,6 @@
 import Utils from "./_utils.js";
 
-const coordonnees_triangle = { hauteur: 1, largeur: 1 };
-const ratio_controlleur = 10;
+const hauteur_controlleur = 0.1;
 
 export default {
   mixins: [Utils],
@@ -9,75 +8,37 @@ export default {
     return { 
       x: 0,
       y: 0,
-      cote_gauche: {
-        pente: (0 - coordonnees_triangle.hauteur) / ((coordonnees_triangle.largeur / 2) - 0),
-        y0: null 
-      },
-      cote_droit: {
-        pente: (coordonnees_triangle.hauteur - 0) / (coordonnees_triangle.largeur - (coordonnees_triangle.largeur / 2)),
-        y0: null
-      },
       debut: this.valeur.debut,
       longueur: this.valeur.longueur
     }
   },
   methods: {
     update: function () {
-      this.$emit('update:valeur', { debut: this.debut, longueur: this.longueur });
+      this.$emit('update:valeur', { debut: this.debut, longueur: this.longueur }); // TODO Ca fait rien
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
-      this.y = this.borner_0_1(coords.y);
-      this.x = this.borner_0_1(coords.x);
-      if(coords.x < 0.5) {
-        this.x = Math.max(this.x, this.x_cote_gauche(this.y));
-      }
-      else if(coords.x > 0.5) {
-        this.x = Math.min(this.x, this.x_cote_droit(this.y));
-      }
+      this.y = this.borner_0_1(coords.y) - (hauteur_controlleur / 2);
+      let x = this.borner_0_1(coords.x) - (this.width / 2)
+      this.x = Math.min(Math.max(x, 0), 1 - this.width);
 
-      //console.log(this.x, this.y);
-      this.update_position_controlleur();
-      this.svg_a_mixer();
       this.update();
     },
-    x_cote_gauche: function (y) {
-      return (y - this.cote_gauche.y0) / this.cote_gauche.pente;
-    },
-    x_cote_droit: function (y) {
-      return (y - this.cote_droit.y0) / this.cote_droit.pente;
-    },
-    update_position_controlleur: function () {
-      this.$refs.controlleur.style.transform = `translate(${(this.x - coordonnees_triangle.largeur / 2 / ratio_controlleur) * 100}%, ${(this.y - coordonnees_triangle.hauteur / 2 / ratio_controlleur) * 100}%)`;
-    },
-    svg_a_mixer: function () {
-      let x_gauche = this.x_cote_gauche(this.y);
-      let x_droit  = this.x_cote_droit(this.y);
-
-      this.longueur = 1 - this.y;
-      this.debut = ((1 - this.longueur) * ((this.x - x_gauche) / (x_droit - x_gauche)) || 0);
-    },
-    mixer_a_svg: function () {
-      this.y = 1 - this.longueur;
-
-      let x_gauche = this.x_cote_gauche(this.y);
-      let x_droit  = this.x_cote_droit(this.y);
-      this.x = ((this.debut / (1 - this.longueur)) * (x_droit - x_gauche)) + x_gauche;
-    }
+  },
+  computed: {
+    width: function () { return Math.max(this.y, 0.05); }
   },
   mounted: function () {
-    this.cote_gauche.y0 = 0 - (this.cote_gauche.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
-    this.cote_droit.y0 = 0 - (this.cote_droit.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
-    this.mixer_a_svg();
-    this.update_position_controlleur();
+    this.y = this.longueur;
+    this.x = this.debut - (this.width / 2);
   },
   template: `
     <generique :module="$t('modules.filtre')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
-        <rect class="centre" x="0.49" width="0.02" y="0.95" height="0.05"/>
-        <rect class="controlleur" ref="controlleur"/>
+        <rect class="centre" x="0.49" width="0.02" y="0.95" height="0.1"/>
+        <rect class="controlleur" :x="x" :y="y" :width="width" height="${hauteur_controlleur}" ref="controlleur"/>
       </svg>
     </generique>
   `

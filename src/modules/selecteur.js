@@ -37,7 +37,6 @@ export default {
         this.x = Math.min(this.x, this.x_cote_droit(this.y));
       }
 
-      //console.log(this.x, this.y);
       this.update_position_controlleur();
       this.svg_a_mixer();
       this.update();

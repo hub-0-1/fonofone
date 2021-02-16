@@ -61,7 +61,6 @@ export default {
     // On peut dragger dans tout le module
     this.$el.addEventListener('mouseup', this.end_drag);
     this.$el.addEventListener('mouseleave', this.end_drag);
-    console.log(this);
   }
 }
 

@@ -88,6 +88,14 @@ class Mixer {
     console.log("reverberation", valeur);
   }
 
+  set_filtre (valeur) {
+    console.log("filtre", valeur);
+  }
+
+  set_arpegiateur (valeur) {
+    console.log("arpegiateur", valeur);
+  }
+
   set_loop (valeur) {
     console.log("loop", valeur);
     //this.wavesurfer.regions.list.selected.loop = valeur;
