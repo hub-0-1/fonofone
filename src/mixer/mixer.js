@@ -54,7 +54,7 @@ class Mixer {
     });
   }
 
-  jouer () {
+  jouer () { // QQC avec _.curry pour enlever la condition?
     if(!this.chargement)
       new Track(this.contexte, this.audio_buffer, this.nodes.master, this.parametres.debut, this.parametres.longueur, this.parametres.vitesse);
   }
