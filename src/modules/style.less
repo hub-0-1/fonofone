@@ -1,11 +1,12 @@
 @hauteur_header_module: 25px; 
 @temps_transition: 0.5s;
 @padding_module: 10px;
-@vert: green;
-@mauve: purple;
-@mauve2: red;
-@orange: orange;
-@rouge: red;
+@jaune: #FFCD00;
+@vert: #A5EB55;
+@mauve: #C814E5;
+@mauve2: #6F2AB7;
+@orange: #F35524;
+@rouge: #F9085A;
 @blanc: white;
 
 .fonofone {
@@ -39,7 +40,7 @@
         }
 
         .centre {
-          fill: @rouge;
+          fill: @blanc;
         }
 
         .controlleur {
@@ -88,14 +89,17 @@
 
       &.selecteur {
         .triangle {
-          fill: yellow;
-          stroke: white;
-          stroke-width: 0.01;
-          stroke-linejoin: round;
+          fill: @jaune;
+          fill-opacity: 0.5;
+          stroke: @jaune;
+          stroke-width: 0.02;
+          //stroke-linejoin: round;
         }
 
         .controlleur {
-          fill: red;
+          fill: @jaune;
+          stroke: @blanc;
+          stroke-width: 0.02;
         }
       }
 

@@ -57,15 +57,16 @@ let ApplicationFonofone = function (id, archive) {
       id, archive,
       fichier_audio: null,
       mode_affichage: "colonne", // "grille" ou "colonne"
-      mode_edition: true,
       mode_importation: false,
       mixer: null,
-      loop: false,
       outils: {
         filepond: null
       }
     },
     methods: {
+      enregistrer: function () {
+        throw "TODO";
+      },
       exporter: function () {
         this.serialiser().then((archive) => { 
           saveAs(new Blob([archive]), "archive.fnfn"); 
@@ -120,11 +121,6 @@ let ApplicationFonofone = function (id, archive) {
     },
     computed: {
       waveform_id: function () { return `waveform-${this.id}`; }
-    },
-    watch: {
-      loop: function (val) {
-        this.mixer.set_loop(val);
-      }
     },
     mounted: function () {
 

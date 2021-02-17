@@ -11,29 +11,45 @@ class Mixer {
     this.chargement = true;
     this.blob = null;
     this.nodes = {};
-    this.parametres = { 
-      debut: 0,
-      longueur: 0,
-      volume: 1,
-      vitesse: 1
-    };
+    this.parametres = {};
 
     // Representation graphique du son
     this.wavesurfer = WaveSurfer.create({
       container: `#${waveform_element_id}`,
-      waveColor: 'violet',
-      progressColor: 'purple',
+      waveColor: '#418ACA',
       height: 100, // TODO determiner par CSS si possible
       plugins: [ Regions.create() ]
     });
 
     // Initialisation
     var AudioContext = window.AudioContext || window.webkitAudioContext;
-    this.contexte =  new AudioContext();
-    // Tous les sources se connectent dans le master
+    this.contexte = new AudioContext(); // TODO ou recevoir contexte audio du Fonoimage parent
+
+    // Reverb
+    // TODO Wet / dry
+    this.nodes.convolver = this.contexte.createConvolver();
+
+    // Filtre
+    this.nodes.lowpass_filter = this.contexte.createBiquadFilter();
+    this.nodes.lowpass_filter.type='lowpass'
+    this.nodes.lowpass_filter.frequency.value = 20000
+
+    this.nodes.highpass_filter = this.contexte.createBiquadFilter();
+    this.nodes.highpass_filter.type='highpass'
+    this.nodes.highpass_filter.frequency.value = 20
+
+    this.nodes.bandpass_filter = this.contexte.createBiquadFilter();
+    this.nodes.bandpass_filter.type='peaking'
+    this.nodes.bandpass_filter.frequency.value = 10000
+
+    // Volume
     this.nodes.master = this.contexte.createGain();
 
     // Appliquer les filtres
+    this.nodes.convolver.connect(this.nodes.lowpass_filter);
+    this.nodes.lowpass_filter.connect(this.nodes.highpass_filter);
+    this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
+    this.nodes.bandpass_filter.connect(this.nodes.convolver);
     this.nodes.master.connect(this.contexte.destination);
     // connecter master dans reverb, reverb dans xyz, xyz dans destination
   }
@@ -77,7 +93,7 @@ class Mixer {
 
     // Visuel
     this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({id: "selected", start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: 'rgba(200,0,0,0.2)'}); // TODO ajouter id fonofone
+    this.wavesurfer.addRegion({id: "selected", start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232'}); // TODO ajouter id fonofone
 
     this.jouer();
   }
@@ -96,11 +112,6 @@ class Mixer {
 
   set_arpegiateur (valeur) {
     console.log("arpegiateur", valeur);
-  }
-
-  set_loop (valeur) {
-    console.log("loop", valeur);
-    //this.wavesurfer.regions.list.selected.loop = valeur;
   }
 }
 
