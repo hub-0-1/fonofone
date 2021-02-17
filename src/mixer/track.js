@@ -1,9 +1,8 @@
 class Track {
-  constructor (context, audio_buffer, master, debut, longueur, vitesse) {
+  constructor (context, audio_buffer, convolver, debut, longueur, vitesse) {
 
-    // TODO refact constantes 
-    let attack = 1;
-    let release = 1;
+    let attack = 0.1;
+    let release = 0.1;
 
     // Initialisation
     let source = context.createBufferSource();
@@ -12,7 +11,7 @@ class Track {
 
     source.buffer = audio_buffer;
     source.connect(enveloppe);
-    enveloppe.connect(master);
+    enveloppe.connect(convolver);
     source.playbackRate.setValueAtTime(vitesse, context.currentTime);
 
     // Enveloppe

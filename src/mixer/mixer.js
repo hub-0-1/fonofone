@@ -50,6 +50,7 @@ class Mixer {
     this.nodes.lowpass_filter.connect(this.nodes.highpass_filter);
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
     this.nodes.bandpass_filter.connect(this.nodes.convolver);
+    this.nodes.convolver.connect(this.nodes.master);
     this.nodes.master.connect(this.contexte.destination);
     // connecter master dans reverb, reverb dans xyz, xyz dans destination
   }
@@ -72,6 +73,7 @@ class Mixer {
 
   jouer () { // QQC avec _.curry pour enlever la condition?
     if(!this.chargement)
+      // TODO passer convolver au lieu de master
       new Track(this.contexte, this.audio_buffer, this.nodes.master, this.parametres.debut, this.parametres.longueur, this.parametres.vitesse);
   }
 
