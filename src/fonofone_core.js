@@ -2,8 +2,6 @@ import Vue from 'vue';
 import _ from 'lodash';
 import { saveAs } from 'file-saver';
 
-import { ToggleButton } from 'vue-js-toggle-button'
-
 import Bouton from './bouton.js';
 import Template from './templates/fonofone';
 import Filepond from './mixins/filepond.js';
@@ -37,7 +35,7 @@ const Configuration = {
  *
  */
 
-let ApplicationFonofone = function (id, archive) {
+let ApplicationFonofone = function (id, archive, ctx_audio) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
@@ -49,12 +47,11 @@ let ApplicationFonofone = function (id, archive) {
       "reverberation": Reverberation,
       "selecteur": Selecteur,
       "volume": Volume,
-      "vitesse": Vitesse,
-      "toggle-button": ToggleButton
+      "vitesse": Vitesse
     },
     i18n,
     data: {
-      id, archive,
+      id, archive, ctx_audio,
       fichier_audio: null,
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
@@ -131,7 +128,7 @@ let ApplicationFonofone = function (id, archive) {
         this.mode_affichage = "grille";
       }
 
-      this.mixer = new Mixer(this.waveform_id, this.id);
+      this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
       this.importer(this.archive).then(() => {
         this.synchroniser_modules();
         this.repaint();

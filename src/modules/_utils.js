@@ -23,14 +23,23 @@ export default {
     start_drag: function (e) {
       this.controlleur_actif = e.target;
       this.$el.addEventListener('mousemove', this.drag);
+      this.$el.addEventListener('touchmove', this.drag);
       this.is_dragging = true;
     },
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
     // Reference pour le drag n drop : https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
     get_mouse_position: function (evt) {
       var pt = this.$refs.canvas.createSVGPoint();
-      pt.x = evt.clientX;
-      pt.y = evt.clientY;
+
+      if(evt.type == "mousemove") {
+        pt.x = evt.clientX;
+        pt.y = evt.clientY;
+      }
+      // evt.type == "touchmove"
+      else {
+        pt.x = evt.touches[0].clientX;
+        pt.y = evt.touches[0].clientY;
+      }
 
       let transform = this.$el.style.transform;
       let translate = transform.match(/(\d+)/g);
@@ -45,6 +54,7 @@ export default {
     },
     end_drag: function (e) {
       this.$el.removeEventListener('mousemove', this.drag);
+      this.$el.removeEventListener('touchmove', this.drag);
       this.controlleur_actif = null;
       this.is_dragging = false;
     }
@@ -54,6 +64,7 @@ export default {
     _.each(this.$refs, (ref) => {
       if(ref.className.baseVal.match(/controlleur/)) { 
         ref.addEventListener('mousedown', this.start_drag);
+        ref.addEventListener('touchstart', this.start_drag);
       }
     });
 
@@ -61,6 +72,7 @@ export default {
     // On peut dragger dans tout le module
     this.$el.addEventListener('mouseup', this.end_drag);
     this.$el.addEventListener('mouseleave', this.end_drag);
+    this.$el.addEventListener('touchend', this.end_drag);
   }
 }
 

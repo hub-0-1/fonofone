@@ -6,8 +6,9 @@ import Track from "./track.js";
 // TODO un seul audio context pour tous les fonofones : https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelMerger
 // ou un audio context par fonofone si pas fonoimage
 class Mixer {
-  constructor (waveform_element_id, fnfn_id) {
+  constructor (waveform_element_id, fnfn_id, ctx_audio) {
     this.fnfn_id = fnfn_id;
+    this.ctx_audio = ctx_audio;
     this.chargement = true;
     this.blob = null;
     this.nodes = {};
@@ -22,28 +23,26 @@ class Mixer {
     });
 
     // Initialisation
-    var AudioContext = window.AudioContext || window.webkitAudioContext;
-    this.contexte = new AudioContext(); // TODO ou recevoir contexte audio du Fonoimage parent
 
     // Reverb
     // TODO Wet / dry
-    this.nodes.convolver = this.contexte.createConvolver();
+    this.nodes.convolver = this.ctx_audio.createConvolver();
 
     // Filtre
-    this.nodes.lowpass_filter = this.contexte.createBiquadFilter();
+    this.nodes.lowpass_filter = this.ctx_audio.createBiquadFilter();
     this.nodes.lowpass_filter.type='lowpass'
     this.nodes.lowpass_filter.frequency.value = 20000
 
-    this.nodes.highpass_filter = this.contexte.createBiquadFilter();
+    this.nodes.highpass_filter = this.ctx_audio.createBiquadFilter();
     this.nodes.highpass_filter.type='highpass'
     this.nodes.highpass_filter.frequency.value = 20
 
-    this.nodes.bandpass_filter = this.contexte.createBiquadFilter();
+    this.nodes.bandpass_filter = this.ctx_audio.createBiquadFilter();
     this.nodes.bandpass_filter.type='peaking'
     this.nodes.bandpass_filter.frequency.value = 10000
 
     // Volume
-    this.nodes.master = this.contexte.createGain();
+    this.nodes.master = this.ctx_audio.createGain();
 
     // Appliquer les filtres
     this.nodes.convolver.connect(this.nodes.lowpass_filter);
@@ -51,8 +50,7 @@ class Mixer {
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
     this.nodes.bandpass_filter.connect(this.nodes.convolver);
     this.nodes.convolver.connect(this.nodes.master);
-    this.nodes.master.connect(this.contexte.destination);
-    // connecter master dans reverb, reverb dans xyz, xyz dans destination
+    this.nodes.master.connect(this.ctx_audio.destination);
   }
 
   charger (blob_audio) {
@@ -61,7 +59,7 @@ class Mixer {
       this.wavesurfer.load(URL.createObjectURL(this.blob));
 
       new Response(this.blob).arrayBuffer().then((buffer) => {
-          return this.contexte.decodeAudioData(buffer)
+          return this.ctx_audio.decodeAudioData(buffer)
         }).then((audio_buffer) => {
           this.audio_buffer = audio_buffer;
           resolve(true);
@@ -74,13 +72,13 @@ class Mixer {
   jouer () { // QQC avec _.curry pour enlever la condition?
     if(!this.chargement)
       // TODO passer convolver au lieu de master
-      new Track(this.contexte, this.audio_buffer, this.nodes.master, this.parametres.debut, this.parametres.longueur, this.parametres.vitesse);
+      new Track(this.ctx_audio, this.audio_buffer, this.nodes.master, this.parametres.debut, this.parametres.longueur, this.parametres.vitesse);
   }
 
   set_volume (valeur) {
     console.log("volume", valeur);
     this.parametres.volume = valeur;
-    this.nodes.master.gain.setValueAtTime(valeur, this.contexte.currentTime);
+    this.nodes.master.gain.setValueAtTime(valeur, this.ctx_audio.currentTime);
   }
 
   set_vitesse (valeur) {
