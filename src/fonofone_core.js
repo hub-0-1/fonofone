@@ -133,6 +133,11 @@ let ApplicationFonofone = function (id, archive, ctx_audio) {
         this.synchroniser_modules();
         this.repaint();
         this.mixer.chargement = false;
+
+        // Ajouter les breaks points pour l'affichage en mode colonne
+        // TODO compter les enfants
+        // Selon la largeur, diviser en colonnes
+        let children = this.$refs.mixer.children;
       });
     }
   });

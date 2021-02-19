@@ -16,7 +16,7 @@ export default `
       </div>
     </header>
     <main>
-      <div class="mixer" :class="mode_affichage">
+      <div class="mixer" :class="mode_affichage" ref="mixer">
         <component v-for="(module, key) in archive.config" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
       </div>
       <div v-show="mode_importation" ref="filepond"></div>

@@ -15,7 +15,7 @@
 
     &.grille {
       height: 100%;
-
+      
       .module > main {
         height: calc(100% - @hauteur_header_module);
       }
@@ -76,6 +76,12 @@
       }
 
       &.vitesse {
+
+        // Aspect ratio du module. Par defaut 1:1
+        main {
+          padding-top: 50%;
+        }
+
         .bg {
           fill: @mauve;
           fill-opacity: 0.5;
