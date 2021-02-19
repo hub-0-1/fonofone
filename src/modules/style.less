@@ -52,6 +52,12 @@
       }
 
       &.volume {
+
+        // Aspect ratio du module. Par defaut 1:1
+        main {
+          padding-top: 50%;
+        }
+
         .bg {
           fill: @vert;
           fill-opacity: 0.5;
@@ -145,6 +151,7 @@
           fill-opacity: 0.5;
         }
       }
+
       & > header {
         height: @hauteur_header_module;
 
@@ -167,10 +174,14 @@
       }
 
       & > main {
-        height: 150px;
+        padding-top: 100%;
+        position: relative;
         transition: height @temps_transition;
 
         svg {
+          position: absolute;
+          top: 0;
+          left: 0;
           width: 100%;
           height: 100%;
 
