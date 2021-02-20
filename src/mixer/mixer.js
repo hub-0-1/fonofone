@@ -112,7 +112,7 @@ class Mixer {
   }
 
   set_filtre (valeur) {
-    let frequence = valeur.debut;
+    let frequence = valeur.debut + valeur.longueur / 2;
     let resonnance = valeur.longueur;
     console.log("filtre", frequence, resonnance);
 
