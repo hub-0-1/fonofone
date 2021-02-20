@@ -129,6 +129,10 @@ class Mixer {
 
     this.nodes.bandpass_filter.gain.value = resonnance * 36;
   }
+
+  enregistrer () {
+    // TODO https://stackoverflow.com/questions/21234902/record-sound-of-a-webaudio-apis-audio-context
+  }
 }
 
 export default Mixer;
