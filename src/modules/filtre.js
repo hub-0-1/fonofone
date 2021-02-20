@@ -2,6 +2,7 @@ import Utils from "./_utils.js";
 
 const hauteur_controlleur = 0.1;
 
+// TODO Refact des x, y, debut, longueur
 export default {
   mixins: [Utils],
   data: function () {
@@ -22,6 +23,9 @@ export default {
       this.y = this.borner_0_1(coords.y) - (hauteur_controlleur / 2);
       let x = this.borner_0_1(coords.x) - (this.width / 2)
       this.x = Math.min(Math.max(x, 0), 1 - this.width);
+
+      this.debut = this.x;
+      this.longueur = this.y;
 
       this.update();
     },

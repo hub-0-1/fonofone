@@ -1,5 +1,5 @@
 class Track {
-  constructor (context, audio_buffer, convolver, parametres) {
+  constructor (context, audio_buffer, noeud_audio, parametres) {
 
     let attack = 0.1;
     let release = 0.1;
@@ -11,7 +11,7 @@ class Track {
 
     source.buffer = audio_buffer;
     source.connect(enveloppe);
-    enveloppe.connect(convolver);
+    enveloppe.connect(noeud_audio);
     source.playbackRate.setValueAtTime(parametres.vitesse, context.currentTime);
 
     // Enveloppe

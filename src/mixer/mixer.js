@@ -49,11 +49,8 @@ class Mixer {
     this.nodes.convolver.connect(this.nodes.lowpass_filter);
     this.nodes.lowpass_filter.connect(this.nodes.highpass_filter);
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
-    this.nodes.bandpass_filter.connect(this.nodes.convolver);
-    this.nodes.convolver.connect(this.nodes.master);
+    this.nodes.bandpass_filter.connect(this.nodes.master);
     this.nodes.master.connect(this.ctx_audio.destination);
-
-    console.log(this);
   }
 
   charger (blob_audio) {
@@ -77,23 +74,18 @@ class Mixer {
     if(this.chargement) return;
 
     // Creer et supprimer la track
-    // TODO passer convolver au lieu de master
-    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.master, this.parametres);
+    // TODO passer convolver au lieu de lowpass
+    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.lowpass_filter, this.parametres);
     this.tracks.push(track);
-    track.source.onended = () => {
-      let index = this.tracks.indexOf(track);
-      this.tracks.splice(index, 1);
-    }
+    track.source.onended = () => { this.tracks.splice(this.tracks.indexOf(track), 1); }
   }
 
   set_volume (valeur) {
-    console.log("volume", valeur);
     this.parametres.volume = valeur;
     this.nodes.master.gain.setValueAtTime(valeur, this.ctx_audio.currentTime);
   }
 
   set_vitesse (valeur) {
-    console.log("vitesse", valeur);
     this.parametres.vitesse = valeur;
     _.each(this.tracks, (track) => {
       track.source.playbackRate.setValueAtTime(this.parametres.vitesse, this.ctx_audio.currentTime);
@@ -101,7 +93,6 @@ class Mixer {
   }
 
   set_selecteur (valeur) {
-    console.log("selecteur", valeur);
     this.parametres.debut = valeur.debut * this.audio_buffer.duration;
     this.parametres.longueur = valeur.longueur * this.audio_buffer.duration;
 
@@ -121,11 +112,22 @@ class Mixer {
   }
 
   set_filtre (valeur) {
-    console.log("filtre", valeur);
-  }
+    let frequence = valeur.debut;
+    let resonnance = valeur.longueur;
+    console.log("filtre", frequence, resonnance);
 
-  set_arpegiateur (valeur) {
-    console.log("arpegiateur", valeur);
+    if(frequence < 0.5) {
+      this.nodes.lowpass_filter.frequency.value = Math.pow(frequence / 0.45,2) * 19900 + 100; // Parce que c'est comme ca
+      this.nodes.highpass_filter.frequency.value = 20;
+      this.nodes.bandpass_filter.frequency.value = this.nodes.lowpass_filter.frequency.value;
+    }
+    else {
+      this.nodes.lowpass_filter.frequency.value = 20000;
+      this.nodes.highpass_filter.frequency.value = Math.pow((frequence - 0.5) / 0.45, 2) * 20000;
+      this.nodes.bandpass_filter.frequency.value = this.nodes.highpass_filter.frequency.value;
+    }
+
+    this.nodes.bandpass_filter.gain.value = resonnance * 36;
   }
 }
 
