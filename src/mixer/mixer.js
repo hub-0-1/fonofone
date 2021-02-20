@@ -13,6 +13,7 @@ class Mixer {
     this.blob = null;
     this.nodes = {};
     this.parametres = {};
+    this.tracks = [];
 
     // Representation graphique du son
     this.wavesurfer = WaveSurfer.create({
@@ -51,6 +52,8 @@ class Mixer {
     this.nodes.bandpass_filter.connect(this.nodes.convolver);
     this.nodes.convolver.connect(this.nodes.master);
     this.nodes.master.connect(this.ctx_audio.destination);
+
+    console.log(this);
   }
 
   charger (blob_audio) {
@@ -69,10 +72,18 @@ class Mixer {
     });
   }
 
-  jouer () { // QQC avec _.curry pour enlever la condition?
-    if(!this.chargement)
-      // TODO passer convolver au lieu de master
-      new Track(this.ctx_audio, this.audio_buffer, this.nodes.master, this.parametres.debut, this.parametres.longueur, this.parametres.vitesse);
+  jouer () {
+    // Ne pas jouer au chargement
+    if(this.chargement) return;
+
+    // Creer et supprimer la track
+    // TODO passer convolver au lieu de master
+    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.master, this.parametres);
+    this.tracks.push(track);
+    track.source.onended = () => {
+      let index = this.tracks.indexOf(track);
+      this.tracks.splice(index, 1);
+    }
   }
 
   set_volume (valeur) {
@@ -84,6 +95,9 @@ class Mixer {
   set_vitesse (valeur) {
     console.log("vitesse", valeur);
     this.parametres.vitesse = valeur;
+    _.each(this.tracks, (track) => {
+      track.source.playbackRate.setValueAtTime(this.parametres.vitesse, this.ctx_audio.currentTime);
+    });
   }
 
   set_selecteur (valeur) {
