@@ -24,11 +24,24 @@
     border-radius: 10px;
     margin-bottom: 10px;
 
-    .bouton-controlleur {
-      cursor: pointer;
+    .menu-gauche {
+      display: flex;
+      align-items: center;
 
-      &.actif {
-        box-shadow: 1px 1px white;
+      .bouton-controlleur {
+        padding: 0;
+        margin: 0;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+
+        img {
+          height: 20px;
+        }
+
+        &.actif {
+          box-shadow: 1px 1px white;
+        }
       }
     }
 
