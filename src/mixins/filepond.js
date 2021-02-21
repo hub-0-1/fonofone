@@ -6,15 +6,18 @@ export default {
     init_filepond: function () {
 
       // Upload fichiers
-      this.outils.filepond = FilePond.create({ 
+      let filepond = this.outils.filepond = FilePond.create({ 
         name: 'filepond',
         credits: false
       });
 
+      filepond.labelIdle = this.$t("filepond.idle");
+
+
       this.$refs.filepond.appendChild(this.outils.filepond.element);
 
-      let filepond = this.$refs.filepond.firstChild;
-      filepond.addEventListener('FilePond:addfile', e => { 
+      let filepond_el = this.$refs.filepond.firstChild;
+      filepond_el.addEventListener('FilePond:addfile', e => { 
         let fichier = e.detail.file;
 
         if(fichier.fileType.match(/audio/)) {

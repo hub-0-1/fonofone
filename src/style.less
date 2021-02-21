@@ -1,8 +1,12 @@
 @import "./modules/style";
 
+@blanc: white;
+@blanc_creme: #EFEFEF;
 @gris: grey;
 @noir: black;
+@charcoal: #323232;
 @temps_transition: 0.5s;
+@border_radius: 10px;
 
 .fonofone {
   font-family: "Arial";
@@ -21,7 +25,7 @@
     background-color: @noir;
     text-transform: uppercase;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: @border_radius;
     margin-bottom: 10px;
 
     .wavesurfer {
@@ -37,7 +41,7 @@
     position: relative;
     flex: 1;
     overflow: auto;
-    border-radius: 10px;
+    border-radius: @border_radius;
 
     .ecran-importation {
       position: absolute;
@@ -57,13 +61,36 @@
           display: flex;
           flex-direction: column;
           height: 100%;
+          border: 1px solid @noir;
+          border-radius: @border_radius;
+          overflow: auto;
 
           header {
             padding: 5px;
+            background-color: @charcoal;
+            color: @blanc;
           }
 
           main {
             flex: 1;
+
+            ul {
+              list-style-type: none;
+              margin: 0;
+              padding: 0;
+
+              li {
+                background-color: @blanc_creme;
+              }
+            }
+            .importation {
+
+              h3 { 
+                padding: 5px;
+                background-color: @charcoal;
+                color: @blanc;
+              }
+            }
           }
 
           footer {
@@ -79,7 +106,7 @@
     display: flex;
     height: 20px;
     margin-top: 10px;
-    border-radius: 10px;
+    border-radius: @border_radius;
     background-color: @noir;
   }
 

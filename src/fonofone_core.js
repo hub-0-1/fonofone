@@ -12,7 +12,6 @@ import _ from 'lodash';
 import { saveAs } from 'file-saver';
 
 import Bouton from './bouton.js';
-import Template from './templates/fonofone';
 import Filepond from './mixins/filepond.js';
 
 import Mixer from './mixer/mixer.js';
@@ -26,16 +25,20 @@ import Vitesse from './modules/vitesse.js';
 // Configuration de base pour l'application
 import Configuration from './configuration.js';
 
+// Icones
+import Record from './images/record.svg';
+import Folder from './images/icon-folder.svg';
+import Fleche from './images/arrow.svg';
+
 // Traduction
 import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
-let ApplicationFonofone = function (id, archive, ctx_audio) {
+export default function (id, archive, ctx_audio) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
-    template: Template,
     components: {
       "Bouton": Bouton,
       "filtre": Filtre,
@@ -136,9 +139,45 @@ let ApplicationFonofone = function (id, archive, ctx_audio) {
         // Selon la largeur, diviser en colonnes
         let children = this.$refs.mixer.children;
       });
-    }
+    },
+    template: `
+      <div :id="id" class="fonofone" ref="fonofone">
+        <header>
+          <div class="nom-archive">
+            <bouton src="${Folder}" @click.native="mode_importation = !mode_importation"></bouton>
+            Archive
+          </div>
+          <div :id="waveform_id" class="wavesurfer"></div>
+          <div class="menu">
+            <bouton src="${Record}" @click.native="enregistrer"></bouton>
+          </div>
+        </header>
+        <main>
+          <div v-show="!mode_importation" class="mixer" :class="mode_affichage" ref="mixer">
+            <component v-for="(module, key) in archive.config" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
+          </div>
+          <div v-show="mode_importation" class="ecran-importation">
+            <div class="background-importation">
+              <div class="fenetre-importation">
+                <header>Liste des sons</header>
+                <main>
+                  <ul>
+                    <li v-for="item in configuration.sons">{{ item }}</li>
+                  </ul>
+                  <div class="importation">
+                    <h3>Importation</h3>
+                    <div ref="filepond"></div>
+                  </div>
+                </main>
+                <footer>
+                  <div>Enregistrer un son</div>
+                  <button @click="exporter()">Exporter</button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer></footer>
+      </div>`
   });
 }
-
-export default ApplicationFonofone;
-
