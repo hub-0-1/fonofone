@@ -1,3 +1,12 @@
+/* 
+ * TODO creer une configuration 0 qui contient tous les modules, mais pas les sons
+ * Format standard des modules : {
+ *  disposition: { top, left, width, height }, // Notee en pourcentage
+ *  valeur: null
+ * }
+ *
+ */
+
 import Vue from 'vue';
 import _ from 'lodash';
 import { saveAs } from 'file-saver';
@@ -14,26 +23,13 @@ import Selecteur from './modules/selecteur.js';
 import Volume from './modules/volume.js';
 import Vitesse from './modules/vitesse.js';
 
+// Configuration de base pour l'application
+import Configuration from './configuration.js';
+
 // Traduction
 import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
-
-// TODO extraire dans un fichier de config
-const Configuration = {
-  min_width_grille: 600
-};
-
-// TODO creer une configuration 0 qui contient tous les modules, mais pas les sons
-// TODO Fonction mixer.jouer() dans template ne fonctionne pas
-
-/* 
- * Format standard des modules : {
- *  disposition: { top, left, width, height }, // Notee en pourcentage
- *  valeur: null
- * }
- *
- */
 
 let ApplicationFonofone = function (id, archive, ctx_audio) {
   return new Vue({
@@ -49,10 +45,10 @@ let ApplicationFonofone = function (id, archive, ctx_audio) {
       "volume": Volume,
       "vitesse": Vitesse
     },
-    i18n,
     data: {
       id, archive, ctx_audio,
-      fichier_audio: null,
+      configuration: Configuration,
+      fichier_audio: null, // TODO inutile, enlever ca
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
       mixer: null,
@@ -60,6 +56,7 @@ let ApplicationFonofone = function (id, archive, ctx_audio) {
         filepond: null
       }
     },
+    i18n,
     methods: {
       enregistrer: function () {
         throw "TODO";
@@ -124,7 +121,7 @@ let ApplicationFonofone = function (id, archive, ctx_audio) {
       // Initialisation de Filepond par les mixins
 
       // Mode affichage
-      if(this.$refs.fonofone.offsetWidth > Configuration.min_width_grille) {
+      if(this.$refs.fonofone.offsetWidth > this.configuration.min_width_grille) {
         this.mode_affichage = "grille";
       }
 

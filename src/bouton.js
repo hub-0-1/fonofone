@@ -6,6 +6,9 @@ export default {
     }
   },
   methods: {
+    exporter: function () {
+      console.log('ci');
+    },
     update: function () {
       this.$emit("update:actif", est_actif);
     }

@@ -108,7 +108,12 @@ class Mixer {
   }
 
   set_reverberation (valeur) {
-    console.log("reverberation", valeur);
+    return console.log("reverberation", valeur);
+
+    //load impulse response from file
+    //let response     = await fetch("path/to/impulse-response.wav");
+    //let arraybuffer  = await response.arrayBuffer();
+    //convolver.buffer = await audioCtx.decodeAudioData(arraybuffer);
   }
 
   set_filtre (valeur) {

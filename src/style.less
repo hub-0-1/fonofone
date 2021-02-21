@@ -24,28 +24,9 @@
     border-radius: 10px;
     margin-bottom: 10px;
 
-    .menu-gauche {
-      display: flex;
-      align-items: center;
-
-      .bouton-controlleur {
-        padding: 0;
-        margin: 0;
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-
-        img {
-          height: 20px;
-        }
-
-        &.actif {
-          box-shadow: 1px 1px white;
-        }
-      }
-    }
-
     .wavesurfer {
+      margin: 15px 0;
+
       .wavesurfer-region {
         z-index: 0 !important;
       }
@@ -58,15 +39,38 @@
     overflow: auto;
     border-radius: 10px;
 
-    .filepond--root {
+    .ecran-importation {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100% !important;
+      height: 100%;
 
-      .filepond--drop-label {
-        height: inherit;
+      background-color: white;
+
+      .background-importation {
+        background-color: rgba(0,0,0,0.6);
+        width: 100%;
+        height: 100%;
+
+        .fenetre-importation {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+
+          header {
+            padding: 5px;
+          }
+
+          main {
+            flex: 1;
+          }
+
+          footer {
+            padding: 5px;
+          }
+        }
+
       }
     }
   }
@@ -77,5 +81,21 @@
     margin-top: 10px;
     border-radius: 10px;
     background-color: @noir;
+  }
+
+  .bouton-controlleur {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+
+    img {
+      height: 20px;
+    }
+
+    &.actif {
+      box-shadow: 1px 1px white;
+    }
   }
 }
