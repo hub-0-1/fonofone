@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     y: function () {
-      return 1 - this.volume - (hauteur_controlleur / 2);
+      return 1 - (this.volume * (1 - hauteur_controlleur) + hauteur_controlleur);
     }
   },
   template: `

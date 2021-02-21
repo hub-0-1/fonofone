@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     x: function () {
-      return this.vitesse - (largeur_vitesse / 2);
+      return this.vitesse * (1 - largeur_vitesse);
     }
   },
   template: `
