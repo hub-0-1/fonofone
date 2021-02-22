@@ -177,7 +177,6 @@ export default function (id, archive, ctx_audio) {
             </div>
           </div>
         </main>
-        <footer></footer>
       </div>`
   });
 }
