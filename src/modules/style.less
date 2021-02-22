@@ -159,6 +159,7 @@
       }
 
       & > header {
+        display: none !important;
         height: @hauteur_header_module;
 
         display: flex;
@@ -194,6 +195,17 @@
           .controlleur {
             cursor: move;
           }
+        }
+      }
+
+      & > footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        img {
+          width: 20px;
+          margin-top: 10px;
         }
       }
 

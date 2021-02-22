@@ -4,6 +4,7 @@ import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 
 import Disposition from "./mixins/disposition.js";
 import Up from "../images/icons/up.png";
+import Power from "../images/icon-power.svg";
 
 export default {
   props: ['module'],
@@ -16,10 +17,15 @@ export default {
           <h2>{{ module }}</h2>
           <img src="${Up}" @click="collapsed = !collapsed">
         </header>
-          <main>
-            <slot></slot>
-          </main>
-        <footer></footer>
+        <main>
+          <slot></slot>
+        </main>
+        <footer>
+          <img class="power" src="${Power}" alt="${Power}">
+          <div class="menu-droite">
+            <slot name="footer"></slot>
+          </div>
+        </footer>
     </vue-draggable-resizable>
   `
 };

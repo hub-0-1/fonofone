@@ -1,5 +1,12 @@
 @import "./modules/style";
 
+@font-face {
+  font-family: 'Helvetica';
+  src:  url('./fonts/HelveticaNeue-01.woff') format('woff');
+  //font-weight: 600;
+  //font-style: normal;
+}
+
 @blanc: white;
 @blanc_creme: #EFEFEF;
 @gris: grey;
@@ -9,7 +16,7 @@
 @border_radius: 10px;
 
 .fonofone {
-  font-family: "Arial";
+  font-family: "Helvetica";
   position: relative;
   width: 100%;
   height: 100%;
@@ -94,6 +101,10 @@
           }
 
           footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
             padding: 5px;
           }
         }

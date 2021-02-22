@@ -1,4 +1,5 @@
 import Utils from "./_utils.js";
+import Magnet from "../images/icon-magnet.svg";
 
 const largeur_vitesse = 0.1;
 
@@ -28,6 +29,10 @@ export default {
         <rect class="centre" x="0" width="1" y="0.49" height="0.02"/>
         <rect class="controlleur" :x="x" width="${largeur_vitesse}" y="0.4" height="0.2" rx="0.02" ref="controlleur"/>
       </svg>
+
+      <template v-slot:footer>
+        <img class="magnet" src="${Magnet}" alt="${Magnet}">
+      </template>
     </generique>
   `
 };
