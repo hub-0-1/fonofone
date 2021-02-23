@@ -99,8 +99,6 @@ class Mixer {
     // Visuel
     this.wavesurfer.clearRegions();
     this.wavesurfer.addRegion({id: "selected", start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232'}); // TODO ajouter id fonofone
-
-    this.jouer();
   }
 
   set_metronome (valeur) {

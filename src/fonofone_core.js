@@ -23,7 +23,7 @@ import Volume from './modules/volume.js';
 import Vitesse from './modules/vitesse.js';
 
 // Configuration de base pour l'application
-import Configuration from './configuration.js';
+import Globales from './globales.js';
 
 // Icones
 import Record from './images/record.svg';
@@ -39,7 +39,7 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
-export default function (id, archive, ctx_audio) {
+export default function (id, configuration, ctx_audio) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
@@ -53,8 +53,8 @@ export default function (id, archive, ctx_audio) {
       "vitesse": Vitesse
     },
     data: {
-      id, archive, ctx_audio,
-      configuration: Configuration,
+      id, configuration, ctx_audio,
+      globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
       mixer: null,
@@ -73,10 +73,7 @@ export default function (id, archive, ctx_audio) {
         });
       },
       serialiser: async function () {
-        return JSON.stringify({ 
-          config: this.archive.config, 
-          fichier: await this.blob_a_base64(this.mixer.blob) 
-        });
+        return JSON.stringify(this.configuration);
       },
       blob_a_base64: function (blob) {
         return new Promise((resolve) => {
@@ -93,8 +90,8 @@ export default function (id, archive, ctx_audio) {
             fileReader.readAsText(fichier);
           });
 
-          this.archive = JSON.parse(archive_serialisee);
-          this.base64_a_blob(this.archive.fichier).then((blob) => {
+          this.configuration = JSON.parse(archive_serialisee);
+          this.base64_a_blob(this.configuration.fichier).then((blob) => {
             return this.mixer.charger(blob)
           }).then(() => { 
             resolve(true) 
@@ -105,8 +102,8 @@ export default function (id, archive, ctx_audio) {
         return await (await fetch(base64)).blob();
       },
       synchroniser_modules: function () {
-        _.each(this.archive.config, (v, key) => {
-          this.$watch(`archive.config.${key}.valeur`, (valeur) => { // https://vuejs.org/v2/api/#vm-watch
+        _.each(this.configuration.modules, (v, key) => {
+          this.$watch(`configuration.modules.${key}.valeur`, (valeur) => { // https://vuejs.org/v2/api/#vm-watch
             this.mixer[`set_${key}`](valeur);
           }, {deep: true, immediate: true});
         });
@@ -122,10 +119,10 @@ export default function (id, archive, ctx_audio) {
 
       },
       toggle_loop: function () {
-
+        this.configuration.parametres.loop = !this.configuration.parametres.loop;
       },
       toggle_sens: function () {
-
+        this.configuration.parametres.sens *= -1;
       },
       jouer: function () {
         this.mixer.jouer();
@@ -139,12 +136,12 @@ export default function (id, archive, ctx_audio) {
       // Initialisation de Filepond par les mixins
 
       // Mode affichage
-      if(this.$refs.fonofone.offsetWidth > this.configuration.min_width_grille) {
+      if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
         this.mode_affichage = "grille";
       }
 
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
-      this.importer(this.archive).then(() => {
+      this.importer(this.configuration).then(() => {
         this.synchroniser_modules();
         this.repaint();
         this.mixer.chargement = false;
@@ -173,7 +170,7 @@ export default function (id, archive, ctx_audio) {
         </header>
         <main>
           <div v-show="!mode_importation" class="mixer" :class="mode_affichage" ref="mixer">
-            <component v-for="(module, key) in archive.modules" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
+            <component v-for="(module, key) in configuration.modules" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
           </div>
           <div v-show="mode_importation" class="ecran-importation">
             <div class="background-importation">
@@ -181,7 +178,7 @@ export default function (id, archive, ctx_audio) {
                 <header>Liste des sons</header>
                 <main>
                   <ul>
-                    <li v-for="item in configuration.sons">{{ item }}</li>
+                    <li v-for="item in globales.sons">{{ item }}</li>
                   </ul>
                   <div class="importation">
                     <h3>Importation</h3>
