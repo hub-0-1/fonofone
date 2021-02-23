@@ -95,7 +95,7 @@ export default function (id, archive, ctx_audio) {
           this.base64_a_blob(this.configuration.fichier).then((blob) => {
             return this.mixer.charger(blob)
           }).then(() => { 
-            resolve(true) 
+            resolve(this.configuration);
           });
         });
       },
@@ -119,11 +119,14 @@ export default function (id, archive, ctx_audio) {
       crop: function () {
 
       },
+      // TODO Mettre watchers
       toggle_loop: function () {
         this.configuration.parametres.loop = !this.configuration.parametres.loop;
+        this.mixer.set_loop(this.configuration.parametres.loop);
       },
       toggle_sens: function () {
         this.configuration.parametres.sens *= -1;
+        this.mixer.set_sens(this.configuration.parametres.sens);
       },
       jouer: function () {
         this.mixer.jouer();
@@ -142,7 +145,10 @@ export default function (id, archive, ctx_audio) {
       }
 
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
-      this.importer(this.archive).then(() => {
+
+      this.importer(this.archive).then((configuration) => {
+        this.mixer.set_loop(configuration.parametres.loop);
+        this.mixer.set_sens(configuration.parametres.sens);
         this.synchroniser_modules();
         this.repaint();
         this.mixer.chargement = false;

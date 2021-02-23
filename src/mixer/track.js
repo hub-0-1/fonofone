@@ -12,7 +12,7 @@ class Track {
     source.buffer = audio_buffer;
     source.connect(enveloppe);
     enveloppe.connect(noeud_audio);
-    source.playbackRate.setValueAtTime(parametres.vitesse, context.currentTime);
+    source.playbackRate.setValueAtTime(parametres.vitesse * parametres.sens, context.currentTime);
 
     // Enveloppe
     enveloppe.gain.setValueAtTime         (0, now);

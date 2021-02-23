@@ -78,6 +78,12 @@ class Mixer {
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.lowpass_filter, this.parametres);
     this.tracks.push(track);
     track.source.onended = () => { this.tracks.splice(this.tracks.indexOf(track), 1); }
+
+    // Loop
+    if(this.parametres.loop) setTimeout(this.jouer.bind(this), this.parametres.longueur * 1000);
+
+    // TODO gestion du metronome
+    // TODO partir la loop onended
   }
 
   set_volume (valeur) {
@@ -87,9 +93,7 @@ class Mixer {
 
   set_vitesse (valeur) {
     this.parametres.vitesse = valeur;
-    _.each(this.tracks, (track) => {
-      track.source.playbackRate.setValueAtTime(this.parametres.vitesse, this.ctx_audio.currentTime);
-    });
+    this.update_tracks();
   }
 
   set_selecteur (valeur) {
@@ -131,6 +135,21 @@ class Mixer {
     }
 
     this.nodes.bandpass_filter.gain.value = resonnance * 36;
+  }
+
+  set_loop (valeur) {
+    this.parametres.loop = valeur;
+  }
+
+  set_sens (valeur) {
+    this.parametres.sens = valeur;
+    this.update_tracks();
+  }
+
+  update_tracks () {
+    _.each(this.tracks, (track) => {
+      track.source.playbackRate.setValueAtTime(this.parametres.vitesse * this.parametres.sens, this.ctx_audio.currentTime);
+    });
   }
 
   enregistrer () {
