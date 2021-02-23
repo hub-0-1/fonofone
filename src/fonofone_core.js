@@ -39,7 +39,7 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
-export default function (id, configuration, ctx_audio) {
+export default function (id, archive, ctx_audio) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
@@ -53,7 +53,8 @@ export default function (id, configuration, ctx_audio) {
       "vitesse": Vitesse
     },
     data: {
-      id, configuration, ctx_audio,
+      id, archive, ctx_audio,
+      configuration: {},
       globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
@@ -141,7 +142,7 @@ export default function (id, configuration, ctx_audio) {
       }
 
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
-      this.importer(this.configuration).then(() => {
+      this.importer(this.archive).then(() => {
         this.synchroniser_modules();
         this.repaint();
         this.mixer.chargement = false;
