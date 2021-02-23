@@ -29,6 +29,10 @@ import Configuration from './configuration.js';
 import Record from './images/record.svg';
 import Folder from './images/icon-folder.svg';
 import Fleche from './images/arrow.svg';
+import Jouer from './images/jouer.svg';
+import Loop from './images/loop.svg';
+import Sens from './images/fleche-sens.svg';
+import Crop from './images/crop.svg';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -51,7 +55,6 @@ export default function (id, archive, ctx_audio) {
     data: {
       id, archive, ctx_audio,
       configuration: Configuration,
-      fichier_audio: null, // TODO inutile, enlever ca
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
       mixer: null,
@@ -114,6 +117,18 @@ export default function (id, archive, ctx_audio) {
           evt.initUIEvent('resize', true, false,window,0);
           window.dispatchEvent(evt);
         }, 0);
+      },
+      crop: function () {
+
+      },
+      toggle_loop: function () {
+
+      },
+      toggle_sens: function () {
+
+      },
+      jouer: function () {
+        this.mixer.jouer();
       }
     },
     computed: {
@@ -150,11 +165,15 @@ export default function (id, archive, ctx_audio) {
           <div :id="waveform_id" class="wavesurfer"></div>
           <div class="menu">
             <bouton src="${Record}" @click.native="enregistrer"></bouton>
+            <bouton src="${Jouer}" @click.native="jouer"></bouton>
+            <bouton src="${Loop}" @click.native="toggle_loop"></bouton>
+            <bouton src="${Sens}" @click.native="toggle_sens"></bouton>
+            <bouton src="${Crop}" @click.native="crop"></bouton>
           </div>
         </header>
         <main>
           <div v-show="!mode_importation" class="mixer" :class="mode_affichage" ref="mixer">
-            <component v-for="(module, key) in archive.config" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
+            <component v-for="(module, key) in archive.modules" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
           </div>
           <div v-show="mode_importation" class="ecran-importation">
             <div class="background-importation">

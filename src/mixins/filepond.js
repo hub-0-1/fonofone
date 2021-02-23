@@ -11,7 +11,7 @@ export default {
         credits: false
       });
 
-      filepond.labelIdle = this.$t("filepond.idle");
+//      filepond.labelIdle = this.$t("filepond.idle");
 
 
       this.$refs.filepond.appendChild(this.outils.filepond.element);
