@@ -66,7 +66,7 @@ export default function (id, archive, ctx_audio) {
     i18n,
     methods: {
       enregistrer: function () {
-        throw "TODO";
+        this.mixer.enregistrer()
       },
       exporter: function () {
         this.serialiser().then((archive) => { 

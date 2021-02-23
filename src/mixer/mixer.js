@@ -158,7 +158,18 @@ class Mixer {
   }
 
   enregistrer () {
-    // TODO https://stackoverflow.com/questions/21234902/record-sound-of-a-webaudio-apis-audio-context
+    // https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioSourceNode
+    let chunks = [];
+    let mediaRecorder = new MediaRecorder(this.nodes.master);
+
+    mediaRecorder.ondataavailable = function(e) { chunks.push(e.data); };
+
+    mediaRecorder.onstop = function () { 
+      var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus'  });
+      var audioURL = URL.createObjectURL(blob);
+      console.log(audioURL);
+    }
+
   }
 }
 
