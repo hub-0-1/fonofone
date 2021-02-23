@@ -117,7 +117,7 @@ export default function (id, archive, ctx_audio) {
         }, 0);
       },
       crop: function () {
-
+        this.mixer.crop();
       },
       // TODO Mettre watchers
       toggle_loop: function () {

@@ -146,6 +146,11 @@ class Mixer {
     this.update_tracks();
   }
 
+  crop () {
+    this.audio_buffer = crop_audio_buffer(this.ctx_audio, this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur, null);
+    this.wavesurfer.loadDecodedBuffer(this.audio_buffer);
+  }
+
   update_tracks () {
     _.each(this.tracks, (track) => {
       track.source.playbackRate.setValueAtTime(this.parametres.vitesse * this.parametres.sens, this.ctx_audio.currentTime);
@@ -158,3 +163,25 @@ class Mixer {
 }
 
 export default Mixer;
+
+// https://miguelmota.com/bytes/slice-audiobuffer/
+function crop_audio_buffer(ctx_audio, buffer, begin, end) {
+
+  let channels = buffer.numberOfChannels;
+  let rate = buffer.sampleRate;
+
+  let startOffset = rate * begin;
+  let endOffset = rate * end;
+  let frameCount = endOffset - startOffset;
+
+  let newArrayBuffer = ctx_audio.createBuffer(channels, endOffset - startOffset, rate);
+  var anotherArray = new Float32Array(frameCount);
+  var offset = 0;
+
+  for (var channel = 0; channel < channels; channel++) {
+    buffer.copyFromChannel(anotherArray, channel, startOffset);
+    newArrayBuffer.copyToChannel(anotherArray, channel, offset);
+  }
+
+  return newArrayBuffer;
+}
