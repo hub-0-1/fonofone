@@ -118,6 +118,10 @@ export default function (id, archive, ctx_audio) {
       },
       crop: function () {
         this.mixer.crop();
+        this.configuration.modules.selecteur.valeur = {
+          debut: 0,
+          longueur: 1
+        };
       },
       // TODO Mettre watchers
       toggle_loop: function () {
