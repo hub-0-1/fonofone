@@ -1,22 +1,28 @@
 import Utils from "./_utils.js";
 
 const hauteur_controlleur = 0.1;
+const largeur_controlleur = 0.2;
 
 export default {
   mixins: [Utils],
   data: function () {
-    return { volume: this.valeur }
+    return { volume: this.valeur.volume, pan: this.valeur.pan };
   },
   methods: {
     drag: function (e) {
-      this.volume = this.borner_0_1(1 - this.get_mouse_position(e).y);
+      let coords = this.get_mouse_position(e);
+      this.volume = this.borner_0_1(1 - coords.y);
+      this.pan = this.borner_0_1(coords.x);
       this.update();
     },
     update: function () {
-      this.$emit('update:valeur', this.volume);
+      this.$emit('update:valeur', { volume: this.volume, pan: this.pan });
     }
   },
   computed: {
+    x: function () {
+      return this.pan * (1 - largeur_controlleur);
+    },
     y: function () {
       return 1 - (this.volume * (1 - hauteur_controlleur) + hauteur_controlleur);
     }
@@ -26,7 +32,7 @@ export default {
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
         <rect class="centre" x="0.49" width="0.02" y="0" height="1"/>
-        <rect class="controlleur" x="0.4" width="0.2" :y="y" height="${hauteur_controlleur}" rx="0.02" ref="controlleur"/>
+        <rect class="controlleur" :x="x" width="${largeur_controlleur}" :y="y" height="${hauteur_controlleur}" rx="0.02" ref="controlleur"/>
       </svg>
     </generique>
   `

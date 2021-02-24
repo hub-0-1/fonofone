@@ -87,8 +87,13 @@ class Mixer {
   }
 
   set_volume (valeur) {
-    this.parametres.volume = valeur;
+    console.log(valeur);
+    // Volume
+    this.parametres.volume = valeur.volume;
     this.nodes.master.gain.setValueAtTime(valeur, this.ctx_audio.currentTime);
+
+    // Pan
+    this.parametres.pan = valeur.pan;
   }
 
   set_vitesse (valeur) {
