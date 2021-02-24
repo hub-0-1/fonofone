@@ -31,7 +31,13 @@ export default {
     <generique :module="$t('modules.volume')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
-        <rect class="centre" x="0.49" width="0.02" y="0" height="1"/>
+        <rect class="ligne" x="0.125" width="0.005" y="0" height="1"/>
+        <rect class="ligne" x="0.25" width="0.005" y="0" height="1"/>
+        <rect class="ligne" x="0.375" width="0.005" y="0" height="1"/>
+        <rect class="centre" x="0.495" width="0.01" y="0" height="1"/>
+        <rect class="ligne" x="0.625" width="0.005" y="0" height="1"/>
+        <rect class="ligne" x="0.75" width="0.005" y="0" height="1"/>
+        <rect class="ligne" x="0.875" width="0.005" y="0" height="1"/>
         <rect class="controlleur" :x="x" width="${largeur_controlleur}" :y="y" height="${hauteur_controlleur}" rx="0.02" ref="controlleur"/>
       </svg>
     </generique>

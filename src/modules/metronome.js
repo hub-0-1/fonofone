@@ -6,7 +6,7 @@ const centre_cercle = { x: 0.5, y: 0.4 };
 export default {
   mixins: [Utils],
   data: function () {
-    return { metronome: this.valeur.metronome, haut: this.valeur.haut } // TODO nommer le 2e parametre
+    return { aleatoire: this.valeur.aleatoire, bpm: this.valeur.bpm } // TODO nommer le 2e parametre
   },
   methods: {
     drag: function (e) {
@@ -14,7 +14,7 @@ export default {
 
       // Potentimetre horizontal
       if(this.controlleur_actif == this.$refs.controlleur_2) {
-        this.metronome = this.borner_0_1(coords.x);
+        this.aleatoire = this.borner_0_1(coords.x);
       }
       // Potentimetre rotatif
       else {
@@ -31,7 +31,7 @@ export default {
         let segment_arc = angle / (taille_arc / 2);
 
         // Projeter sur l'interval [0..1]
-        this.haut = (segment_arc / 2) + 0.5;
+        this.bpm = (segment_arc / 2) + 0.5;
         this.update_position_point_arc();
       }
       this.update();
@@ -40,17 +40,17 @@ export default {
     update_position_point_arc: function () {
       // Deplacement du point : https://bl.ocks.org/mbostock/1705868
       let arc = this.$refs.arc;
-      let point = arc.getPointAtLength(arc.getTotalLength() * (1 - this.haut));
+      let point = arc.getPointAtLength(arc.getTotalLength() * (1 - this.bpm));
       this.$refs.controlleur_1.setAttribute('cx', point.x);
       this.$refs.controlleur_1.setAttribute('cy', point.y);
     },
     update: function () {
-      this.$emit('update:valeur', { metronome: this.metronome, haut: this.haut });
+      this.$emit('update:valeur', { aleatoire: this.aleatoire, bpm: this.bpm });
     }
   },
   computed: {
     x_controlleur_2: function () {
-      return Math.min(Math.max(this.metronome, 0.05), 0.85)
+      return Math.min(Math.max(this.aleatoire, 0.05), 0.85)
     }
   },
   mounted: function () {
@@ -64,7 +64,7 @@ export default {
         <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.1"/>
         <path d="${describeArc(0.5, 0.4, 0.3, (taille_arc / -2), (taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-1" r="0.02" ref="controlleur_1"/>
-        <rect class="ligne-2" x="0.2" width="0.6" y="0.8" height="0.01" rx="0.02"/>
+        <rect class="ligne-2" x="0" width="1" y="0.8" height="0.01" rx="0.02"/>
         <rect class="controlleur-2" :x="x_controlleur_2" width="0.05" y="0.7" height="0.2" rx="0.02" ref="controlleur_2"/>
       </svg>
     </generique>

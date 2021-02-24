@@ -3,6 +3,9 @@ import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 
 import Track from "./track.js";
 
+const min_bpm = 24;
+const max_bpm = 375;
+
 // TODO un seul audio context pour tous les fonofones : https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelMerger
 // ou un audio context par fonofone si pas fonoimage
 class Mixer {
@@ -24,6 +27,7 @@ class Mixer {
     });
 
     // Initialisation
+    this.nodes.pan = this.ctx_audio.createStereoPanner();
 
     // Reverb
     // TODO Wet / dry
@@ -46,7 +50,8 @@ class Mixer {
     this.nodes.master = this.ctx_audio.createGain();
 
     // Appliquer les filtres
-    this.nodes.convolver.connect(this.nodes.lowpass_filter);
+    this.nodes.pan.connect(this.nodes.lowpass_filter); // Connecter dans convolver
+    //this.nodes.convolver.connect(this.nodes.lowpass_filter);
     this.nodes.lowpass_filter.connect(this.nodes.highpass_filter);
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
     this.nodes.bandpass_filter.connect(this.nodes.master);
@@ -74,26 +79,31 @@ class Mixer {
     if(this.chargement) return;
 
     // Creer et supprimer la track
-    // TODO passer convolver au lieu de lowpass
-    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.lowpass_filter, this.parametres);
+    // TODO passer convolver au lieu de pan
+    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
     this.tracks.push(track);
     track.source.onended = () => { this.tracks.splice(this.tracks.indexOf(track), 1); }
 
     // Loop
-    if(this.parametres.loop) setTimeout(this.jouer.bind(this), this.parametres.longueur * 1000);
-
-    // TODO gestion du metronome
+    if(!this.parametres.loop) return;
+    if(this.parametres.bpm > 0) {
+      setTimeout(this.jouer.bind(this), (60 / this.parametres.bpm) * 1000);
+    }
+    else {
+      setTimeout(this.jouer.bind(this), this.parametres.longueur * 1000);
+    }
     // TODO partir la loop onended
   }
 
   set_volume (valeur) {
-    console.log(valeur);
+
     // Volume
     this.parametres.volume = valeur.volume;
-    this.nodes.master.gain.setValueAtTime(valeur, this.ctx_audio.currentTime);
+    this.nodes.master.gain.setValueAtTime(valeur.volume, this.ctx_audio.currentTime);
 
     // Pan
-    this.parametres.pan = valeur.pan;
+    this.parametres.pan = (valeur.pan - 0.5) * 2; // Projection sur l'interval [-1, 1]
+    this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
   }
 
   set_vitesse (valeur) {
@@ -112,6 +122,12 @@ class Mixer {
 
   set_metronome (valeur) {
     console.log("metronome", valeur);
+    if(valeur.haut == 0) {
+      this.parametres.bpm = 0;
+    }
+    else {
+      this.parametres.bpm = valeur.haut * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bmp, max_bpm]
+    }
   }
 
   set_reverberation (valeur) {
