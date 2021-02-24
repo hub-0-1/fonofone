@@ -5,6 +5,7 @@ import Track from "./track.js";
 
 const min_bpm = 24;
 const max_bpm = 375;
+const pct_bpm_aleatoire = 0.6;
 
 // TODO un seul audio context pour tous les fonofones : https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelMerger
 // ou un audio context par fonofone si pas fonoimage
@@ -75,6 +76,7 @@ class Mixer {
   }
 
   jouer () {
+    console.log('jouer');
     // Ne pas jouer au chargement
     if(this.chargement) return;
 
@@ -87,12 +89,12 @@ class Mixer {
     // Loop
     if(!this.parametres.loop) return;
     if(this.parametres.bpm > 0) {
-      setTimeout(this.jouer.bind(this), (60 / this.parametres.bpm) * 1000);
+      setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000);
     }
     else {
+      // TODO partir la loop onended
       setTimeout(this.jouer.bind(this), this.parametres.longueur * 1000);
     }
-    // TODO partir la loop onended
   }
 
   set_volume (valeur) {
@@ -121,12 +123,16 @@ class Mixer {
   }
 
   set_metronome (valeur) {
-    console.log("metronome", valeur);
-    if(valeur.haut == 0) {
+
+    // Rythme aleatoire
+    this.parametres.aleatoire = valeur.aleatoire * Math.random() * pct_bpm_aleatoire;
+
+    // BPM
+    if(valeur.bpm == 0) {
       this.parametres.bpm = 0;
     }
     else {
-      this.parametres.bpm = valeur.haut * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bmp, max_bpm]
+      this.parametres.bpm = valeur.bpm * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bmp, max_bpm]
     }
   }
 

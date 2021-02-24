@@ -2,6 +2,7 @@ import Utils from "./_utils.js";
 
 const taille_arc = 270;
 const centre_cercle = { x: 0.5, y: 0.4 };
+const largeur_controlleur_2 = 0.05;
 
 export default {
   mixins: [Utils],
@@ -50,7 +51,7 @@ export default {
   },
   computed: {
     x_controlleur_2: function () {
-      return Math.min(Math.max(this.aleatoire, 0.05), 0.85)
+      return this.aleatoire * (1 - largeur_controlleur_2);
     }
   },
   mounted: function () {
@@ -65,7 +66,7 @@ export default {
         <path d="${describeArc(0.5, 0.4, 0.3, (taille_arc / -2), (taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-1" r="0.02" ref="controlleur_1"/>
         <rect class="ligne-2" x="0" width="1" y="0.8" height="0.01" rx="0.02"/>
-        <rect class="controlleur-2" :x="x_controlleur_2" width="0.05" y="0.7" height="0.2" rx="0.02" ref="controlleur_2"/>
+        <rect class="controlleur-2" :x="x_controlleur_2" width="${largeur_controlleur_2}" y="0.7" height="0.2" rx="0.02" ref="controlleur_2"/>
       </svg>
     </generique>
   `
