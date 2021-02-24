@@ -1,5 +1,7 @@
 import Utils from "./_utils.js";
+import Magnet from "../images/icon-magnet.svg";
 
+const nb_division = 3;
 const taille_arc = 270;
 const centre_cercle = { x: 0.5, y: 0.4 };
 const largeur_controlleur_2 = 0.05;
@@ -7,7 +9,11 @@ const largeur_controlleur_2 = 0.05;
 export default {
   mixins: [Utils],
   data: function () {
-    return { aleatoire: this.valeur.aleatoire, bpm: this.valeur.bpm } // TODO nommer le 2e parametre
+    return { 
+      aleatoire: this.valeur.aleatoire,
+      bpm: this.valeur.bpm,
+      aimant: false
+    }
   },
   methods: {
     drag: function (e) {
@@ -68,6 +74,10 @@ export default {
         <rect class="ligne-2" x="0" width="1" y="0.8" height="0.01" rx="0.02"/>
         <rect class="controlleur-2" :x="x_controlleur_2" width="${largeur_controlleur_2}" y="0.7" height="0.2" rx="0.02" ref="controlleur_2"/>
       </svg>
+
+      <template v-slot:footer>
+        <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
+      </template>
     </generique>
   `
 };

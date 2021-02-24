@@ -1,12 +1,18 @@
 import Utils from "./_utils.js";
+import Magnet from "../images/icon-magnet.svg";
 
 const hauteur_controlleur = 0.1;
-const largeur_controlleur = 0.2;
+const largeur_controlleur = 0.1;
+const nb_division = 8;
 
 export default {
   mixins: [Utils],
   data: function () {
-    return { volume: this.valeur.volume, pan: this.valeur.pan };
+    return { 
+      volume: this.valeur.volume,
+      pan: this.valeur.pan,
+      aimant: false
+    };
   },
   methods: {
     drag: function (e) {
@@ -21,7 +27,11 @@ export default {
   },
   computed: {
     x: function () {
-      return this.pan * (1 - largeur_controlleur);
+      let pos_init = this.pan;
+      if(this.aimant) {
+        pos_init = Math.round(pos_init / (1 / nb_division)) * (1 / nb_division);
+      }
+      return pos_init * (1 - largeur_controlleur);
     },
     y: function () {
       return 1 - (this.volume * (1 - hauteur_controlleur) + hauteur_controlleur);
@@ -40,6 +50,10 @@ export default {
         <rect class="ligne" x="0.875" width="0.005" y="0" height="1"/>
         <rect class="controlleur" :x="x" width="${largeur_controlleur}" :y="y" height="${hauteur_controlleur}" rx="0.02" ref="controlleur"/>
       </svg>
+
+      <template v-slot:footer>
+        <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
+      </template>
     </generique>
   `
 };
