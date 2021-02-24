@@ -3,6 +3,8 @@ import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 
 import Track from "./track.js";
 
+import Impulse from "../donnees/impulse.wav";
+
 const min_bpm = 24;
 const max_bpm = 375;
 const pct_bpm_aleatoire = 0.6;
@@ -143,7 +145,7 @@ class Mixer {
     }
   }
 
-  set_reverberation (valeur) {
+  async set_reverberation (valeur) {
     console.log("reverberation", valeur);
     this.parametres.convolver_dry = valeur.dry;
 
@@ -152,9 +154,9 @@ class Mixer {
 
     // TODO mettre les .wav dans le dossier
     //load impulse response from file
-    //let response     = await fetch("path/to/impulse-response.wav");
-    //let arraybuffer  = await response.arrayBuffer();
-    //convolver.buffer = await audioCtx.decodeAudioData(arraybuffer);
+    let response     = await fetch(Impulse);
+    let arraybuffer  = await response.arrayBuffer();
+    convolver.buffer = await audioCtx.decodeAudioData(arraybuffer);
   }
 
   set_filtre (valeur) {
