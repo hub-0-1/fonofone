@@ -32,6 +32,8 @@ class Mixer {
 
     // Reverb
     // TODO Wet / dry
+    this.nodes.reverberation_dry = this.ctx_audio.createGain();
+    this.nodes.reverberation_wet = this.ctx_audio.createGain();
     this.nodes.convolver = this.ctx_audio.createConvolver();
 
     // Filtre
@@ -50,12 +52,18 @@ class Mixer {
     // Volume
     this.nodes.master = this.ctx_audio.createGain();
 
-    // Appliquer les filtres
-    this.nodes.pan.connect(this.nodes.lowpass_filter); // Connecter dans convolver
-    //this.nodes.convolver.connect(this.nodes.lowpass_filter);
+    // Appliquer les filtres //
+    this.nodes.pan.connect(this.nodes.reverberation_dry);
+    this.nodes.reverberation_dry.connect(this.nodes.lowpass_filter);
+
+    this.nodes.pan.connect(this.nodes.convolver);
+    this.nodes.convolver.connect(this.nodes.reverberation_wet);
+    this.nodes.reverberation_wet.connect(this.nodes.lowpass_filter);
+
     this.nodes.lowpass_filter.connect(this.nodes.highpass_filter);
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
     this.nodes.bandpass_filter.connect(this.nodes.master);
+
     this.nodes.master.connect(this.ctx_audio.destination);
   }
 
@@ -76,7 +84,6 @@ class Mixer {
   }
 
   jouer () {
-    console.log('jouer');
     // Ne pas jouer au chargement
     if(this.chargement) return;
 
@@ -137,8 +144,13 @@ class Mixer {
   }
 
   set_reverberation (valeur) {
-    return console.log("reverberation", valeur);
+    console.log("reverberation", valeur);
+    this.parametres.convolver_dry = valeur.dry;
 
+    this.nodes.reverberation_dry.gain.setValueAtTime(valeur.dry, this.ctx_audio.currentTime);
+    this.nodes.reverberation_wet.gain.setValueAtTime(1 - valeur.dry, this.ctx_audio.currentTime);
+
+    // TODO mettre les .wav dans le dossier
     //load impulse response from file
     //let response     = await fetch("path/to/impulse-response.wav");
     //let arraybuffer  = await response.arrayBuffer();
@@ -148,7 +160,6 @@ class Mixer {
   set_filtre (valeur) {
     let frequence = valeur.debut + valeur.longueur / 2;
     let resonnance = valeur.longueur;
-    console.log("filtre", frequence, resonnance);
 
     if(frequence < 0.5) {
       this.nodes.lowpass_filter.frequency.value = Math.pow(frequence / 0.45,2) * 19900 + 100; // Parce que c'est comme ca
