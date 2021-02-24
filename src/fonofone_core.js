@@ -165,45 +165,49 @@ export default function (id, archive, ctx_audio) {
     },
     template: `
       <div :id="id" class="fonofone" ref="fonofone">
-        <header>
-          <div class="nom-archive">
-            <bouton src="${Folder}" @click.native="mode_importation = !mode_importation"></bouton>
-            Archive
-          </div>
-          <div :id="waveform_id" class="wavesurfer"></div>
-          <div class="menu">
-            <bouton src="${Record}" @click.native="enregistrer"></bouton>
-            <bouton src="${Jouer}" @click.native="jouer"></bouton>
-            <bouton src="${Loop}" @click.native="toggle_loop"></bouton>
-            <bouton src="${Sens}" @click.native="toggle_sens"></bouton>
-            <bouton src="${Crop}" @click.native="crop"></bouton>
-          </div>
-        </header>
-        <main>
-          <div v-show="!mode_importation" class="mixer" :class="mode_affichage" ref="mixer">
-            <component v-for="(module, key) in configuration.modules" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
-          </div>
-          <div v-show="mode_importation" class="ecran-importation">
-            <div class="background-importation">
-              <div class="fenetre-importation">
-                <header>Liste des sons</header>
-                <main>
-                  <ul>
-                    <li v-for="item in globales.sons">{{ item }}</li>
-                  </ul>
-                  <div class="importation">
-                    <h3>Importation</h3>
-                    <div ref="filepond"></div>
-                  </div>
-                </main>
-                <footer>
-                  <div>Enregistrer un son</div>
-                  <button @click="exporter()">Exporter</button>
-                </footer>
+        <menu>
+          <button @click="exporter()">Exporter</button>
+        </menu>
+        <section class="app-fonofone">
+          <header>
+            <div class="nom-archive">
+              <bouton src="${Folder}" @click.native="mode_importation = !mode_importation"></bouton>
+              Archive
+            </div>
+            <div :id="waveform_id" class="wavesurfer"></div>
+            <div class="menu">
+              <bouton src="${Record}" @click.native="enregistrer"></bouton>
+              <bouton src="${Jouer}" @click.native="jouer"></bouton>
+              <bouton src="${Loop}" @click.native="toggle_loop"></bouton>
+              <bouton src="${Sens}" @click.native="toggle_sens"></bouton>
+              <bouton src="${Crop}" @click.native="crop"></bouton>
+            </div>
+          </header>
+          <main>
+            <div v-show="!mode_importation" class="mixer" :class="mode_affichage" ref="mixer">
+              <component v-for="(module, key) in configuration.modules" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
+            </div>
+            <div v-show="mode_importation" class="ecran-importation">
+              <div class="background-importation">
+                <div class="fenetre-importation">
+                  <header>Liste des sons</header>
+                  <main>
+                    <ul>
+                      <li v-for="item in globales.sons">{{ item }}</li>
+                    </ul>
+                    <div class="importation">
+                      <h3>Importation</h3>
+                      <div ref="filepond"></div>
+                    </div>
+                  </main>
+                  <footer>
+                    <div>Enregistrer un son</div>
+                  </footer>
+                </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
+        </section>
       </div>`
   });
 }
