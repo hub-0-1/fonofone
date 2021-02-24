@@ -33,7 +33,6 @@ class Mixer {
     this.nodes.pan = this.ctx_audio.createStereoPanner();
 
     // Reverb
-    // TODO Wet / dry
     this.nodes.reverberation_dry = this.ctx_audio.createGain();
     this.nodes.reverberation_wet = this.ctx_audio.createGain();
     this.nodes.convolver = this.ctx_audio.createConvolver();
@@ -90,7 +89,6 @@ class Mixer {
     if(this.chargement) return;
 
     // Creer et supprimer la track
-    // TODO passer convolver au lieu de pan
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
     this.tracks.push(track);
     track.source.onended = () => { this.tracks.splice(this.tracks.indexOf(track), 1); }
@@ -154,9 +152,9 @@ class Mixer {
 
     // TODO mettre les .wav dans le dossier
     //load impulse response from file
-    let response     = await fetch(Impulse);
+    let response     = await fetch("https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav");
     let arraybuffer  = await response.arrayBuffer();
-    convolver.buffer = await audioCtx.decodeAudioData(arraybuffer);
+    this.nodes.convolver.buffer = await this.ctx_audio.decodeAudioData(arraybuffer);
   }
 
   set_filtre (valeur) {
