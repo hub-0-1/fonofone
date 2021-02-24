@@ -2,11 +2,15 @@ import Utils from "./_utils.js";
 import Magnet from "../images/icon-magnet.svg";
 
 const largeur_vitesse = 0.1;
+const nb_division = 4;
 
 export default {
   mixins: [Utils],
   data: function () {
-    return { vitesse: this.valeur }
+    return { 
+      vitesse: this.valeur,
+      aimant: false
+    }
   },
   methods: {
     drag: function (e) {
@@ -19,7 +23,11 @@ export default {
   },
   computed: {
     x: function () {
-      return this.vitesse * (1 - largeur_vitesse);
+      let pos_init = this.vitesse;
+      if(this.aimant) {
+        pos_init = Math.round(pos_init / (1 / nb_division)) * (1 / nb_division);
+      }
+      return pos_init * (1 - largeur_vitesse);
     }
   },
   template: `
@@ -31,7 +39,7 @@ export default {
       </svg>
 
       <template v-slot:footer>
-        <img class="magnet" src="${Magnet}" alt="${Magnet}">
+        <img class="magnet" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
       </template>
     </generique>
   `
