@@ -28,6 +28,11 @@
     background-color: @noir;
     display: flex;
     justify-content: right;
+    padding: 2px;
+
+    img {
+      filter: invert(1);
+    }
   }
 
   .app-fonofone {
@@ -122,21 +127,21 @@
         }
       }
     }
+  }
 
-    .bouton-controlleur {
-      padding: 0;
-      margin: 0;
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
+  .bouton-controlleur {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
 
-      img {
-        height: 20px;
-      }
+    img {
+      height: 20px;
+    }
 
-      &.actif {
-        box-shadow: 1px 1px white;
-      }
+    &.actif {
+      box-shadow: 1px 1px white;
     }
   }
 }

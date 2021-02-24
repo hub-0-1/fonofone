@@ -33,6 +33,8 @@ import Jouer from './images/jouer.svg';
 import Loop from './images/loop.svg';
 import Sens from './images/fleche-sens.svg';
 import Crop from './images/crop.svg';
+import Export from './images/export.svg';
+import Import from './images/import.svg';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -166,7 +168,8 @@ export default function (id, archive, ctx_audio) {
     template: `
       <div :id="id" class="fonofone" ref="fonofone">
         <menu>
-          <button @click="exporter()">Exporter</button>
+          <bouton src="${Import}" @click.native="mode_importation = !mode_importation"></bouton>
+          <bouton src="${Export}" @click.native="exporter"></bouton>
         </menu>
         <section class="app-fonofone">
           <header>

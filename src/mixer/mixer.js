@@ -30,7 +30,7 @@ class Mixer {
     });
 
     // Initialisation
-    this.nodes.pan = this.ctx_audio.createStereoPanner();
+    this.nodes.pan = this.ctx_audio.createStereoPanner(); // TODO Alex : n'existe pas sous safari ...
 
     // Reverb
     this.nodes.reverberation_dry = this.ctx_audio.createGain();
