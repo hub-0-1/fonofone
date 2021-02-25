@@ -113,7 +113,7 @@ class Mixer {
     this.nodes.master.gain.setValueAtTime(valeur.volume, this.ctx_audio.currentTime);
 
     // Pan
-    this.parametres.pan = (valeur.pan - 0.5) * 2; // Projection sur l'interval [-1, 1]
+    this.parametres.pan = (valeur.pan - 0.5) * 2 * -1; // Projection sur l'interval [-1, 1]. -1 inverse le pan pour le ramener
     this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
   }
 
