@@ -30,6 +30,10 @@ class Mixer {
     });
 
     // Initialisation
+    this.nodes.n0 = this.ctx_audio.createGain();
+    
+    // Pan
+    if(typeof this.ctx_audio.createStereoPanner == "function")
     this.nodes.pan = this.ctx_audio.createStereoPanner(); // TODO Alex : n'existe pas sous safari ...
 
     // Reverb
@@ -54,11 +58,17 @@ class Mixer {
     this.nodes.master = this.ctx_audio.createGain();
 
     // Appliquer les filtres //
+    if(this.nodes.pan) { // Pour safari
+      this.nodes.n0.connect(this.nodes.pan);
+      this.nodes.pan.connect(this.nodes.reverberation_dry);
+      this.nodes.pan.connect(this.nodes.reverberation_wet);
+    }
+    else {
+      this.nodes.n0.connect(this.nodes.reverberation_dry);
+      this.nodes.n0.connect(this.nodes.reverberation_wet);
+    }
 
-    this.nodes.pan.connect(this.nodes.reverberation_dry);
     this.nodes.reverberation_dry.connect(this.nodes.lowpass_filter);
-
-    this.nodes.pan.connect(this.nodes.reverberation_wet);
     this.nodes.reverberation_wet.connect(this.nodes.convolver);
     this.nodes.convolver.connect(this.nodes.lowpass_filter);
 
@@ -80,7 +90,7 @@ class Mixer {
           this.audio_buffer = audio_buffer;
           resolve(true);
         }).catch(() => {
-          reject("erreur importation");
+          reject("erreur importation"); // TODO marche pas dans safari
         });
     });
   }
@@ -91,10 +101,9 @@ class Mixer {
     if(this.chargement) return;
 
     // Creer et supprimer la track
-    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
+    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.n0, this.parametres);
     this.tracks.push(track);
     track.source.onended = () => { 
-      console.log("ended");
       this.tracks.splice(this.tracks.indexOf(track), 1); 
 
       // Loop sans metronome
@@ -116,7 +125,7 @@ class Mixer {
     this.nodes.master.gain.setValueAtTime(valeur.volume, this.ctx_audio.currentTime);
 
     // Pan
-    this.parametres.pan = (valeur.pan - 0.5) * 2 * -1; // Projection sur l'interval [-1, 1]. -1 inverse le pan pour le ramener
+    this.parametres.pan = (valeur.pan - 0.5) * 2; // Projection sur l'interval [-1, 1]
     this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
   }
 

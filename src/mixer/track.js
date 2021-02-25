@@ -8,9 +8,9 @@ export default class Track {
     let source = this.source = context.createBufferSource();
     let enveloppe = context.createGain();
     let now = context.currentTime;
-    console.log(context.state);
 
     source.buffer = audio_buffer;
+    source.connect(noeud_audio);
 
     // Enveloppe
     source.connect(enveloppe);
@@ -24,7 +24,6 @@ export default class Track {
     source.playbackRate.setValueAtTime(parametres.vitesse * parametres.sens, context.currentTime);
 
     // Lancer
-    //source.start(context.currentTime, parametres.debut, attack + parametres.longueur + release);
-    source.start();
+    source.start(context.currentTime, parametres.debut, attack + parametres.longueur + release);
   }
 }

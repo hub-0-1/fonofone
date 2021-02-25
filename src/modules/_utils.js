@@ -23,7 +23,7 @@ export default {
     start_drag: function (e) {
       this.controlleur_actif = e.target;
       this.$el.addEventListener('mousemove', this.drag);
-      this.$el.addEventListener('touchmove', this.drag);
+      this.$el.addEventListener('touchmove', this.drag, { passive: true });
       this.is_dragging = true;
     },
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
