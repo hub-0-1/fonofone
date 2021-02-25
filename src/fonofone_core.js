@@ -138,6 +138,17 @@ export default function (id, archive, ctx_audio) {
         this.ctx_audio.resume().then(() => {
           this.mixer.jouer();
         });
+      },
+      charger_son: function (son) {
+        fetch(son.url, { mode: 'cors' }).then((response) => {
+          return response.blob();
+        }).then((blob) => {
+          return this.mixer.charger(blob);
+        }).then(() => {
+          this.mode_importation = false;
+        }).catch((e) => {
+          throw e;
+        });
       }
     },
     computed: {
@@ -148,9 +159,9 @@ export default function (id, archive, ctx_audio) {
       // Initialisation de Filepond par les mixins
 
       // Mode affichage
-      if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
+      /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
         this.mode_affichage = "grille";
-      }
+      }*/
 
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
 
@@ -197,19 +208,15 @@ export default function (id, archive, ctx_audio) {
         <div v-show="mode_importation" class="ecran-importation">
           <div class="background-importation">
             <div class="fenetre-importation">
-              <header>Liste des sons</header>
+              <h3>Liste des sons</h3>
               <main>
                 <ul>
-                  <li v-for="item in globales.sons">{{ item }}</li>
+                  <li v-for="son in globales.sons" @click="charger_son(son)">{{ son.nom }}</li>
                 </ul>
-                <div class="importation">
-                  <h3>Importation</h3>
-                  <div ref="filepond"></div>
-                </div>
+                <h3>Importation</h3>
+                <div ref="filepond"></div>
               </main>
-              <footer>
-                <div>Enregistrer un son</div>
-              </footer>
+              <h3>Enregistrer un son</h3>
             </div>
           </div>
         </div>
