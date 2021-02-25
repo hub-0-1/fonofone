@@ -11,7 +11,7 @@ export default {
   props: ['valeur', 'disposition', 'modifiable'],
   components: { "generique": Generique },
   data: function () {
-    return { is_dragging: false, controlleur_actif: null, module_actif: (this.valeur.actif || false) };
+    return { is_dragging: false, controlleur_actif: null, module_actif: (this.valeur.actif || true) };
   },
   methods: {
     borner_0_1: function (valeur) {
@@ -57,6 +57,10 @@ export default {
       this.$el.removeEventListener('touchmove', this.drag);
       this.controlleur_actif = null;
       this.is_dragging = false;
+    },
+    toggle_actif: function () {
+      this.module_actif = !this.module_actif;
+      this.update();
     }
   },
   mounted: function () {

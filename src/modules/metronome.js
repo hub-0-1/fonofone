@@ -1,5 +1,7 @@
 import Utils from "./_utils.js";
+
 import Magnet from "../images/icon-magnet.svg";
+import Power from "../images/icon-power.svg";
 
 const nb_division = 3;
 const taille_arc = 270;
@@ -38,7 +40,7 @@ export default {
         let segment_arc = angle / (taille_arc / 2);
 
         // Projeter sur l'interval [0..1]
-        this.bpm = (segment_arc / 2) + 0.5;
+        this.bpm = (segment_arc / 2) + 0.5; // TODO peut retourner des valeurs negatives ... ne devrait pas
         this.update_position_point_arc();
       }
       this.update();
@@ -52,7 +54,7 @@ export default {
       this.$refs.controlleur_1.setAttribute('cy', point.y);
     },
     update: function () {
-      this.$emit('update:valeur', { actif: this.actif, aleatoire: this.aleatoire, bpm: this.bpm });
+      this.$emit('update:valeur', { actif: this.module_actif, aleatoire: this.aleatoire, bpm: this.bpm });
     }
   },
   computed: {
@@ -76,6 +78,7 @@ export default {
       </svg>
 
       <template v-slot:footer>
+        <img class="power" src="${Power}" alt="${Power}" @click="toggle_actif">
         <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
       </template>
     </generique>

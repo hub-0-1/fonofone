@@ -3,7 +3,6 @@ import VueDraggableResizable from 'vue-draggable-resizable'; // https://github.c
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 
 import Disposition from "./mixins/disposition.js";
-import Power from "../images/icon-power.svg";
 
 export default {
   props: ['module'],
@@ -16,10 +15,7 @@ export default {
           <slot></slot>
         </main>
         <footer>
-          <img class="power" src="${Power}" alt="${Power}">
-          <div class="menu-droite">
-            <slot name="footer"></slot>
-          </div>
+          <slot name="footer"></slot>
         </footer>
     </vue-draggable-resizable>
   `
