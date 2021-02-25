@@ -173,7 +173,7 @@ export default function (id, archive, ctx_audio) {
           <bouton src="${Import}" @click.native="mode_importation = !mode_importation"></bouton>
           <bouton src="${Export}" @click.native="exporter"></bouton>
         </menu>
-        <section class="app-fonofone">
+        <section v-show="!mode_importation" class="app-fonofone">
           <header>
             <div class="nom-archive">
               <bouton src="${Folder}" @click.native="mode_importation = !mode_importation"></bouton>
@@ -189,30 +189,30 @@ export default function (id, archive, ctx_audio) {
             </div>
           </header>
           <main>
-            <div v-show="!mode_importation" class="mixer" :class="mode_affichage" ref="mixer">
+            <div class="mixer" :class="mode_affichage" ref="mixer">
               <component v-for="(module, key) in configuration.modules" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
-            </div>
-            <div v-show="mode_importation" class="ecran-importation">
-              <div class="background-importation">
-                <div class="fenetre-importation">
-                  <header>Liste des sons</header>
-                  <main>
-                    <ul>
-                      <li v-for="item in globales.sons">{{ item }}</li>
-                    </ul>
-                    <div class="importation">
-                      <h3>Importation</h3>
-                      <div ref="filepond"></div>
-                    </div>
-                  </main>
-                  <footer>
-                    <div>Enregistrer un son</div>
-                  </footer>
-                </div>
-              </div>
             </div>
           </main>
         </section>
+        <div v-show="mode_importation" class="ecran-importation">
+          <div class="background-importation">
+            <div class="fenetre-importation">
+              <header>Liste des sons</header>
+              <main>
+                <ul>
+                  <li v-for="item in globales.sons">{{ item }}</li>
+                </ul>
+                <div class="importation">
+                  <h3>Importation</h3>
+                  <div ref="filepond"></div>
+                </div>
+              </main>
+              <footer>
+                <div>Enregistrer un son</div>
+              </footer>
+            </div>
+          </div>
+        </div>
       </div>`
   });
 }

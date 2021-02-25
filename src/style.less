@@ -36,6 +36,66 @@
     }
   }
 
+  .ecran-importation {
+    position: relative;
+    margin: 10px;
+    height: calc(100% - 40px); // margin-top, margin-bottom, padding-bottom, padding-top
+
+    background-color: white;
+
+    .background-importation {
+      background-color: rgba(0,0,0,0.6);
+      width: 100%;
+      height: 100%;
+
+      .fenetre-importation {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 1px solid @noir;
+        border-radius: @border_radius;
+        overflow: auto;
+
+        header {
+          padding: 5px;
+          background-color: @charcoal;
+          color: @blanc;
+        }
+
+        main {
+          flex: 1;
+
+          ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+
+            li {
+              background-color: @blanc_creme;
+            }
+          }
+          .importation {
+
+            h3 { 
+              padding: 5px;
+              background-color: @charcoal;
+              color: @blanc;
+            }
+          }
+        }
+
+        footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          padding: 5px;
+        }
+      }
+
+    }
+  }
+
   .app-fonofone {
     margin: 10px;
     display: flex;
@@ -66,67 +126,7 @@
       overflow: auto;
       border-radius: @border_radius;
 
-      .ecran-importation {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
 
-        background-color: white;
-
-        .background-importation {
-          background-color: rgba(0,0,0,0.6);
-          width: 100%;
-          height: 100%;
-
-          .fenetre-importation {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            border: 1px solid @noir;
-            border-radius: @border_radius;
-            overflow: auto;
-
-            header {
-              padding: 5px;
-              background-color: @charcoal;
-              color: @blanc;
-            }
-
-            main {
-              flex: 1;
-
-              ul {
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-
-                li {
-                  background-color: @blanc_creme;
-                }
-              }
-              .importation {
-
-                h3 { 
-                  padding: 5px;
-                  background-color: @charcoal;
-                  color: @blanc;
-                }
-              }
-            }
-
-            footer {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-
-              padding: 5px;
-            }
-          }
-
-        }
-      }
     }
   }
 
