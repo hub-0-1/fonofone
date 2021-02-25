@@ -193,18 +193,34 @@ class Mixer {
   }
 
   enregistrer () {
-    // https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioSourceNode
+
     let chunks = [];
-    let mediaRecorder = new MediaRecorder(this.nodes.master);
+    return new Promise ((resolve, reject) => {
 
-    mediaRecorder.ondataavailable = function(e) { chunks.push(e.data); };
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        let mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = function(e) { chunks.push(e.data); }
+        mediaRecorder.onstop = function (e) {
+          let blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
+          new Response(blob).arrayBuffer().then((buffer) => {
+            console.log(buffer);
+            resolve(buffer);
+          }).catch((e) => {
+            reject(ej);
+          });
+        }
+        
+        // Lancer
+        mediaRecorder.start();
+        console.log('start');
 
-    mediaRecorder.onstop = function () { 
-      var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus'  });
-      var audioURL = URL.createObjectURL(blob);
-      console.log(audioURL);
-    }
-
+        // Arreter
+        setTimeout(() => {
+          console.log('stop');
+          mediaRecorder.stop();
+        }, 2000);
+      });
+    });
   }
 }
 

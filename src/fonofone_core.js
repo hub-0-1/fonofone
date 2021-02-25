@@ -68,7 +68,9 @@ export default function (id, archive, ctx_audio) {
     i18n,
     methods: {
       enregistrer: function () {
-        this.mixer.enregistrer()
+        this.mixer.enregistrer().then((buffer) => {
+          this.globales.sons.push({ buffer: buffer, nom: Date.now().toString() });
+        });
       },
       exporter: function () {
         this.serialiser().then((archive) => { 
@@ -142,16 +144,24 @@ export default function (id, archive, ctx_audio) {
         });
       },
       charger_son: function (son) {
-        fetch(son.url, { mode: 'cors' }).then((response) => {
-          return response.arrayBuffer();
-        }).then((buffer) => {
-          return this.mixer.charger_buffer(buffer);
-        }).then(() => {
-          this.mode_importation = false;
-          this.reset_selecteur();
-        }).catch((e) => {
-          throw e;
-        });
+        if(son.buffer) {
+          this.mixer.charger_buffer(son.buffer).then(() => {
+            this.mode_importation = false;
+            this.reset_selecteur();
+          });
+        }
+        else {
+          fetch(son.url, { mode: 'cors' }).then((response) => {
+            return response.arrayBuffer();
+          }).then((buffer) => {
+            return this.mixer.charger_buffer(buffer);
+          }).then(() => {
+            this.mode_importation = false;
+            this.reset_selecteur();
+          }).catch((e) => {
+            throw e;
+          });
+        }
       }
     },
     computed: {
@@ -195,7 +205,7 @@ export default function (id, archive, ctx_audio) {
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
-              <bouton src="${Record}" @click.native="enregistrer"></bouton>
+              <bouton src="${Record}"></bouton>
               <bouton src="${Jouer}" @click.native="jouer"></bouton>
               <bouton src="${Loop}" @click.native="toggle_loop"></bouton>
               <bouton src="${Sens}" @click.native="toggle_sens"></bouton>
@@ -219,7 +229,7 @@ export default function (id, archive, ctx_audio) {
                 <h3>Importation</h3>
                 <div ref="filepond"></div>
               </main>
-              <h3>Enregistrer un son</h3>
+              <h3 @click="enregistrer">Enregistrer un son</h3>
             </div>
           </div>
         </div>
