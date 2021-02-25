@@ -126,7 +126,7 @@ class Mixer {
 
     // Visuel
     this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({id: "selected", start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232'}); // TODO ajouter id fonofone
+    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232'}); // TODO ajouter id fonofone
   }
 
   set_metronome (valeur) {
@@ -145,10 +145,10 @@ class Mixer {
 
   async set_reverberation (valeur) {
     console.log("reverberation", valeur);
-    this.parametres.convolver_dry = valeur.dry;
+    this.parametres.convolver_wet = valeur.wet;
 
-    this.nodes.reverberation_dry.gain.setValueAtTime(valeur.dry, this.ctx_audio.currentTime);
-    this.nodes.reverberation_wet.gain.setValueAtTime(1 - valeur.dry, this.ctx_audio.currentTime);
+    this.nodes.reverberation_dry.gain.setValueAtTime(1 - valeur.wet, this.ctx_audio.currentTime);
+    this.nodes.reverberation_wet.gain.setValueAtTime(valeur.wet, this.ctx_audio.currentTime);
 
     // TODO mettre les .wav dans le dossier
     //load impulse response from file
