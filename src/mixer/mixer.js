@@ -57,7 +57,7 @@ class Mixer {
     this.nodes.pan.connect(this.nodes.reverberation_dry);
     this.nodes.reverberation_dry.connect(this.nodes.lowpass_filter);
 
-    this.nodes.pan.connect(this.nodes.convolver);
+    this.nodes.pan.connect(this.nodes.reverberation_wet);
     this.nodes.convolver.connect(this.nodes.reverberation_wet);
     this.nodes.reverberation_wet.connect(this.nodes.lowpass_filter);
 
@@ -85,25 +85,32 @@ class Mixer {
   }
 
   jouer () {
+
     // Ne pas jouer au chargement
     if(this.chargement) return;
 
-    // Creer et supprimer la track
-    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
-    this.tracks.push(track);
-    track.source.onended = () => { 
-      this.tracks.splice(this.tracks.indexOf(track), 1); 
+    // Le ctx_audio doit etre resume onuserinput
+    this.ctx_audio.resume().then(() => {
 
-      // Loop sans metronome
-      if(this.tracks.length == 0 && this.parametres.loop) {
-        this.jouer();
+      // Creer et supprimer la track
+      let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
+      this.tracks.push(track);
+      track.source.onended = () => { 
+        this.tracks.splice(this.tracks.indexOf(track), 1); 
+
+        // Loop sans metronome
+        if(this.tracks.length == 0 && this.parametres.loop) {
+          this.jouer();
+        }
       }
-    }
 
-    // Loop avec metronome
-    if(this.parametres.metronome_actif && this.parametres.loop) {
-      setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000);
-    }
+      // Loop avec metronome
+      if(this.parametres.metronome_actif && this.parametres.loop) {
+        setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000);
+      }
+    });
+
+
   }
 
   set_volume (valeur) {
@@ -140,7 +147,6 @@ class Mixer {
   }
 
   async set_reverberation (valeur) {
-    console.log("reverberation", valeur);
     this.parametres.convolver_wet = valeur.wet;
 
     this.nodes.reverberation_dry.gain.setValueAtTime(1 - valeur.wet, this.ctx_audio.currentTime);
@@ -149,10 +155,9 @@ class Mixer {
     // Son du convolver
     let response     = await fetch("https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav");
     let arraybuffer  = await response.arrayBuffer();
-    console.log(arraybuffer);
 
+    this.nodes.convolver.normalize = true;
     this.ctx_audio.decodeAudioData(arraybuffer, (buffer) => {
-      console.log(buffer);
       this.nodes.convolver.buffer = buffer;
     });
     //this.nodes.convolver.buffer = await this.ctx_audio.decodeAudioData(arraybuffer);

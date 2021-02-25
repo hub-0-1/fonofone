@@ -4,6 +4,7 @@ import Magnet from "../images/icon-magnet.svg";
 const hauteur_controlleur = 0.1;
 const largeur_controlleur = 0.1;
 const nb_division = 8;
+const width_division = 0.005;
 
 export default {
   mixins: [Utils],
@@ -41,13 +42,15 @@ export default {
     <generique :module="$t('modules.volume')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
-        <rect class="ligne" x="0.125" width="0.005" y="0" height="1"/>
-        <rect class="ligne" x="0.25" width="0.005" y="0" height="1"/>
-        <rect class="ligne" x="0.375" width="0.005" y="0" height="1"/>
-        <rect class="centre" x="0.495" width="0.01" y="0" height="1"/>
-        <rect class="ligne" x="0.625" width="0.005" y="0" height="1"/>
-        <rect class="ligne" x="0.75" width="0.005" y="0" height="1"/>
-        <rect class="ligne" x="0.875" width="0.005" y="0" height="1"/>
+        <rect class="ligne" x="${(0 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
+        <rect class="ligne" x="${(1 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
+        <rect class="ligne" x="${(2 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
+        <rect class="ligne" x="${(3 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
+        <rect class="ligne" x="${(4 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division)}" y="0" height="1" width="${width_division * 2}" />
+        <rect class="ligne" x="${(5 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
+        <rect class="ligne" x="${(6 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
+        <rect class="ligne" x="${(7 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
+        <rect class="ligne" x="${(8 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
         <rect class="controlleur" :x="x" width="${largeur_controlleur}" :y="y" height="${hauteur_controlleur}" rx="0.02" ref="controlleur"/>
       </svg>
 
