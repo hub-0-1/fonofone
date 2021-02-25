@@ -54,12 +54,13 @@ class Mixer {
     this.nodes.master = this.ctx_audio.createGain();
 
     // Appliquer les filtres //
+
     this.nodes.pan.connect(this.nodes.reverberation_dry);
     this.nodes.reverberation_dry.connect(this.nodes.lowpass_filter);
 
     this.nodes.pan.connect(this.nodes.reverberation_wet);
-    this.nodes.convolver.connect(this.nodes.reverberation_wet);
-    this.nodes.reverberation_wet.connect(this.nodes.lowpass_filter);
+    this.nodes.reverberation_wet.connect(this.nodes.convolver);
+    this.nodes.convolver.connect(this.nodes.lowpass_filter);
 
     this.nodes.lowpass_filter.connect(this.nodes.highpass_filter);
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
@@ -155,12 +156,7 @@ class Mixer {
     // Son du convolver
     let response     = await fetch("https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav");
     let arraybuffer  = await response.arrayBuffer();
-
-    this.nodes.convolver.normalize = true;
-    this.ctx_audio.decodeAudioData(arraybuffer, (buffer) => {
-      this.nodes.convolver.buffer = buffer;
-    });
-    //this.nodes.convolver.buffer = await this.ctx_audio.decodeAudioData(arraybuffer);
+    this.nodes.convolver.buffer = await this.ctx_audio.decodeAudioData(arraybuffer);
   }
 
   set_filtre (valeur) {
