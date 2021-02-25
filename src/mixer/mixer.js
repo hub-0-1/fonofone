@@ -90,28 +90,23 @@ class Mixer {
     // Ne pas jouer au chargement
     if(this.chargement) return;
 
-    // Le ctx_audio doit etre resume onuserinput
-    this.ctx_audio.resume().then(() => {
+    // Creer et supprimer la track
+    let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
+    this.tracks.push(track);
+    track.source.onended = () => { 
+      console.log("ended");
+      this.tracks.splice(this.tracks.indexOf(track), 1); 
 
-      // Creer et supprimer la track
-      let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
-      this.tracks.push(track);
-      track.source.onended = () => { 
-        this.tracks.splice(this.tracks.indexOf(track), 1); 
-
-        // Loop sans metronome
-        if(this.tracks.length == 0 && this.parametres.loop) {
-          this.jouer();
-        }
+      // Loop sans metronome
+      if(this.tracks.length == 0 && this.parametres.loop && !this.parametres.metronome_actif) {
+        this.jouer();
       }
+    }
 
-      // Loop avec metronome
-      if(this.parametres.metronome_actif && this.parametres.loop) {
-        setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000);
-      }
-    });
-
-
+    // Loop avec metronome
+    if(this.parametres.metronome_actif && this.parametres.loop) {
+      setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000); // TODO Aleatoire
+    }
   }
 
   set_volume (valeur) {

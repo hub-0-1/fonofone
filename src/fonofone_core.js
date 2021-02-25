@@ -135,7 +135,9 @@ export default function (id, archive, ctx_audio) {
         this.mixer.set_sens(this.configuration.parametres.sens);
       },
       jouer: function () {
-        this.mixer.jouer();
+        this.ctx_audio.resume().then(() => {
+          this.mixer.jouer();
+        });
       }
     },
     computed: {
