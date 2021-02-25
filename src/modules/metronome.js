@@ -52,7 +52,7 @@ export default {
       this.$refs.controlleur_1.setAttribute('cy', point.y);
     },
     update: function () {
-      this.$emit('update:valeur', { aleatoire: this.aleatoire, bpm: this.bpm });
+      this.$emit('update:valeur', { actif: this.actif, aleatoire: this.aleatoire, bpm: this.bpm });
     }
   },
   computed: {

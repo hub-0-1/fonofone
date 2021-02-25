@@ -91,16 +91,18 @@ class Mixer {
     // Creer et supprimer la track
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.pan, this.parametres);
     this.tracks.push(track);
-    track.source.onended = () => { this.tracks.splice(this.tracks.indexOf(track), 1); }
+    track.source.onended = () => { 
+      this.tracks.splice(this.tracks.indexOf(track), 1); 
 
-    // Loop
-    if(!this.parametres.loop) return;
-    if(this.parametres.bpm > 0) {
-      setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000);
+      // Loop sans metronome
+      if(this.tracks.length == 0 && this.parametres.loop) {
+        this.jouer();
+      }
     }
-    else {
-      // TODO partir la loop onended
-      setTimeout(this.jouer.bind(this), this.parametres.longueur * 1000);
+
+    // Loop avec metronome
+    if(this.parametres.metronome_actif && this.parametres.loop) {
+      setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000);
     }
   }
 
@@ -133,14 +135,8 @@ class Mixer {
 
     // Rythme aleatoire
     this.parametres.aleatoire = valeur.aleatoire * Math.random() * pct_bpm_aleatoire;
-
-    // BPM
-    if(valeur.bpm == 0) {
-      this.parametres.bpm = 0;
-    }
-    else {
-      this.parametres.bpm = valeur.bpm * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bmp, max_bpm]
-    }
+    this.parametres.metronome_actif = valeur.actif;
+    this.parametres.bpm = valeur.bpm * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bpm, max_bpm]
   }
 
   async set_reverberation (valeur) {
@@ -150,11 +146,16 @@ class Mixer {
     this.nodes.reverberation_dry.gain.setValueAtTime(1 - valeur.wet, this.ctx_audio.currentTime);
     this.nodes.reverberation_wet.gain.setValueAtTime(valeur.wet, this.ctx_audio.currentTime);
 
-    // TODO mettre les .wav dans le dossier
-    //load impulse response from file
+    // Son du convolver
     let response     = await fetch("https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav");
     let arraybuffer  = await response.arrayBuffer();
-    this.nodes.convolver.buffer = await this.ctx_audio.decodeAudioData(arraybuffer);
+    console.log(arraybuffer);
+
+    this.ctx_audio.decodeAudioData(arraybuffer, (buffer) => {
+      console.log(buffer);
+      this.nodes.convolver.buffer = buffer;
+    });
+    //this.nodes.convolver.buffer = await this.ctx_audio.decodeAudioData(arraybuffer);
   }
 
   set_filtre (valeur) {
