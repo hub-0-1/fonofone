@@ -24,6 +24,7 @@ export default class Track {
     source.playbackRate.setValueAtTime(parametres.vitesse * parametres.sens, context.currentTime);
 
     // Lancer
-    source.start(context.currentTime, parametres.debut, attack + parametres.longueur + release);
+    //source.start(context.currentTime, parametres.debut, attack + parametres.longueur + release);
+    source.start();
   }
 }

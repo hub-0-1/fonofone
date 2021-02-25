@@ -68,7 +68,7 @@ export default {
     _.each(this.$refs, (ref) => {
       if(ref.className.baseVal.match(/controlleur/)) { 
         ref.addEventListener('mousedown', this.start_drag);
-        ref.addEventListener('touchstart', this.start_drag);
+        ref.addEventListener('touchstart', this.start_drag, { passive: true }); // Optimisation pour le scrolling
       }
     });
 
