@@ -94,15 +94,17 @@ export default function (id, archive, ctx_audio) {
           });
 
           this.configuration = JSON.parse(archive_serialisee);
-          this.base64_a_blob(this.configuration.fichier).then((blob) => {
-            return this.mixer.charger(blob)
+          fetch(this.configuration.fichier).then((response) => {
+            return response.arrayBuffer();
+          }).then((buffer) => {
+            return this.mixer.charger_buffer(buffer)
           }).then(() => { 
             resolve(this.configuration);
           });
         });
       },
-      base64_a_blob: async function (base64) {
-        return await (await fetch(base64)).blob();
+      base64_a_buffer: async function (base64) {
+        return await (await fetch(base64)).arrayBuffer();
       },
       synchroniser_modules: function () {
         _.each(this.configuration.modules, (v, key) => {
@@ -120,10 +122,10 @@ export default function (id, archive, ctx_audio) {
       },
       crop: function () {
         this.mixer.crop();
-        this.configuration.modules.selecteur.valeur = {
-          debut: 0,
-          longueur: 1
-        };
+        this.reset_selecteur();
+      },
+      reset_selecteur: function () {
+        this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
       },
       // TODO Mettre watchers
       toggle_loop: function () {
@@ -141,11 +143,12 @@ export default function (id, archive, ctx_audio) {
       },
       charger_son: function (son) {
         fetch(son.url, { mode: 'cors' }).then((response) => {
-          return response.blob();
-        }).then((blob) => {
-          return this.mixer.charger(blob);
+          return response.arrayBuffer();
+        }).then((buffer) => {
+          return this.mixer.charger_buffer(buffer);
         }).then(() => {
           this.mode_importation = false;
+          this.reset_selecteur();
         }).catch((e) => {
           throw e;
         });

@@ -11,7 +11,7 @@ export default class Track {
 
     source.buffer = audio_buffer;
     source.connect(noeud_audio);
-
+    
     // Enveloppe
     source.connect(enveloppe);
     enveloppe.connect(noeud_audio);

@@ -16,7 +16,7 @@ class Mixer {
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
     this.chargement = true;
-    this.blob = null;
+    this.audio_buffer = this.ctx_audio.createBufferSource();
     this.nodes = {};
     this.parametres = {};
     this.tracks = [];
@@ -79,19 +79,10 @@ class Mixer {
     this.nodes.master.connect(this.ctx_audio.destination);
   }
 
-  charger (blob_audio) {
-    return new Promise ((resolve, reject) => {
-      this.blob = blob_audio;
-      this.wavesurfer.load(URL.createObjectURL(this.blob));
-
-      new Response(this.blob).arrayBuffer().then((buffer) => {
-          return this.ctx_audio.decodeAudioData(buffer)
-        }).then((audio_buffer) => {
-          this.audio_buffer = audio_buffer;
-          resolve(true);
-        }).catch(() => {
-          reject("erreur importation"); // TODO marche pas dans safari
-        });
+  charger_buffer (buffer) {
+    return this.ctx_audio.decodeAudioData(buffer).then((audio_buffer) => {
+      this.audio_buffer = audio_buffer;
+      this.wavesurfer.loadDecodedBuffer(audio_buffer);
     });
   }
 
@@ -135,8 +126,8 @@ class Mixer {
   }
 
   set_selecteur (valeur) {
-    this.parametres.debut = valeur.debut * this.audio_buffer.duration;
-    this.parametres.longueur = valeur.longueur * this.audio_buffer.duration;
+    this.parametres.debut = (valeur.debut * this.audio_buffer.duration || 0);
+    this.parametres.longueur = (valeur.longueur * this.audio_buffer.duration || 0);
 
     // Visuel
     this.wavesurfer.clearRegions();
