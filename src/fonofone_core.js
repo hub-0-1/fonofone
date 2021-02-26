@@ -73,6 +73,7 @@ export default function (id, archive, ctx_audio) {
         });
       },
       exporter: function () {
+        console.log(buffer2base64(this.mixer.audio_buffer));
         this.serialiser().then((archive) => { 
           saveAs(new Blob([archive]), "archive.fnfn"); 
         });
@@ -194,8 +195,8 @@ export default function (id, archive, ctx_audio) {
     template: `
       <div :id="id" class="fonofone" ref="fonofone">
         <menu>
-          <bouton src="${Import}" @click.native="mode_importation = !mode_importation"></bouton>
-          <bouton src="${Export}" @click.native="exporter"></bouton>
+          <img src="${Import}" @click="mode_importation = !mode_importation">
+          <img src="${Export}" @click="exporter">
         </menu>
         <section v-show="!mode_importation" class="app-fonofone">
           <header>
@@ -235,4 +236,8 @@ export default function (id, archive, ctx_audio) {
         </div>
       </div>`
   });
+}
+
+function buffer2base64 (arrayBuffer) {
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)))
 }

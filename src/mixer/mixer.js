@@ -192,6 +192,8 @@ class Mixer {
     });
   }
 
+  // TODO Envoyer dans le fonofone
+  // Nouvelle fonction devrait faire : https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode
   enregistrer () {
 
     let chunks = [];
