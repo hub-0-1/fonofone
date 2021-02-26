@@ -89,6 +89,9 @@ export default function (id, archive, ctx_audio) {
           fileReader.readAsDataURL(blob);
         });
       },
+      base64_a_buffer: async function (base64) {
+        return await (await fetch(base64)).arrayBuffer();
+      },
       importer: function (fichier) {
         return new Promise (async (resolve) => {
           let archive_serialisee = await new Promise((resolve) => {
@@ -106,9 +109,6 @@ export default function (id, archive, ctx_audio) {
             resolve(this.configuration);
           });
         });
-      },
-      base64_a_buffer: async function (base64) {
-        return await (await fetch(base64)).arrayBuffer();
       },
       synchroniser_modules: function () {
         _.each(this.configuration.modules, (v, key) => {
@@ -145,9 +145,21 @@ export default function (id, archive, ctx_audio) {
           this.mixer.jouer();
         });
       },
+      toggle_enregistrement: function () {
+        this.get_recorder().then((recorder) => {
+          this.enregistrement.encours ? recorder.stop() : recorder.start();
+          this.enregistrement.encours = !this.enregistrement.encours;
+        });
+      },
+      toggle_export_wav: function () {
+        this.mixer.enregistrement.encours ?  this.mixer.enregistrer() : this.mixer.exporter();
+        this.mixer.enregistrement.encours = !this.mixer.enregistrement.encours;
+      },
       charger_son: function (son) {
-        if(son.buffer) {
-          this.mixer.charger_buffer(son.buffer).then(() => {
+        if(son.blob) {
+          new Response(son.blob).arrayBuffer().then((buffer) => {
+            return this.mixer.charger_buffer(buffer);
+          }).then(() => {
             this.mode_importation = false;
             this.reset_selecteur();
           });
@@ -165,12 +177,6 @@ export default function (id, archive, ctx_audio) {
           });
         }
       },
-      toggle_enregistrement: function () {
-        this.get_recorder().then((recorder) => {
-          this.enregistrement.encours ? recorder.stop() : recorder.start();
-          this.enregistrement.encours = !this.enregistrement.encours;
-        });
-      },
       get_recorder: function () {
         return new Promise ((resolve) => {
 
@@ -180,14 +186,13 @@ export default function (id, archive, ctx_audio) {
           // Sinon
           else {
             navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-              this.enregistrement.recorder = new MediaRecorder(stream);
+              let mediaRecorder = this.enregistrement.recorder = new MediaRecorder(stream);
               this.enregistrement.recorder.ondataavailable = function(e) { this.enregistrement.chunks.push(e.data); }.bind(this);
 
               this.enregistrement.recorder.onstop = function (e) {
-                let blob = new Blob(this.enregistrement.chunks, { 'type': 'audio/ogg; codecs=opus' });
-                new Response(blob).arrayBuffer().then((buffer) => {
-                  this.globales.sons.push({ buffer: buffer, nom: Date.now().toString() });
-                });
+                // Retourner un blob parce que les arrayBuffers sont consommes dans le processus
+                this.globales.sons.push({ nom: Date.now().toString(), blob: new Blob(this.enregistrement.chunks, { 'type': 'audio/ogg; codecs=opus' }) });
+                this.enregistrement.chunks = [];
               }.bind(this);
 
               resolve(this.enregistrement.recorder);
@@ -239,7 +244,7 @@ export default function (id, archive, ctx_audio) {
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
-              <bouton src="${Record}"></bouton>
+              <bouton src="${Record}" @click.native="toogle_export_wav"></bouton>
               <bouton src="${Jouer}" @click.native="jouer"></bouton>
               <bouton src="${Loop}" @click.native="toggle_loop"></bouton>
               <bouton src="${Sens}" @click.native="toggle_sens"></bouton>

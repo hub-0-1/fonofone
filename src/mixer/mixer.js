@@ -1,5 +1,6 @@
 import WaveSurfer from 'wavesurfer.js';
 import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
+import Audiobuffer2Wav from 'audiobuffer-to-wav';
 
 import Track from "./track.js";
 
@@ -9,8 +10,6 @@ const min_bpm = 24;
 const max_bpm = 375;
 const pct_bpm_aleatoire = 0.6;
 
-// TODO un seul audio context pour tous les fonofones : https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createChannelMerger
-// ou un audio context par fonofone si pas fonoimage
 class Mixer {
   constructor (waveform_element_id, fnfn_id, ctx_audio) {
     this.fnfn_id = fnfn_id;
@@ -18,6 +17,11 @@ class Mixer {
     this.chargement = true;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.nodes = {};
+    this.enregistrement = {
+      encours: false,
+      chunks: [],
+      recorder: null
+    },
     this.parametres = {};
     this.tracks = [];
 
@@ -35,6 +39,7 @@ class Mixer {
     // Pan
     if(typeof this.ctx_audio.createStereoPanner == "function")
     this.nodes.pan = this.ctx_audio.createStereoPanner(); // TODO Alex : n'existe pas sous safari ...
+    // https://www.npmjs.com/package/stereo-panner-node/v/0.1.2
 
     // Reverb
     this.nodes.reverberation_dry = this.ctx_audio.createGain();
@@ -80,9 +85,16 @@ class Mixer {
   }
 
   charger_buffer (buffer) {
+    
+    var test = null;
+    // Encoder en wav
     return this.ctx_audio.decodeAudioData(buffer).then((audio_buffer) => {
-      this.audio_buffer = audio_buffer;
-      this.wavesurfer.loadDecodedBuffer(audio_buffer);
+      test = audio_buffer;
+      return this.ctx_audio.decodeAudioData(Audiobuffer2Wav(audio_buffer));
+    }).then((audio_buffer_wav) => { // Utiliser le fichier
+      this.audio_buffer = audio_buffer_wav;
+      console.log(audio_buffer_wav);
+      this.wavesurfer.loadDecodedBuffer(audio_buffer_wav);
     });
   }
 
