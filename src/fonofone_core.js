@@ -35,6 +35,7 @@ import Sens from './images/fleche-sens.svg';
 import Crop from './images/crop.svg';
 import Export from './images/export.svg';
 import Import from './images/import.svg';
+import Micro from './images/micro.svg';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -60,6 +61,11 @@ export default function (id, archive, ctx_audio) {
       globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
+      enregistrement: {
+        encours: false,
+        chunks: [],
+        recorder: null
+      },
       mixer: null,
       outils: {
         filepond: null
@@ -67,11 +73,6 @@ export default function (id, archive, ctx_audio) {
     },
     i18n,
     methods: {
-      enregistrer: function () {
-        this.mixer.enregistrer().then((buffer) => {
-          this.globales.sons.push({ buffer: buffer, nom: Date.now().toString() });
-        });
-      },
       exporter: function () {
         console.log(buffer2base64(this.mixer.audio_buffer));
         this.serialiser().then((archive) => { 
@@ -163,6 +164,36 @@ export default function (id, archive, ctx_audio) {
             throw e;
           });
         }
+      },
+      toggle_enregistrement: function () {
+        this.get_recorder().then((recorder) => {
+          this.enregistrement.encours ? recorder.stop() : recorder.start();
+          this.enregistrement.encours = !this.enregistrement.encours;
+        });
+      },
+      get_recorder: function () {
+        return new Promise ((resolve) => {
+
+          // S'il est deja initialise
+          if(this.enregistrement.recorder) resolve(this.enregistrement.recorder);
+
+          // Sinon
+          else {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+              this.enregistrement.recorder = new MediaRecorder(stream);
+              this.enregistrement.recorder.ondataavailable = function(e) { this.enregistrement.chunks.push(e.data); }.bind(this);
+
+              this.enregistrement.recorder.onstop = function (e) {
+                let blob = new Blob(this.enregistrement.chunks, { 'type': 'audio/ogg; codecs=opus' });
+                new Response(blob).arrayBuffer().then((buffer) => {
+                  this.globales.sons.push({ buffer: buffer, nom: Date.now().toString() });
+                });
+              }.bind(this);
+
+              resolve(this.enregistrement.recorder);
+            });      
+          }
+        });
       }
     },
     computed: {
@@ -176,6 +207,8 @@ export default function (id, archive, ctx_audio) {
       /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
         this.mode_affichage = "grille";
       }*/
+
+
 
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
 
@@ -230,7 +263,7 @@ export default function (id, archive, ctx_audio) {
                 <h3>Importation</h3>
                 <div ref="filepond"></div>
               </main>
-              <h3 @click="enregistrer">Enregistrer un son</h3>
+              <h3 @click="toggle_enregistrement"><img src="${Micro}">Enregistrer un son</h3>
             </div>
           </div>
         </div>

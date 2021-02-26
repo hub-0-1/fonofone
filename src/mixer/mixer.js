@@ -192,38 +192,7 @@ class Mixer {
     });
   }
 
-  // TODO Envoyer dans le fonofone
-  // Nouvelle fonction devrait faire : https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode
-  enregistrer () {
-
-    let chunks = [];
-    return new Promise ((resolve, reject) => {
-
-      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-        let mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.ondataavailable = function(e) { chunks.push(e.data); }
-        mediaRecorder.onstop = function (e) {
-          let blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
-          new Response(blob).arrayBuffer().then((buffer) => {
-            console.log(buffer);
-            resolve(buffer);
-          }).catch((e) => {
-            reject(ej);
-          });
-        }
-        
-        // Lancer
-        mediaRecorder.start();
-        console.log('start');
-
-        // Arreter
-        setTimeout(() => {
-          console.log('stop');
-          mediaRecorder.stop();
-        }, 2000);
-      });
-    });
-  }
+  // TODO Nouvelle fonction devrait faire : https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode
 }
 
 export default Mixer;
