@@ -86,16 +86,17 @@ class Mixer {
 
   charger_blob (blob) {
     return new Promise((resolve) => {
-      this.wavesurfer.loadBlob(blob);
       new Response(blob).arrayBuffer().then((array_buffer) => {
         return this.ctx_audio.decodeAudioData(array_buffer)
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
-        resolve(audio_buffer);
+        this.wavesurfer.loadBlob(blob);
+        resolve(true);
       });
     });
   }
 
+  // TODO enlever
   charger_buffer (buffer) {
 
     var test = null;
