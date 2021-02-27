@@ -157,9 +157,7 @@ export default function (id, archive, ctx_audio) {
       },
       charger_son: function (son) {
         if(son.blob) {
-          new Response(son.blob).arrayBuffer().then((buffer) => {
-            return this.mixer.charger_buffer(buffer);
-          }).then(() => {
+          this.mixer.charger_blob(son.blob).then(() => {
             this.mode_importation = false;
             this.reset_selecteur();
           });

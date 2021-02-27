@@ -84,8 +84,20 @@ class Mixer {
     this.nodes.master.connect(this.ctx_audio.destination);
   }
 
+  charger_blob (blob) {
+    return new Promise((resolve) => {
+      this.wavesurfer.loadBlob(blob);
+      new Response(blob).arrayBuffer().then((array_buffer) => {
+        return this.ctx_audio.decodeAudioData(array_buffer)
+      }).then((audio_buffer) => {
+        this.audio_buffer = audio_buffer;
+        resolve(audio_buffer);
+      });
+    });
+  }
+
   charger_buffer (buffer) {
-    
+
     var test = null;
     // Encoder en wav
     return this.ctx_audio.decodeAudioData(buffer).then((audio_buffer) => {
