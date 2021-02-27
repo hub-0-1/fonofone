@@ -74,24 +74,15 @@ export default function (id, archive, ctx_audio) {
     i18n,
     methods: {
       exporter: function () {
-        console.log(buffer2base64(this.mixer.audio_buffer));
         this.serialiser().then((archive) => { 
           saveAs(new Blob([archive]), "archive.fnfn"); 
         });
       },
       serialiser: async function () {
-        // TODO fichier = await fetch(this.mixer.audio_buffer).blob()
+        let fichier = await new Response(this.mixer.audio_buffer).blob();
+        console.log(fichier);
+
         return JSON.stringify(this.configuration);
-      },
-      blob_a_base64: function (blob) {
-        return new Promise((resolve) => {
-          let fileReader = new FileReader();
-          fileReader.onload = (e) => resolve(fileReader.result);
-          fileReader.readAsDataURL(blob);
-        });
-      },
-      base64_a_buffer: async function (base64) {
-        return await (await fetch(base64)).arrayBuffer();
       },
       importer: function (fichier) {
         return new Promise (async (resolve) => {
@@ -103,9 +94,9 @@ export default function (id, archive, ctx_audio) {
 
           this.configuration = JSON.parse(archive_serialisee);
           fetch(this.configuration.fichier).then((response) => {
-            return response.arrayBuffer();
-          }).then((buffer) => {
-            return this.mixer.charger_buffer(buffer)
+            return response.blob();
+          }).then((blob) => {
+            return this.mixer.charger_blob(blob)
           }).then(() => { 
             resolve(this.configuration);
           });
@@ -165,9 +156,9 @@ export default function (id, archive, ctx_audio) {
         }
         else {
           fetch(son.url, { mode: 'cors' }).then((response) => {
-            return response.arrayBuffer();
-          }).then((buffer) => {
-            return this.mixer.charger_buffer(buffer);
+            return response.blob();
+          }).then((blob) => {
+            return this.mixer.charger_blob(blob);
           }).then(() => {
             this.mode_importation = false;
             this.reset_selecteur();
@@ -212,8 +203,6 @@ export default function (id, archive, ctx_audio) {
         this.mode_affichage = "grille";
       }*/
 
-
-
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
 
       this.importer(this.archive).then((configuration) => {
@@ -223,9 +212,8 @@ export default function (id, archive, ctx_audio) {
         this.repaint();
         this.mixer.chargement = false;
 
-        // Ajouter les breaks points pour l'affichage en mode colonne
-        // TODO compter les enfants
-        // Selon la largeur, diviser en colonnes
+        // TODO Ajouter les breaks points pour l'affichage en mode colonne
+        // compter les enfants, sSelon la largeur, diviser en colonnes
         let children = this.$refs.mixer.children;
       });
     },
@@ -277,4 +265,13 @@ export default function (id, archive, ctx_audio) {
 
 function buffer2base64 (arrayBuffer) {
   return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)))
+}
+
+// https://stackoverflow.com/questions/18650168/convert-blob-to-base64
+function blob2base64 (blob) {
+  return new Promise ((resolve) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(blob); 
+    reader.onloadend = function() { resolve(reader.result); };                
+  });
 }

@@ -96,21 +96,6 @@ class Mixer {
     });
   }
 
-  // TODO enlever
-  charger_buffer (buffer) {
-
-    var test = null;
-    // Encoder en wav
-    return this.ctx_audio.decodeAudioData(buffer).then((audio_buffer) => {
-      test = audio_buffer;
-      return this.ctx_audio.decodeAudioData(Audiobuffer2Wav(audio_buffer));
-    }).then((audio_buffer_wav) => { // Utiliser le fichier
-      this.audio_buffer = audio_buffer_wav;
-      console.log(audio_buffer_wav);
-      this.wavesurfer.loadDecodedBuffer(audio_buffer_wav);
-    });
-  }
-
   jouer () {
 
     // Ne pas jouer au chargement
