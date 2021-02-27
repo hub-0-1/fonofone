@@ -80,6 +80,7 @@ export default function (id, archive, ctx_audio) {
         });
       },
       serialiser: async function () {
+        // TODO fichier = await fetch(this.mixer.audio_buffer).blob()
         return JSON.stringify(this.configuration);
       },
       blob_a_base64: function (blob) {
