@@ -48,7 +48,7 @@ export default {
       return (y - this.cote_droit.y0) / this.cote_droit.pente;
     },
     update_position_controlleur: function () {
-      this.$refs.controlleur.style.transform = `translate(${(this.x - coordonnees_triangle.largeur / 2 / ratio_controlleur) * 100}%, ${(this.y - coordonnees_triangle.hauteur / 2 / ratio_controlleur) * 100}%)`;
+      this.$refs.controlleur.style.transform = `translate(${(this.x - coordonnees_triangle.largeur / 2 / ratio_controlleur) * 100}%, ${(Math.min(this.y, 1 - (coordonnees_triangle.hauteur / ratio_controlleur))) * 100}%)`;
     },
     svg_a_mixer: function () {
       let x_gauche = this.x_cote_gauche(this.y);
