@@ -16,14 +16,19 @@ class Mixer {
     this.ctx_audio = ctx_audio;
     this.chargement = true;
     this.audio_buffer = this.ctx_audio.createBufferSource();
-    this.nodes = {};
-    this.enregistrement = {
-      encours: false,
-      chunks: [],
-      recorder: null
-    },
     this.parametres = {};
     this.tracks = [];
+    this.nodes = {};
+
+    // Enregistrement de session
+    this.nodes.media_stream_destination = ctx_audio.createMediaStreamDestination();
+    this.session = {
+      blob: null,
+      encours: false,
+      chunks: [],
+      recorder: new MediaRecorder(this.nodes.media_stream_destination.stream)
+    };
+    this.session.recorder.ondataavailable = (evt) => { this.session.chunks.push(evt.data); };
 
     // Representation graphique du son
     this.wavesurfer = WaveSurfer.create({
@@ -82,6 +87,7 @@ class Mixer {
     this.nodes.bandpass_filter.connect(this.nodes.master);
 
     this.nodes.master.connect(this.ctx_audio.destination);
+    this.nodes.master.connect(this.nodes.media_stream_destination);
   }
 
   charger_blob (blob) {
@@ -200,6 +206,21 @@ class Mixer {
     _.each(this.tracks, (track) => {
       track.source.playbackRate.setValueAtTime(this.parametres.vitesse * this.parametres.sens, this.ctx_audio.currentTime);
     });
+  }
+
+  exporter () {
+    return new Promise ((resolve) => {
+      this.session.recorder.onstop = () => { 
+        this.session.blob = new Blob(this.session.chunks, { 'type': 'audio/ogg; codecs=opus' }); 
+        this.session.chunks = [];
+        resolve(this.session.blob);
+      };
+      this.session.recorder.stop();
+    }) 
+  }
+
+  start_session () {
+    this.session.recorder.start();
   }
 
   // TODO Nouvelle fonction devrait faire : https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode

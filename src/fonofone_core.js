@@ -143,9 +143,15 @@ export default function (id, archive, ctx_audio) {
           this.enregistrement.encours = !this.enregistrement.encours;
         });
       },
-      toggle_export_wav: function () {
-        this.mixer.enregistrement.encours ?  this.mixer.enregistrer() : this.mixer.exporter();
-        this.mixer.enregistrement.encours = !this.mixer.enregistrement.encours;
+      toggle_session: function () {
+        if(this.mixer.session.encours) {
+          this.mixer.exporter().then((blob) => {
+            saveAs(blob, `session_${Date.now().toString()}.ogg`); 
+          });
+        } else {
+          this.mixer.start_session();
+        }
+        this.mixer.session.encours = !this.mixer.session.encours;
       },
       charger_son: function (son) {
         if(son.blob) {
@@ -231,7 +237,7 @@ export default function (id, archive, ctx_audio) {
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
-              <bouton src="${Record}" @click.native="toogle_export_wav"></bouton>
+              <bouton src="${Record}" @click.native="toggle_session"></bouton>
               <bouton src="${Jouer}" @click.native="jouer"></bouton>
               <bouton src="${Loop}" @click.native="toggle_loop"></bouton>
               <bouton src="${Sens}" @click.native="toggle_sens"></bouton>
