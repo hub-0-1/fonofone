@@ -191,7 +191,7 @@ class Mixer {
       return response.arrayBuffer();
     }).then((buffer) => {
       return this.ctx_audio.decodeAudioData(buffer);
-    }).then((audio_bufer) => {
+    }).then((audio_buffer) => {
       this.nodes.convolver.buffer = audio_buffer;
     });
   }
