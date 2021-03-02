@@ -196,7 +196,8 @@ export default function (id, archive, ctx_audio) {
       }
     },
     computed: {
-      waveform_id: function () { return `waveform-${this.id}`; }
+      waveform_id: function () { return `waveform-${this.id}`; },
+      est_en_pause: function () { return this.mixer.en_pause || (this.mixer.tracks && this.mixer.tracks.length > 0) }
     },
     mounted: function () {
 
@@ -236,7 +237,7 @@ export default function (id, archive, ctx_audio) {
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
               <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
-              <img src="${Jouer}" class="icone pause" :class="{actif: mixer.en_pause || (mixer.tracks && mixer.tracks.length > 0)}" @click="toggle_pause"/>
+              <img src="${Jouer}" class="icone pause" :class="{actif: est_en_pause}" @click="toggle_pause"/>
               <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
               <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
               <img src="${Crop}" class="icone" @click="crop"/>
