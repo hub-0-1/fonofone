@@ -197,6 +197,9 @@ class Mixer {
   }
 
   set_filtre (valeur) {
+
+    // TODO if(!valeur.actif) {}
+
     let frequence = valeur.debut + valeur.longueur / 2;
     let resonnance = valeur.longueur;
 

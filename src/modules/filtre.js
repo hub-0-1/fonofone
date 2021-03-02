@@ -1,5 +1,7 @@
 import Utils from "./_utils.js";
 
+import Power from "../images/icon-power.svg";
+
 const hauteur_controlleur = 0.1;
 
 // TODO Refact des x, y, debut, longueur
@@ -15,7 +17,7 @@ export default {
   },
   methods: {
     update: function () {
-      this.$emit('update:valeur', { debut: this.debut, longueur: this.longueur }); // TODO Ca fait rien
+      this.$emit('update:valeur', { actif: this.module_actif, debut: this.debut, longueur: this.longueur });
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
@@ -45,6 +47,10 @@ export default {
         <rect class="centre" x="0.49" width="0.02" y="0.9" height="0.1"/>
         <rect class="controlleur" :x="x" :y="hauteur" :width="width" height="${hauteur_controlleur}" ref="controlleur"/>
       </svg>
+
+      <template v-slot:footer>
+        <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
+      </template>
     </generique>
   `
 };
