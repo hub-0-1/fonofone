@@ -57,7 +57,7 @@ export default function (id, archive, ctx_audio) {
     },
     data: {
       id, archive, ctx_audio,
-      configuration: {},
+      configuration: {parametres:{}},
       globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
@@ -66,7 +66,7 @@ export default function (id, archive, ctx_audio) {
         chunks: [],
         recorder: null
       },
-      mixer: null,
+      mixer: {session:{}},
       outils: {
         filepond: null
       }
@@ -237,11 +237,11 @@ export default function (id, archive, ctx_audio) {
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
-              <bouton src="${Record}" @click.native="toggle_session"></bouton>
-              <bouton src="${Jouer}" @click.native="jouer"></bouton>
-              <bouton src="${Loop}" @click.native="toggle_loop"></bouton>
-              <bouton src="${Sens}" @click.native="toggle_sens"></bouton>
-              <bouton src="${Crop}" @click.native="crop"></bouton>
+              <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
+              <img src="${Jouer}" class="icone" @click="jouer"/>
+              <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
+              <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
+              <img src="${Crop}" class="icone" @click="crop"/>
             </div>
           </header>
           <main>
