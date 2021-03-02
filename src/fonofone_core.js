@@ -11,7 +11,6 @@ import Vue from 'vue';
 import _ from 'lodash';
 import { saveAs } from 'file-saver';
 
-import Bouton from './bouton.js';
 import Filepond from './mixins/filepond.js';
 
 import Mixer from './mixer/mixer.js';
@@ -47,7 +46,6 @@ export default function (id, archive, ctx_audio) {
     el: "#" + id,
     mixins: [Filepond],
     components: {
-      "Bouton": Bouton,
       "filtre": Filtre,
       "metronome": Metronome,
       "reverberation": Reverberation,
@@ -231,8 +229,8 @@ export default function (id, archive, ctx_audio) {
         <section v-show="!mode_importation" class="app-fonofone">
           <header>
             <div class="nom-archive">
-              <bouton src="${Folder}" @click.native="mode_importation = !mode_importation"></bouton>
-              Archive
+              <img src="${Folder}" @click="mode_importation = !mode_importation"/>
+              <input class="texte-nom-archive" value="Archive" @input="console.log(e)"/>
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
