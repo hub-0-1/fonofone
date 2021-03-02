@@ -106,7 +106,6 @@ class Mixer {
   }
 
   toggle_pause () {
-    console.log(this.en_pause);
     if(this.en_pause || this.tracks.length == 0) {
       this.ctx_audio.resume().then(() => { this.jouer(); });
     }
@@ -157,7 +156,6 @@ class Mixer {
 
   set_selecteur (valeur) {
 
-    console.log(valeur);
     if(!valeur.actif) {
       valeur.debut = 0;
       valeur.longueur = 1;
