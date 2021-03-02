@@ -1,5 +1,7 @@
 import Utils from "./_utils.js";
 
+import Power from "../images/icon-power.svg";
+
 const largeur_reverberation = 0.1;
 const dimension_img = 0.1;
 const sons = [
@@ -21,11 +23,12 @@ export default {
       if(this.controlleur_actif == this.$refs.controlleur_wet) {
         this.wet = this.borner_0_1(this.get_mouse_position(e).x);
       }
+      // TODO onclick image
       else { }
       this.update();
     },
     update: function () {
-      this.$emit('update:valeur', { wet: this.wet, url: this.url });
+      this.$emit('update:valeur', { actif: this.module_actif, wet: this.wet, url: this.url });
     }
   },
   computed: {
@@ -41,6 +44,10 @@ export default {
         <rect class="controlleur-wet" :x="x_wet" width="${largeur_reverberation}" y="0.2" height="0.1" rx="0.02" ref="controlleur_wet"/>
         <image v-for="son in sons" :href="son.image" height="${dimension_img}" width="${dimension_img}" :x="(sons.indexOf(son) + 1) * ${espacement_images} - (${dimension_img} / 2)" y="${0.75 - (dimension_img / 2)}"/>
       </svg>
+
+      <template v-slot:footer>
+        <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
+      </template>
     </generique>
   `
 };
