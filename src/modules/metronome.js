@@ -78,7 +78,7 @@ export default {
       </svg>
 
       <template v-slot:footer>
-        <img class="power" src="${Power}" alt="${Power}" @click="toggle_actif">
+        <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
         <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
       </template>
     </generique>
