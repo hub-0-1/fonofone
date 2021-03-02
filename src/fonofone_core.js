@@ -132,10 +132,8 @@ export default function (id, archive, ctx_audio) {
         this.configuration.parametres.sens *= -1;
         this.mixer.set_sens(this.configuration.parametres.sens);
       },
-      jouer: function () {
-        this.ctx_audio.resume().then(() => {
-          this.mixer.jouer();
-        });
+      toggle_pause: function () {
+        this.mixer.toggle_pause();
       },
       toggle_enregistrement: function () {
         this.get_recorder().then((recorder) => {
@@ -238,7 +236,7 @@ export default function (id, archive, ctx_audio) {
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
               <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
-              <img src="${Jouer}" class="icone" @click="jouer"/>
+              <img src="${Jouer}" class="icone pause" :class="{actif: mixer.en_pause || (mixer.tracks && mixer.tracks.length > 0)}" @click="toggle_pause"/>
               <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
               <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
               <img src="${Crop}" class="icone" @click="crop"/>

@@ -39,6 +39,7 @@
     "filepond": "^4.24.0",
     "i18n": "^0.13.2",
     "lodash": "^4.17.20",
+    "stereo-panner-node": "^1.4.0",
     "vue": "^2.6.12",
     "vue-draggable-resizable": "^2.3.0",
     "vue-i18n": "^8.22.2",

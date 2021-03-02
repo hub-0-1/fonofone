@@ -1,10 +1,12 @@
 import WaveSurfer from 'wavesurfer.js';
 import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import Audiobuffer2Wav from 'audiobuffer-to-wav';
+import StereoPannerNode from 'stereo-panner-node';
 
 import Track from "./track.js";
-
 import Impulse from "../donnees/impulse.wav";
+
+StereoPannerNode.polyfill();
 
 const min_bpm = 24;
 const max_bpm = 375;
@@ -15,6 +17,7 @@ class Mixer {
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
     this.chargement = true;
+    this.en_pause = true;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.parametres = {};
     this.tracks = [];
@@ -100,6 +103,17 @@ class Mixer {
         resolve(true);
       });
     });
+  }
+
+  toggle_pause () {
+    console.log(this.en_pause);
+    if(this.en_pause || this.tracks.length == 0) {
+      this.ctx_audio.resume().then(() => { this.jouer(); });
+    }
+    else {
+      _.each(this.tracks, (track) => { track.source.stop(); });
+    }
+    this.en_pause = !this.en_pause;
   }
 
   jouer () {
