@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     width: function () { return Math.max(this.y, 0.05); },
-    hauteur: function ()  { return this.y * (1 - hauteur_controlleur) + hauteur_controlleur; }
+    hauteur: function ()  { return Math.min(this.y, 1 - hauteur_controlleur); }
   },
   mounted: function () {
     this.y = this.longueur;
@@ -42,7 +42,7 @@ export default {
     <generique :module="$t('modules.filtre')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
-        <rect class="centre" x="0.49" width="0.02" y="0.95" height="0.2"/>
+        <rect class="centre" x="0.49" width="0.02" y="0.9" height="0.1"/>
         <rect class="controlleur" :x="x" :y="hauteur" :width="width" height="${hauteur_controlleur}" ref="controlleur"/>
       </svg>
     </generique>
