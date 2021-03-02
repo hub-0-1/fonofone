@@ -11,7 +11,7 @@ export default {
   props: ['valeur', 'disposition', 'modifiable'],
   components: { "generique": Generique },
   data: function () {
-    return { is_dragging: false, controlleur_actif: null, module_actif: (this.valeur.actif || true) };
+    return { is_dragging: false, controlleur_actif: null, module_actif: ((this.valeur.actif === true) || true) };
   },
   methods: {
     borner_0_1: function (valeur) {

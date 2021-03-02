@@ -29,6 +29,13 @@
       display: flex;
       flex-direction: column;
 
+      .power {
+        filter: invert(1);
+        &.actif {
+          filter: invert(0);
+        }
+      }
+
       .magnet.actif {
         border: 1px solid white;
       }
