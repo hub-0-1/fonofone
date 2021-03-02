@@ -13,7 +13,7 @@ export default {
   mixins: [Utils],
   data: function () {
     return { 
-      vitesse: this.valeur,
+      vitesse: this.valeur.vitesse,
       mode: this.valeur.mode,
       aimant: false
     }
@@ -25,6 +25,9 @@ export default {
     },
     update: function () {
       this.$emit('update:valeur', {actif: this.module_actif, vitesse: this.vitesse, mode: this.mode});
+    },
+    change_mode: function () {
+      this.mode = ((this.mode + 1) % 3) + 1;
     }
   },
   computed: {
@@ -36,7 +39,7 @@ export default {
       return pos_init * (1 - largeur_vitesse);
     },
     affichage_mode: function () {
-      let mode = "I";
+      let mode = "";
       for(let i = 0; i < this.mode; ++i) mode += "I";
       return mode;
     }

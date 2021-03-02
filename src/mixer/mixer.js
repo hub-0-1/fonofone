@@ -150,8 +150,6 @@ class Mixer {
   }
 
   set_vitesse (valeur) {
-    console.log(valeur);
-
     // TODO faire quelque chose avec le mode
     if(!valeur.actif) valeur.vitesse = 0.5;
     this.parametres.vitesse = valeur.vitesse;
@@ -227,6 +225,7 @@ class Mixer {
 
   update_tracks () {
     _.each(this.tracks, (track) => {
+      console.log(this.parametres.vitesse * this.parametres.sens);
       track.source.playbackRate.setValueAtTime(this.parametres.vitesse * this.parametres.sens, this.ctx_audio.currentTime);
     });
   }
