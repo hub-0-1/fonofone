@@ -156,6 +156,13 @@ class Mixer {
   }
 
   set_selecteur (valeur) {
+
+    console.log(valeur);
+    if(!valeur.actif) {
+      valeur.debut = 0;
+      valeur.longueur = 1;
+    }
+
     this.parametres.debut = (valeur.debut * this.audio_buffer.duration || 0);
     this.parametres.longueur = (valeur.longueur * this.audio_buffer.duration || 0);
 

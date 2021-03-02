@@ -1,5 +1,7 @@
 import Utils from "./_utils.js";
 
+import Power from "../images/icon-power.svg";
+
 const coordonnees_triangle = { hauteur: 1, largeur: 1 };
 const ratio_controlleur = 10;
 
@@ -23,7 +25,7 @@ export default {
   },
   methods: {
     update: function () {
-      this.$emit('update:valeur', { debut: this.debut, longueur: this.longueur });
+      this.$emit('update:valeur', { actif: this.module_actif, debut: this.debut, longueur: this.longueur });
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
@@ -77,6 +79,10 @@ export default {
         <polygon class="triangle" points="0,${coordonnees_triangle.hauteur} ${coordonnees_triangle.largeur / 2},0 ${coordonnees_triangle.largeur},${coordonnees_triangle.hauteur}"/>
         <polygon class="controlleur" points="0,${coordonnees_triangle.hauteur / ratio_controlleur} ${coordonnees_triangle.largeur / ratio_controlleur / 2},0 ${coordonnees_triangle.largeur / ratio_controlleur},${coordonnees_triangle.hauteur / ratio_controlleur}" ref="controlleur"/>
       </svg>
+
+      <template v-slot:footer>
+        <img class="power" src="${Power}" alt="${Power}" @click="toggle_actif">
+      </template>
     </generique>
   `
 };
