@@ -17,7 +17,7 @@ class Mixer {
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
     this.chargement = true;
-    this.en_pause = true;
+    this.en_pause = false;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.parametres = {};
     this.tracks = [];
@@ -134,7 +134,9 @@ class Mixer {
 
     // Loop avec metronome
     if(this.parametres.metronome_actif && this.parametres.loop) {
-      setTimeout(this.jouer.bind(this), (60 / (this.parametres.bpm * (1 - this.parametres.aleatoire / 2))) * 1000); // TODO Aleatoire
+      let prochaine_track = this.parametres.bpm + (this.parametres.aleatoire * 100) - 50;
+      console.log(this.parametres.aleatoire, prochaine_track);
+      setTimeout(this.jouer.bind(this), (60 / prochaine_track) * 1000); // TODO Aleatoire
     }
   }
 
@@ -174,7 +176,7 @@ class Mixer {
   set_metronome (valeur) {
 
     // Rythme aleatoire
-    this.parametres.aleatoire = valeur.aleatoire * Math.random() * pct_bpm_aleatoire;
+    this.parametres.aleatoire = valeur.aleatoire * Math.random();
     this.parametres.metronome_actif = valeur.actif;
     this.parametres.bpm = valeur.bpm * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bpm, max_bpm]
   }
@@ -233,7 +235,6 @@ class Mixer {
 
   update_tracks () {
     _.each(this.tracks, (track) => {
-      console.log(this.parametres.vitesse * this.parametres.sens);
       track.source.playbackRate.setValueAtTime(this.parametres.vitesse * this.parametres.sens, this.ctx_audio.currentTime);
     });
   }

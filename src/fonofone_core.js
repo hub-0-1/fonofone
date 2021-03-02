@@ -78,8 +78,6 @@ export default function (id, archive, ctx_audio) {
       },
       serialiser: async function () {
         let fichier = await new Response(this.mixer.audio_buffer).blob();
-        console.log(fichier);
-
         return JSON.stringify(this.configuration);
       },
       importer: function (fichier) {
@@ -194,8 +192,9 @@ export default function (id, archive, ctx_audio) {
       }
     },
     computed: {
+      tracks: function () { return this.mixer.tracks; },
       waveform_id: function () { return `waveform-${this.id}`; },
-      est_en_pause: function () { return this.mixer.en_pause || (this.mixer.tracks && this.mixer.tracks.length > 0) }
+      est_en_pause: function () { return this.mixer.en_pause || (this.tracks && this.tracks.length > 0) }
     },
     mounted: function () {
 
@@ -206,6 +205,7 @@ export default function (id, archive, ctx_audio) {
         this.mode_affichage = "grille";
       }*/
 
+      window.addEventListener("resize", this.repaint);
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
 
       this.importer(this.archive).then((configuration) => {
