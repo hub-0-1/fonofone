@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     width: function () { return Math.max(this.y, 0.05); },
-    hauteur: function ()  { return Math.min(this.y, 1 - hauteur_controlleur); }
+    hauteur: function ()  { return Math.min(this.y (hauteur_controlleur / 2), 1 - hauteur_controlleur); }
   },
   mounted: function () {
     this.y = this.longueur;
