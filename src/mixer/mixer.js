@@ -12,6 +12,7 @@ const min_bpm = 24;
 const max_bpm = 375;
 const pct_bpm_aleatoire = 0.6;
 
+// TODO Refact constantes de tout le fonofone dans globales.js
 class Mixer {
   constructor (waveform_element_id, fnfn_id, ctx_audio) {
     this.fnfn_id = fnfn_id;
@@ -134,9 +135,9 @@ class Mixer {
 
     // Loop avec metronome
     if(this.parametres.metronome_actif && this.parametres.loop) {
+      // TODO extraire amplitude dans fichier config
       let prochaine_track = this.parametres.bpm + (this.parametres.aleatoire * 100) - 50;
-      console.log(this.parametres.aleatoire, prochaine_track);
-      setTimeout(this.jouer.bind(this), (60 / prochaine_track) * 1000); // TODO Aleatoire
+      setTimeout(this.jouer.bind(this), (60 / prochaine_track) * 1000);
     }
   }
 
