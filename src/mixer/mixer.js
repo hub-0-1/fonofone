@@ -18,7 +18,7 @@ class Mixer {
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
     this.chargement = true;
-    this.en_pause = false;
+    this.en_arret = false;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.parametres = {};
     this.tracks = [];
@@ -107,19 +107,22 @@ class Mixer {
   }
 
   toggle_pause () {
-    if(this.en_pause || this.tracks.length == 0) {
-      this.ctx_audio.resume().then(() => { this.jouer(); });
+    if(this.tracks.length > 0) {
+      _.each(this.tracks, (track) => { 
+        track.source.stop() 
+      });
     }
     else {
-      _.each(this.tracks, (track) => { track.source.stop(); });
+      // Politique autoplay
+      this.ctx_audio.resume().then(() => { this.jouer(); });
     }
-    this.en_pause = !this.en_pause;
   }
 
   jouer () {
 
     // Ne pas jouer au chargement
-    if(this.chargement) return;
+    console.log(this.en_arret);
+    if(this.chargement || this.en_arret) return;
 
     // Creer et supprimer la track
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.n0, this.parametres);

@@ -59,6 +59,7 @@ export default function (id, archive, ctx_audio) {
       globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
+      tracks_actives: false,
       enregistrement: {
         encours: false,
         chunks: [],
@@ -129,6 +130,10 @@ export default function (id, archive, ctx_audio) {
         this.mixer.set_sens(this.configuration.parametres.sens);
       },
       toggle_pause: function () {
+        if(this.playing) {
+          this.mixer.set_loop(false);
+          this.configuration.parametres.loop = false;
+        }
         this.mixer.toggle_pause();
       },
       toggle_enregistrement: function () {
@@ -191,10 +196,15 @@ export default function (id, archive, ctx_audio) {
         });
       }
     },
+    watch: {
+      mixer: {
+        handler: function (obj) { this.tracks_actives = obj.tracks.length > 0 },
+        deep: true
+      }
+    },
     computed: {
-      tracks: function () { return this.mixer.tracks; },
       waveform_id: function () { return `waveform-${this.id}`; },
-      est_en_pause: function () { return this.mixer.en_pause || (this.tracks && this.tracks.length > 0) }
+      playing: function () { return this.tracks_actives }
     },
     mounted: function () {
 
@@ -235,7 +245,7 @@ export default function (id, archive, ctx_audio) {
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
               <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
-              <img src="${Jouer}" class="icone pause" :class="{actif: est_en_pause}" @click="toggle_pause"/>
+              <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
               <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
               <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
               <img src="${Crop}" class="icone" @click="crop"/>
