@@ -94,8 +94,17 @@
         }
 
         footer {
-          span {
-            color: @blanc;
+
+          .menu-droite {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            span {
+              margin-right: 10px;
+              color: @blanc;
+              cursor: default;
+            }
           }
         }
 
@@ -228,9 +237,12 @@
         justify-content: space-between;
         align-items: center;
         
+        & > * {
+          margin-top: 10px;
+        }
+
         img {
           width: 20px;
-          margin-top: 10px;
         }
       }
 

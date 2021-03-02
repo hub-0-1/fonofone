@@ -27,7 +27,7 @@ export default {
       this.$emit('update:valeur', {actif: this.module_actif, vitesse: this.vitesse, mode: this.mode});
     },
     change_mode: function () {
-      this.mode = ((this.mode + 1) % 3) + 1;
+      this.mode = (this.mode % 3) + 1;
     }
   },
   computed: {
@@ -60,9 +60,11 @@ export default {
       </svg>
 
       <template v-slot:footer>
-        <span class="mode" @click="change_mode">{{ affichage_mode }}</span>
         <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
-        <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
+        <div class="menu-droite">
+          <span class="mode" @click="change_mode">{{ affichage_mode }}</span>
+          <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
+        </div>
       </template>
     </generique>
   `
