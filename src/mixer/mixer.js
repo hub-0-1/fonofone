@@ -150,7 +150,11 @@ class Mixer {
   }
 
   set_vitesse (valeur) {
-    this.parametres.vitesse = valeur;
+    console.log(valeur);
+
+    // TODO faire quelque chose avec le mode
+    if(!valeur.actif) valeur.vitesse = 0.5;
+    this.parametres.vitesse = valeur.vitesse;
     this.update_tracks();
   }
 

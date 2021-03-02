@@ -24,7 +24,7 @@ export default {
       this.update();
     },
     update: function () {
-      this.$emit('update:valeur', this.vitesse);
+      this.$emit('update:valeur', {actif: this.module_actif, vitesse: this.vitesse, mode: this.mode});
     }
   },
   computed: {
@@ -34,6 +34,11 @@ export default {
         pos_init = Math.round(pos_init / (1 / nb_division)) * (1 / nb_division);
       }
       return pos_init * (1 - largeur_vitesse);
+    },
+    affichage_mode: function () {
+      let mode = "I";
+      for(let i = 0; i < this.mode; ++i) mode += "I";
+      return mode;
     }
   },
   template: `
@@ -52,6 +57,7 @@ export default {
       </svg>
 
       <template v-slot:footer>
+        <span class="mode" @click="change_mode">{{ affichage_mode }}</span>
         <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
         <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
       </template>
