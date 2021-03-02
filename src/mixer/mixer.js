@@ -179,16 +179,21 @@ class Mixer {
     this.parametres.bpm = valeur.bpm * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bpm, max_bpm]
   }
 
-  async set_reverberation (valeur) {
+  set_reverberation (valeur) {
+    if(!valeur.actif) valeur.wet = 0;
     this.parametres.convolver_wet = valeur.wet;
 
     this.nodes.reverberation_dry.gain.setValueAtTime(1 - valeur.wet, this.ctx_audio.currentTime);
     this.nodes.reverberation_wet.gain.setValueAtTime(valeur.wet, this.ctx_audio.currentTime);
 
     // Son du convolver
-    let response     = await fetch("https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav");
-    let arraybuffer  = await response.arrayBuffer();
-    this.nodes.convolver.buffer = await this.ctx_audio.decodeAudioData(arraybuffer);
+    fetch(valeur.url).then((response) => {
+      return response.arrayBuffer();
+    }).then((buffer) => {
+      return this.ctx_audio.decodeAudioData(buffer);
+    }).then((audio_bufer) => {
+      this.nodes.convolver.buffer = audio_buffer;
+    });
   }
 
   set_filtre (valeur) {
