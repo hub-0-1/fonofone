@@ -10,6 +10,7 @@
 import Vue from 'vue';
 import _ from 'lodash';
 import { saveAs } from 'file-saver';
+import toWav from 'audiobuffer-to-wav';
 
 import Filepond from './mixins/filepond.js';
 
@@ -74,12 +75,21 @@ export default function (id, archive, ctx_audio) {
     methods: {
       exporter: function () {
         this.serialiser().then((archive) => { 
-          saveAs(new Blob([archive]), "archive.fnfn"); 
+          saveAs(new Blob([archive]), `${this.configuration.parametres.nom}.fnfn`);
         });
       },
-      serialiser: async function () {
-        let fichier = await new Response(this.mixer.audio_buffer).blob();
-        return JSON.stringify(this.configuration);
+      serialiser: function () {
+        return new Promise((resolve) => {
+          let audio_blob = new Blob([toWav(this.mixer.audio_buffer)]);
+          blob2base64(audio_blob).then((base64) => {
+            let archive = {
+              parametres: this.configuration.parametres,
+              modules: this.configuration.modules,
+              fichier: base64
+            };
+            resolve(JSON.stringify(archive));
+          });
+        });
       },
       importer: function (fichier) {
         return new Promise (async (resolve) => {
