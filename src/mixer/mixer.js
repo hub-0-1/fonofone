@@ -21,6 +21,7 @@ class Mixer {
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.parametres = {};
     this.tracks = [];
+    this.prochaines_tracks = [];
     this.nodes = {};
 
     // Enregistrement de session
@@ -115,6 +116,11 @@ class Mixer {
 
   toggle_pause () {
     if(this.tracks.length > 0) {
+      // Annuler le metronome
+      _.each(this.prochaines_tracks, (track) => { clearTimeout(track); });
+      this.prochaines_tracks = [];
+
+      // Arreter les tracks qui jouent
       _.each(this.tracks, (track) => { 
         track.source.stop() 
       });
@@ -147,7 +153,7 @@ class Mixer {
     if(this.parametres.metronome_actif && this.parametres.loop) {
       // TODO extraire amplitude dans fichier config
       let prochaine_track = this.parametres.bpm + (this.parametres.aleatoire * 100) - 50;
-      setTimeout(this.jouer.bind(this), (60 / prochaine_track) * 1000);
+      this.prochaines_tracks.push(setTimeout(this.jouer.bind(this), (60 / prochaine_track) * 1000));
     }
   }
 
