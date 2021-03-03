@@ -17,7 +17,6 @@ class Mixer {
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
     this.chargement = true;
-    this.en_arret = false;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.parametres = {};
     this.tracks = [];
@@ -134,8 +133,7 @@ class Mixer {
   jouer () {
 
     // Ne pas jouer au chargement
-    console.log(this.en_arret);
-    if(this.chargement || this.en_arret) return;
+    if(this.chargement) return;
 
     // Creer et supprimer la track
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.n0, this.parametres);
@@ -149,6 +147,7 @@ class Mixer {
       }
     }
 
+    // TODO faire embarquer quand on coche loop apres avoir fait play
     // Loop avec metronome
     if(this.parametres.metronome_actif && this.parametres.loop) {
       // TODO extraire amplitude dans fichier config
