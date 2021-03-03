@@ -9,6 +9,8 @@ const min_bpm = 24;
 const max_bpm = 375;
 const pct_bpm_aleatoire = 0.6;
 
+// Hacks Safari : https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Migrating_from_webkitAudioContext
+
 // TODO Refact constantes de tout le fonofone dans globales.js
 class Mixer {
   constructor (waveform_element_id, fnfn_id, ctx_audio) {
@@ -239,6 +241,7 @@ class Mixer {
     this.update_tracks();
   }
 
+  // TODO plante dans Safari
   crop () {
     this.audio_buffer = crop_audio_buffer(this.ctx_audio, this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur, null);
     this.wavesurfer.loadDecodedBuffer(this.audio_buffer);
