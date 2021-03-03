@@ -103,7 +103,7 @@ export default function (id, archive, ctx_audio) {
           fetch(this.configuration.fichier).then((response) => {
             return response.blob();
           }).then((blob) => {
-            return this.mixer.charger_blob(blob)
+            return this.mixer.charger_blob(blob);
           }).then(() => { 
             resolve(this.configuration);
           });

@@ -22,9 +22,9 @@ export default {
 
         console.log(fichier);
         if(fichier.fileType.match(/audio/)) {
-          this.update_fichier_audio(fichier.file);
+          this.update_fichier_audio(fichier.file); // TODO ca doit planter
           this.mode_importation = false;
-        } else if (fichier.fileExtension == "fnfn") { // TODO, semble manquer un repaint
+        } else if (fichier.fileExtension == "fnfn") {
           this.importer(fichier.file);
           this.mode_importation = false;
         } else {

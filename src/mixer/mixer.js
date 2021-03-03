@@ -1,12 +1,9 @@
 import WaveSurfer from 'wavesurfer.js';
 import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import Audiobuffer2Wav from 'audiobuffer-to-wav';
-import StereoPannerNode from 'stereo-panner-node';
 
 import Track from "./track.js";
 import Impulse from "../donnees/impulse.wav";
-
-StereoPannerNode.polyfill();
 
 const min_bpm = 24;
 const max_bpm = 375;
@@ -97,7 +94,15 @@ class Mixer {
   charger_blob (blob) {
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
-        return this.ctx_audio.decodeAudioData(array_buffer)
+
+        // Hack Safari
+        if(this.ctx_audio.constructor.name == "webkitAudioContext") {
+          return this.ctx_audio.createBuffer(array_buffer, false);
+        }
+        // Firefox et Chrome
+        else {
+          return this.ctx_audio.decodeAudioData(array_buffer);
+        }
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
         this.wavesurfer.loadBlob(blob);
@@ -152,6 +157,8 @@ class Mixer {
 
     // Pan
     this.parametres.pan = (valeur.pan - 0.5) * 2; // Projection sur l'interval [-1, 1]
+    // Hack Safari
+    if(typeof this.ctx_audio.createStereoPanner == "function")
     this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
   }
 
