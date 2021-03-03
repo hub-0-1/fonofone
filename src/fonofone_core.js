@@ -120,7 +120,6 @@ export default function (id, archive, ctx_audio) {
       reset_selecteur: function () {
         this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
       },
-      // TODO Mettre watchers
       toggle_loop: function () {
         this.configuration.parametres.loop = !this.configuration.parametres.loop;
         this.mixer.set_loop(this.configuration.parametres.loop);
@@ -240,7 +239,7 @@ export default function (id, archive, ctx_audio) {
           <header>
             <div class="nom-archive">
               <img src="${Folder}" @click="mode_importation = !mode_importation"/>
-              <input class="texte-nom-archive" value="Archive" @input="console.log(e)"/>
+              <input v-model="configuration.parametres.nom" class="texte-nom-archive" placeholder="Archive"/>
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu">
