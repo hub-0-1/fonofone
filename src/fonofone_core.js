@@ -116,13 +116,6 @@ export default function (id, archive, ctx_audio) {
           }, {deep: true, immediate: true});
         });
       },
-      repaint: function () {
-        window.setTimeout(() => {
-          var evt = document.createEvent('UIEvents');
-          evt.initUIEvent('resize', true, false,window,0);
-          window.dispatchEvent(evt);
-        }, 0);
-      },
       crop: function () {
         this.mixer.crop();
         this.reset_selecteur();
@@ -224,14 +217,12 @@ export default function (id, archive, ctx_audio) {
         this.mode_affichage = "grille";
       }*/
 
-      window.addEventListener("resize", this.repaint);
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
 
       this.importer(this.archive).then((configuration) => {
         this.mixer.set_loop(configuration.parametres.loop);
         this.mixer.set_sens(configuration.parametres.sens);
         this.synchroniser_modules();
-        this.repaint();
         this.mixer.chargement = false;
 
         // TODO Ajouter les breaks points pour l'affichage en mode colonne
