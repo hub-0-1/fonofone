@@ -16,6 +16,7 @@ class Mixer {
   constructor (waveform_element_id, fnfn_id, ctx_audio) {
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
+    this.is_webkitAudioContext = (this.ctx_audio.constructor.name == "webkitAudioContext"); // Test safari
     this.chargement = true;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.parametres = {};
@@ -45,9 +46,12 @@ class Mixer {
     this.nodes.n0 = this.ctx_audio.createGain();
     
     // Pan
-    if(typeof this.ctx_audio.createStereoPanner == "function")
-    this.nodes.pan = this.ctx_audio.createStereoPanner(); // TODO Alex : n'existe pas sous safari ...
-    // https://www.npmjs.com/package/stereo-panner-node/v/0.1.2
+    if(this.is_webkitAudioContext) {
+
+    }
+    else {
+      this.nodes.pan = this.ctx_audio.createStereoPanner();
+    }
 
     // Reverb
     this.nodes.reverberation_dry = this.ctx_audio.createGain();
@@ -98,13 +102,11 @@ class Mixer {
       new Response(blob).arrayBuffer().then((array_buffer) => {
 
         // Hack Safari
-        if(this.ctx_audio.constructor.name == "webkitAudioContext") {
-          return this.ctx_audio.createBuffer(array_buffer, false);
-        }
+        if(this.is_webkitAudioContext) { return this.ctx_audio.createBuffer(array_buffer, false); }
+
         // Firefox et Chrome
-        else {
-          return this.ctx_audio.decodeAudioData(array_buffer);
-        }
+        else { return this.ctx_audio.decodeAudioData(array_buffer); }
+
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
         this.wavesurfer.loadBlob(blob);
@@ -165,8 +167,8 @@ class Mixer {
     // Pan
     this.parametres.pan = (valeur.pan - 0.5) * 2; // Projection sur l'interval [-1, 1]
     // Hack Safari
-    if(typeof this.ctx_audio.createStereoPanner == "function")
-    this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
+    if(!this.is_webkitAudioContext)
+      this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
   }
 
   set_vitesse (valeur) {
@@ -210,7 +212,12 @@ class Mixer {
     fetch(valeur.url).then((response) => {
       return response.arrayBuffer();
     }).then((buffer) => {
-      return this.ctx_audio.decodeAudioData(buffer);
+      if(this.is_webkitAudioContext) { 
+        return this.ctx_audio.createBuffer(buffer, false); 
+      }
+      else { 
+        return this.ctx_audio.decodeAudioData(buffer); 
+      }
     }).then((audio_buffer) => {
       this.nodes.convolver.buffer = audio_buffer;
     });
