@@ -223,19 +223,22 @@ class Mixer {
 
   set_filtre (valeur) {
 
-    // TODO if(!valeur.actif) {}
+    if(!valeur.actif) {
+      valeur.debut = 0.5;
+      valeur.longueur = 0;
+    }
 
     let frequence = valeur.debut + valeur.longueur / 2;
     let resonnance = valeur.longueur;
 
     if(frequence < 0.5) {
-      this.nodes.lowpass_filter.frequency.value = Math.pow(frequence / 0.45,2) * 19900 + 100; // Parce que c'est comme ca
+      this.nodes.lowpass_filter.frequency.value = Math.pow(frequence / 0.5, 2) * 19900 + 100;
       this.nodes.highpass_filter.frequency.value = 20;
       this.nodes.bandpass_filter.frequency.value = this.nodes.lowpass_filter.frequency.value;
     }
     else {
       this.nodes.lowpass_filter.frequency.value = 20000;
-      this.nodes.highpass_filter.frequency.value = Math.pow((frequence - 0.5) / 0.45, 2) * 20000;
+      this.nodes.highpass_filter.frequency.value = Math.pow((frequence - 0.5) / 0.5, 2) * 19980 + 20;
       this.nodes.bandpass_filter.frequency.value = this.nodes.highpass_filter.frequency.value;
     }
 
