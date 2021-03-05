@@ -4,9 +4,8 @@ import Audiobuffer2Wav from 'audiobuffer-to-wav';
 
 import Track from "./track.js";
 import Impulse from "../donnees/impulse.wav";
+import Globales from "../globales.js";
 
-const min_bpm = 24;
-const max_bpm = 375;
 const pct_bpm_aleatoire = 0.6;
 
 // Hacks Safari : https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Migrating_from_webkitAudioContext
@@ -198,9 +197,9 @@ class Mixer {
   set_metronome (valeur) {
 
     // Rythme aleatoire
-    this.parametres.aleatoire = valeur.aleatoire * Math.random();
     this.parametres.metronome_actif = valeur.actif;
-    this.parametres.bpm = valeur.bpm * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bpm, max_bpm]
+    this.parametres.aleatoire = valeur.aleatoire * Math.random();
+    this.parametres.bpm = Math.pow(valeur.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm;
   }
 
   // TODO Confirmer que ca fonctionne

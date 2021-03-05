@@ -1,4 +1,5 @@
 import Utils from "./_utils.js";
+import Globales from "../globales.js";
 
 import Magnet from "../images/icon-magnet.svg";
 import Power from "../images/icon-power.svg";
@@ -60,6 +61,9 @@ export default {
   computed: {
     x_controlleur_2: function () {
       return this.aleatoire * (1 - largeur_controlleur_2);
+    },
+    text_bpm: function () {
+      return Math.round(Math.pow(this.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm);
     }
   },
   mounted: function () {
@@ -71,6 +75,7 @@ export default {
         <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.2"/>
         <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.15"/>
         <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.1"/>
+        <text x="${centre_cercle.x}" y="${centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle">{{ text_bpm }}</text>
         <path d="${describeArc(0.5, 0.4, 0.3, (taille_arc / -2), (taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-1" r="0.04" ref="controlleur_1"/>
         <rect class="ligne-2" x="0" width="1" y="0.8" height="0.01" rx="0.02"/>

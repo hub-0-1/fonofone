@@ -1,5 +1,11 @@
 export default {
   min_width_grille: 600,
+  modules: {
+    metronome: {
+      min_bpm: 20,
+      max_bpm: 220
+    }
+  },
   sons: [{
     nom: "Impulse",
     url: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav"
