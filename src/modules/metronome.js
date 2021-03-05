@@ -4,11 +4,6 @@ import Globales from "../globales.js";
 import Magnet from "../images/icon-magnet.svg";
 import Power from "../images/icon-power.svg";
 
-const nb_division = 3;
-const taille_arc = 270;
-const centre_cercle = { x: 0.5, y: 0.4 };
-const largeur_controlleur_2 = 0.1;
-
 export default {
   mixins: [Utils],
   data: function () {
@@ -30,15 +25,15 @@ export default {
       else {
         
         // Recentrer les coordonnees de drag
-        let x = coords.x - centre_cercle.x;
-        let y = coords.y - centre_cercle.y;
+        let x = coords.x - Globales.modules.metronome.centre_cercle.x;
+        let y = coords.y - Globales.modules.metronome.centre_cercle.y;
 
         // Hack, aucune idée pourquoi il faut inverser x et y et multiplier y par -1.
         // Donne les bonnes coordonnes
         let angle = cartesianToPolar(-y, x).degrees;
 
         // Reporter l'angle sur l'arc
-        let segment_arc = angle / (taille_arc / 2);
+        let segment_arc = angle / (Globales.modules.metronome.taille_arc / 2);
 
         // Projeter sur l'interval [0..1]
         this.bpm = (segment_arc / 2) + 0.5; // TODO peut retourner des valeurs negatives ... ne devrait pas
@@ -60,7 +55,7 @@ export default {
   },
   computed: {
     x_controlleur_2: function () {
-      return this.aleatoire * (1 - largeur_controlleur_2);
+      return this.aleatoire * (1 - Globales.modules.metronome.largeur_controlleur_2);
     },
     text_bpm: function () {
       return Math.round(Math.pow(this.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm);
@@ -72,14 +67,14 @@ export default {
   template: `
     <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-        <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.2"/>
-        <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.15"/>
-        <circle class="concentrique" cx="${centre_cercle.x}" cy="${centre_cercle.y}" r="0.1"/>
-        <text x="${centre_cercle.x}" y="${centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle">{{ text_bpm }}</text>
-        <path d="${describeArc(0.5, 0.4, 0.3, (taille_arc / -2), (taille_arc / 2))}" class="arc" ref="arc"/>
+        <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.2"/>
+        <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.15"/>
+        <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.1"/>
+        <text x="${Globales.modules.metronome.centre_cercle.x}" y="${Globales.modules.metronome.centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle">{{ text_bpm }}</text>
+        <path d="${describeArc(0.5, 0.4, 0.3, (Globales.modules.metronome.taille_arc / -2), (Globales.modules.metronome.taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-1" r="0.04" ref="controlleur_1"/>
         <rect class="ligne-2" x="0" width="1" y="0.8" height="0.01" rx="0.02"/>
-        <rect class="controlleur-2" :x="x_controlleur_2" width="${largeur_controlleur_2}" y="0.75" height="0.1" rx="0.02" ref="controlleur_2"/>
+        <rect class="controlleur-2" :x="x_controlleur_2" width="${Globales.modules.metronome.largeur_controlleur_2}" y="0.75" height="0.1" rx="0.02" ref="controlleur_2"/>
       </svg>
 
       <template v-slot:footer>
