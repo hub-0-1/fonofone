@@ -207,7 +207,7 @@ export default function (id, archive, ctx_audio) {
     },
     watch: {
       mixer: {
-        handler: function (obj) { this.tracks_actives = obj.tracks.length > 0 },
+        handler: function (mixer) { this.tracks_actives = mixer.tracks.length > 0 },
         deep: true
       }
     },

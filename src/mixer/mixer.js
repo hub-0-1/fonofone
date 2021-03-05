@@ -3,7 +3,6 @@ import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import Audiobuffer2Wav from 'audiobuffer-to-wav';
 
 import Track from "./track.js";
-import Impulse from "../donnees/impulse.wav"; // TODO Enlever
 import Globales from "../globales.js";
 
 const pct_bpm_aleatoire = 0.6;
@@ -111,18 +110,18 @@ class Mixer {
 
   toggle_pause () {
     if(this.tracks.length > 0) {
-      // Annuler le metronome
-      _.each(this.prochaines_tracks, (track) => { clearTimeout(track); });
-      this.prochaines_tracks = [];
-
       // Arreter les tracks qui jouent
       _.each(this.tracks, (track) => { 
-        track.source.stop() 
+        track.source.stop();
       });
     }
     else {
-      // Politique autoplay
-      this.ctx_audio.resume().then(() => { this.jouer(); });
+      if(this.ctx_audio.state == "running") {
+        this.jouer();
+      } else {
+        // Politique autoplay
+        this.ctx_audio.resume().then(() => { this.jouer(); });
+      }
     }
   }
 
@@ -141,21 +140,6 @@ class Mixer {
       if(this.tracks.length == 0 && this.parametres.loop && !this.parametres.metronome_actif) {
         this.jouer();
       }
-    }
-
-    // TODO faire embarquer quand on coche loop apres avoir fait play
-    // Loop avec metronome
-    if(this.parametres.metronome_actif && this.parametres.loop) {
-
-      let interval = (60 / this.parametres.bpm) * 1000;
-
-      // Si aleatoire
-      if(this.parametres.aleatoire > 0) {
-        interval = interval * (1 - (this.parametres.aleatoire / 2)) + ((Math.random() * this.parametres.bpm * 1000) * (this.parametres.aleatoire / 2)) + 50;
-      }
-
-      // TODO Swing, voir code alex
-      this.prochaines_tracks.push(setTimeout(this.jouer.bind(this), interval));
     }
   }
 
@@ -197,7 +181,7 @@ class Mixer {
 
     // Visuel
     this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232'}); // TODO ajouter id fonofone
+    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232'});
   }
 
   set_metronome (valeur) {
@@ -206,6 +190,24 @@ class Mixer {
     this.parametres.metronome_actif = valeur.actif;
     this.parametres.aleatoire = valeur.aleatoire * Math.random();
     this.parametres.bpm = Math.pow(valeur.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm;
+
+
+    // Loop avec metronome
+    if(this.parametres.metronome_actif && this.parametres.loop) {
+
+      let interval = (60 / this.parametres.bpm) * 1000;
+
+      // Si aleatoire
+      if(this.parametres.aleatoire > 0) {
+        interval = interval * (1 - (this.parametres.aleatoire / 2)) + ((Math.random() * this.parametres.bpm * 1000) * (this.parametres.aleatoire / 2)) + 50;
+      }
+
+      // TODO Swing, voir code alex
+
+      // Lancer le metronome
+      clearInterval(this.parametres.handle_interval_metronome);
+      this.parametres.handle_interval_metronome = setInterval(this.jouer.bind(this), interval);
+    }
   }
 
   // TODO Confirmer que ca fonctionne
@@ -251,6 +253,7 @@ class Mixer {
 
   set_loop (valeur) {
     this.parametres.loop = valeur;
+    if(!valeur) clearInterval(this.parametres.handle_interval_metronome);
   }
 
   set_sens (valeur) {
