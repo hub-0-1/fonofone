@@ -13,21 +13,21 @@ export default {
 
 //      filepond.labelIdle = this.$t("filepond.idle");
 
-
       this.$refs.filepond.appendChild(this.outils.filepond.element);
 
       let filepond_el = this.$refs.filepond.firstChild;
       filepond_el.addEventListener('FilePond:addfile', e => { 
         let fichier = e.detail.file;
 
-        console.log(fichier);
         if(fichier.fileType.match(/audio/)) {
-          this.update_fichier_audio(fichier.file); // TODO ca doit planter
-          this.mode_importation = false;
+          new Response(fichier.file).blob().then((blob) =>{
+            this.globales.sons.push({ nom: fichier.filenameWithoutExtension, blob: blob });
+          });
         } else if (fichier.fileExtension == "fnfn") {
-          this.importer(fichier.file);
           this.mode_importation = false;
+          this.importer(fichier.file);
         } else {
+          this.mode_importation = false;
           throw "type de fichier non valide";
         }
       });

@@ -3,7 +3,7 @@ import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 import Audiobuffer2Wav from 'audiobuffer-to-wav';
 
 import Track from "./track.js";
-import Impulse from "../donnees/impulse.wav";
+import Impulse from "../donnees/impulse.wav"; // TODO Enlever
 import Globales from "../globales.js";
 
 const pct_bpm_aleatoire = 0.6;
@@ -145,9 +145,16 @@ class Mixer {
     // TODO faire embarquer quand on coche loop apres avoir fait play
     // Loop avec metronome
     if(this.parametres.metronome_actif && this.parametres.loop) {
-      // TODO extraire amplitude dans fichier config
-      let prochaine_track = this.parametres.bpm + (this.parametres.aleatoire * 100) - 50;
-      this.prochaines_tracks.push(setTimeout(this.jouer.bind(this), (60 / prochaine_track) * 1000));
+
+      let interval = (60 / this.parametres.bpm) * 1000;
+
+      // Si aleatoire
+      if(this.parametres.aleatoire > 0) {
+        interval = interval * (1 - (this.parametres.aleatoire / 2)) + ((Math.random() * this.parametres.bpm * 1000) * (this.parametres.aleatoire / 2)) + 50;
+      }
+
+      // TODO Swing, voir code alex
+      this.prochaines_tracks.push(setTimeout(this.jouer.bind(this), interval));
     }
   }
 
