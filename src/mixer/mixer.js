@@ -42,15 +42,13 @@ class Mixer {
     });
 
     // Initialisation
-    this.nodes.n0 = this.ctx_audio.createGain();
-    
-    // Pan
-    if(this.is_webkitAudioContext) {
+    this.nodes.n0 = this.ctx_audio.createGain(); // Noeud initial qu'on passe a toutes les tracks pour qu'elles se connectent a la destination
 
-    }
-    else {
-      this.nodes.pan = this.ctx_audio.createStereoPanner();
-    }
+    // Pan
+    this.nodes.splitter = this.ctx_audio.createChannelSplitter(2);
+    this.nodes.pan_gauche = this.ctx_audio.createGain();
+    this.nodes.pan_droite = this.ctx_audio.createGain();
+    this.nodes.merger = this.ctx_audio.createChannelMerger(2);
 
     // Reverb
     this.nodes.reverberation_dry = this.ctx_audio.createGain();
@@ -74,24 +72,27 @@ class Mixer {
     this.nodes.master = this.ctx_audio.createGain();
 
     // Appliquer les filtres //
-    if(this.nodes.pan) { // Pour safari
-      this.nodes.n0.connect(this.nodes.pan);
-      this.nodes.pan.connect(this.nodes.reverberation_dry);
-      this.nodes.pan.connect(this.nodes.reverberation_wet);
-    }
-    else {
-      this.nodes.n0.connect(this.nodes.reverberation_dry);
-      this.nodes.n0.connect(this.nodes.reverberation_wet);
-    }
+    this.nodes.n0.connect(this.nodes.splitter);
 
+    // Pan
+    this.nodes.splitter.connect(this.nodes.pan_gauche, 0, 0);
+    this.nodes.splitter.connect(this.nodes.pan_droite, 1, 0);
+    this.nodes.pan_gauche.connect(this.nodes.merger, 0, 1);
+    this.nodes.pan_droite.connect(this.nodes.merger, 0, 0);
+    this.nodes.merger.connect(this.nodes.reverberation_dry);
+    this.nodes.merger.connect(this.nodes.reverberation_wet);
+
+    // Reverb
     this.nodes.reverberation_dry.connect(this.nodes.lowpass_filter);
     this.nodes.reverberation_wet.connect(this.nodes.convolver);
     this.nodes.convolver.connect(this.nodes.lowpass_filter);
 
+    // Filtre
     this.nodes.lowpass_filter.connect(this.nodes.highpass_filter);
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
     this.nodes.bandpass_filter.connect(this.nodes.master);
 
+    // Gain
     this.nodes.master.connect(this.ctx_audio.destination);
     this.nodes.master.connect(this.nodes.media_stream_destination);
   }
@@ -161,14 +162,12 @@ class Mixer {
   set_volume (valeur) {
 
     // Volume
-    this.parametres.volume = valeur.volume;
     this.nodes.master.gain.setValueAtTime(valeur.volume, this.ctx_audio.currentTime);
 
     // Pan
-    this.parametres.pan = (valeur.pan - 0.5) * 2; // Projection sur l'interval [-1, 1]
-    // TODO Hack Safari
-    if(!this.is_webkitAudioContext)
-      this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
+    let pan = valeur.pan * (Math.PI/2);
+    this.nodes.pan_gauche.gain.setValueAtTime(Math.sin(pan), this.ctx_audio.currentTime);
+    this.nodes.pan_droite.gain.setValueAtTime(Math.cos(pan), this.ctx_audio.currentTime);
   }
 
   set_vitesse (valeur) {
@@ -212,7 +211,6 @@ class Mixer {
   // TODO Confirmer que ca fonctionne
   set_reverberation (valeur) {
     if(!valeur.actif) valeur.wet = 0;
-    this.parametres.convolver_wet = valeur.wet;
 
     this.nodes.reverberation_dry.gain.setValueAtTime(1 - valeur.wet, this.ctx_audio.currentTime);
     this.nodes.reverberation_wet.gain.setValueAtTime(valeur.wet, this.ctx_audio.currentTime);
@@ -272,6 +270,7 @@ class Mixer {
     });
   }
 
+  // TODO Voir : https://github.com/mattdiamond/Recorderjs/blob/master/src/recorder.js pour exporter en wav
   exporter () {
     return new Promise ((resolve) => {
       this.session.recorder.onstop = () => { 
