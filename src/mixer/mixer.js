@@ -188,26 +188,40 @@ class Mixer {
 
     // Rythme aleatoire
     this.parametres.metronome_actif = valeur.actif;
-    this.parametres.aleatoire = valeur.aleatoire * Math.random();
-    this.parametres.bpm = Math.pow(valeur.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm;
+    let aleatoire = valeur.aleatoire * Math.random();
+    let bpm = Math.pow(valeur.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm;
 
+    let interval = (60 / bpm) * 1000;
+
+    // Si aleatoire
+    if(aleatoire > 0) {
+      interval = interval * (1 - (aleatoire / 2)) + ((Math.random() * bpm * 1000) * (aleatoire / 2)) + 50;
+    }
+
+    if(valeur.swing) {
+      // TODO Swing, voir code alex
+      interval = interval;
+    }
+
+    this.parametres.interval_metronome = interval;
 
     // Loop avec metronome
-    if(this.parametres.metronome_actif && this.parametres.loop) {
+    console.log(interval);
+    if(this.parametres.metronome_actif && this.parametres.loop) { this.set_interval_metronome(); }
+  }
 
-      let interval = (60 / this.parametres.bpm) * 1000;
+  set_interval_metronome () {
+    this.stop_metronome();
+    console.log("start metronome");
+    this.parametres.handle_interval_metronome = setInterval(function () {
+      console.log("jouer", this.parametres.interval_metronome, Date.now());
+      this.jouer();
+    }.bind(this), this.parametres.interval_metronome);
+  }
 
-      // Si aleatoire
-      if(this.parametres.aleatoire > 0) {
-        interval = interval * (1 - (this.parametres.aleatoire / 2)) + ((Math.random() * this.parametres.bpm * 1000) * (this.parametres.aleatoire / 2)) + 50;
-      }
-
-      // TODO Swing, voir code alex
-
-      // Lancer le metronome
-      clearInterval(this.parametres.handle_interval_metronome);
-      this.parametres.handle_interval_metronome = setInterval(this.jouer.bind(this), interval);
-    }
+  stop_metronome () {
+    console.log("stop metronome");
+    clearInterval(this.parametres.handle_interval_metronome);
   }
 
   // TODO Confirmer que ca fonctionne
@@ -253,7 +267,7 @@ class Mixer {
 
   set_loop (valeur) {
     this.parametres.loop = valeur;
-    if(!valeur) clearInterval(this.parametres.handle_interval_metronome);
+    valeur ? this.set_interval_metronome() : this.stop_metronome(); 
   }
 
   set_sens (valeur) {
