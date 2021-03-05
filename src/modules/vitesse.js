@@ -28,6 +28,7 @@ export default {
     },
     change_mode: function () {
       this.mode = (this.mode % 3) + 1;
+      this.update();
     }
   },
   computed: {

@@ -100,13 +100,7 @@ class Mixer {
   charger_blob (blob) {
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
-
-        // Hack Safari
-        if(this.is_webkitAudioContext) { return this.ctx_audio.createBuffer(array_buffer, false); }
-
-        // Firefox et Chrome
-        else { return this.ctx_audio.decodeAudioData(array_buffer); }
-
+        return this.buffer2audio_buffer(array_buffer);
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
         this.wavesurfer.loadBlob(blob);
@@ -166,15 +160,23 @@ class Mixer {
 
     // Pan
     this.parametres.pan = (valeur.pan - 0.5) * 2; // Projection sur l'interval [-1, 1]
-    // Hack Safari
+    // TODO Hack Safari
     if(!this.is_webkitAudioContext)
       this.nodes.pan.pan.setValueAtTime(this.parametres.pan, this.ctx_audio.currentTime);
   }
 
   set_vitesse (valeur) {
-    // TODO faire quelque chose avec le mode
-    if(!valeur.actif) valeur.vitesse = 0.5;
-    this.parametres.vitesse = valeur.vitesse;
+
+    if(!valeur.actif) {
+      valeur.vitesse = 0.5;
+      valeur.mode = 1;
+    }
+
+    if (valeur.vitesse <.5) {
+      this.parametres.vitesse = Math.pow(valeur.vitesse + 0.5, valeur.mode); // facture de vitesse, .5 = demi-vitesse, 2 = double vitesse
+    } else {
+       this.parametres.vitesse = Math.pow(valeur.vitesse * 2, valeur.mode);
+    }
     this.update_tracks();
   }
 
@@ -201,6 +203,7 @@ class Mixer {
     this.parametres.bpm = valeur.bpm * (max_bpm - min_bpm) + min_bpm; // Projection sur l'interval [min_bpm, max_bpm]
   }
 
+  // TODO Confirmer que ca fonctionne
   set_reverberation (valeur) {
     if(!valeur.actif) valeur.wet = 0;
     this.parametres.convolver_wet = valeur.wet;
@@ -212,12 +215,7 @@ class Mixer {
     fetch(valeur.url).then((response) => {
       return response.arrayBuffer();
     }).then((buffer) => {
-      if(this.is_webkitAudioContext) { 
-        return this.ctx_audio.createBuffer(buffer, false); 
-      }
-      else { 
-        return this.ctx_audio.decodeAudioData(buffer); 
-      }
+      return this.buffer2audio_buffer(buffer);
     }).then((audio_buffer) => {
       this.nodes.convolver.buffer = audio_buffer;
     });
@@ -280,7 +278,14 @@ class Mixer {
     this.session.recorder.start();
   }
 
-  // TODO Nouvelle fonction devrait faire : https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioDestinationNode
+  buffer2audio_buffer (buffer) {
+
+    // Hack Safari
+    if(this.is_webkitAudioContext) { return this.ctx_audio.createBuffer(buffer, false); }
+
+    // Firefox et Chrome
+    else { return this.ctx_audio.decodeAudioData(buffer); }
+  }
 }
 
 export default Mixer;
@@ -306,3 +311,5 @@ function crop_audio_buffer(ctx_audio, buffer, begin, end) {
 
   return newArrayBuffer;
 }
+
+
