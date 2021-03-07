@@ -138,6 +138,9 @@ export default function (id, archive, ctx_audio) {
         }
         this.mixer.toggle_pause();
       },
+      repaint: function () {
+        console.log("TODO : repaint");
+      },
       toggle_enregistrement: function () {
         this.get_recorder().then((recorder) => {
           this.enregistrement.encours ? recorder.stop() : recorder.start();
@@ -216,6 +219,8 @@ export default function (id, archive, ctx_audio) {
       /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
         this.mode_affichage = "grille";
       }*/
+
+      window.addEventListener("resize", this.repaint);
 
       this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
 

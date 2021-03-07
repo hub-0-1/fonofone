@@ -1,6 +1,6 @@
 import WaveSurfer from 'wavesurfer.js';
 import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
-import Audiobuffer2Wav from 'audiobuffer-to-wav';
+import toWav from 'audiobuffer-to-wav';
 
 import Track from "./track.js";
 import Globales from "../globales.js";
@@ -12,6 +12,7 @@ const pct_bpm_aleatoire = 0.6;
 // TODO Refact constantes de tout le fonofone dans globales.js
 class Mixer {
   constructor (waveform_element_id, fnfn_id, ctx_audio) {
+    this.waveform_element_id = waveform_element_id;
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
     this.is_webkitAudioContext = (this.ctx_audio.constructor.name == "webkitAudioContext"); // Test safari
@@ -33,14 +34,9 @@ class Mixer {
     this.session.recorder.ondataavailable = (evt) => { this.session.chunks.push(evt.data); };
 
     // Representation graphique du son
-    this.wavesurfer = WaveSurfer.create({
-      container: `#${waveform_element_id}`,
-      waveColor: '#418ACA',
-      height: 100, // TODO determiner par CSS si possible
-      plugins: [ Regions.create() ]
-    });
+    this.paint();
 
-    // Initialisation
+        // Initialisation
     this.nodes.n0 = this.ctx_audio.createGain(); // Noeud initial qu'on passe a toutes les tracks pour qu'elles se connectent a la destination
 
     // Pan
@@ -94,6 +90,18 @@ class Mixer {
     // Gain
     this.nodes.master.connect(this.ctx_audio.destination);
     this.nodes.master.connect(this.nodes.media_stream_destination);
+  }
+
+  paint () {
+    // TODO trouver une facon de repaint responsive;
+    
+    // Afficher
+    this.wavesurfer = WaveSurfer.create({
+      container: `#${this.waveform_element_id}`,
+      waveColor: '#418ACA',
+      height: 100, // TODO determiner par CSS si possible
+      plugins: [ Regions.create() ]
+    });
   }
 
   charger_blob (blob) {
@@ -193,34 +201,29 @@ class Mixer {
 
     let interval = (60 / bpm) * 1000;
 
-    // Si aleatoire
-    if(aleatoire > 0) {
-      interval = interval * (1 - (aleatoire / 2)) + ((Math.random() * bpm * 1000) * (aleatoire / 2)) + 50;
-    }
-
     if(valeur.swing) {
       // TODO Swing, voir code alex
       interval = interval;
     }
 
+    // Si aleatoire
+    if(aleatoire > 0) {
+      interval = interval * (1 - (aleatoire / 2)) + ((Math.random() * bpm * 1000) * (aleatoire / 2)) + 50;
+    }
     this.parametres.interval_metronome = interval;
 
     // Loop avec metronome
-    console.log(interval);
     if(this.parametres.metronome_actif && this.parametres.loop) { this.set_interval_metronome(); }
   }
 
   set_interval_metronome () {
     this.stop_metronome();
-    console.log("start metronome");
     this.parametres.handle_interval_metronome = setInterval(function () {
-      console.log("jouer", this.parametres.interval_metronome, Date.now());
       this.jouer();
     }.bind(this), this.parametres.interval_metronome);
   }
 
   stop_metronome () {
-    console.log("stop metronome");
     clearInterval(this.parametres.handle_interval_metronome);
   }
 
@@ -287,13 +290,24 @@ class Mixer {
     });
   }
 
-  // TODO Voir : https://github.com/mattdiamond/Recorderjs/blob/master/src/recorder.js pour exporter en wav
   exporter () {
     return new Promise ((resolve) => {
       this.session.recorder.onstop = () => { 
-        this.session.blob = new Blob(this.session.chunks, { 'type': 'audio/ogg; codecs=opus' }); 
+        let blob = this.session.blob = new Blob(this.session.chunks, { 'type': 'audio/ogg; codecs=opus' }); 
         this.session.chunks = [];
-        resolve(this.session.blob);
+
+        // Il doit y avoir moyen de faire plus simple ...
+        // Marche pas
+        new Response(blob).arrayBuffer().then((buffer) => {
+          return this.buffer2audio_buffer(buffer);
+        }).then((audio_buffer) => {
+          return toWav(audio_buffer);
+        }).then((wav_buffer) => {
+          return new Response(wav_buffer).blob();
+        }).then((audio_blob) => {
+          //resolve(audio_blob);
+          resolve(this.session.blob);
+        })
       };
       this.session.recorder.stop();
     }) 
