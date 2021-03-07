@@ -91,7 +91,10 @@ class Mixer {
   }
 
   paint () {
-    if(this.wavesurfer) this.wavesurfer.destroy();
+
+    if(this.wavesurfer) {
+      this.wavesurfer.destroy();
+    }
     
     // Afficher
     this.wavesurfer = WaveSurfer.create({
@@ -105,13 +108,19 @@ class Mixer {
   }
 
   charger_blob (blob) {
+
+    // Affichage
+    // TODO recursion infinie ...
     this.audio_blob = blob;
+    this.paint();
+
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
         return this.buffer2audio_buffer(array_buffer);
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
-        this.paint();
+        // TODO tout enlever paint et mettre cette ligne si recursion infinie
+        //this.wavesurfer.loadBlob(this.audio_blob);
         resolve(true);
       });
     });
