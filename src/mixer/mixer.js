@@ -34,6 +34,9 @@ class Mixer {
     };
     this.session.recorder.ondataavailable = (evt) => { this.session.chunks.push(evt.data); };
 
+    // Visualisation
+    this.paint();
+
     // Initialisation
     this.nodes.n0 = this.ctx_audio.createGain(); // Noeud initial qu'on passe a toutes les tracks pour qu'elles se connectent a la destination
 
@@ -104,7 +107,7 @@ class Mixer {
       plugins: [ Regions.create() ]
     });
 
-    this.wavesurfer.loadBlob(this.audio_blob);
+    //this.wavesurfer.loadBlob(this.audio_blob);
   }
 
   charger_blob (blob) {
@@ -112,7 +115,7 @@ class Mixer {
     // Affichage
     // TODO recursion infinie ...
     this.audio_blob = blob;
-    this.paint();
+    //this.paint();
 
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
@@ -120,7 +123,7 @@ class Mixer {
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
         // TODO tout enlever paint et mettre cette ligne si recursion infinie
-        //this.wavesurfer.loadBlob(this.audio_blob);
+        this.wavesurfer.loadBlob(this.audio_blob);
         resolve(true);
       });
     });
@@ -148,13 +151,17 @@ class Mixer {
     // Ne pas jouer au chargement
     if(this.chargement) return;
 
-    // Creer et supprimer la track
+    // Creer et lancer la track
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.n0, this.parametres);
     this.tracks.push(track);
+
+    // Lors de la fin
     track.source.onended = () => { 
+
+      // Supprimer la track de la liste
       this.tracks.splice(this.tracks.indexOf(track), 1); 
 
-      // Loop sans metronome
+      // Si loop mais pas metronome
       if(this.tracks.length == 0 && this.parametres.loop && !this.parametres.metronome_actif) {
         this.jouer();
       }
@@ -216,10 +223,10 @@ class Mixer {
       interval = interval;
     }
 
-    // Si aleatoire
-    if(aleatoire > 0) {
-      interval = interval * (1 - (aleatoire / 2)) + ((Math.random() * bpm * 1000) * (aleatoire / 2)) + 50;
-    }
+    // Partie aleatoire
+    interval = interval * (1 - (aleatoire / 2)) + (Math.random() * interval * aleatoire); // + 50
+
+    // Sauvegarder
     this.parametres.interval_metronome = interval;
 
     // Loop avec metronome

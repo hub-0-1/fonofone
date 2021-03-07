@@ -139,7 +139,7 @@ export default function (id, archive, ctx_audio) {
         this.mixer.toggle_pause();
       },
       repaint: function () {
-        this.mixer.paint();
+        // TODO this.mixer.paint();
       },
       toggle_enregistrement: function () {
         this.get_recorder().then((recorder) => {
@@ -203,7 +203,11 @@ export default function (id, archive, ctx_audio) {
     },
     watch: {
       mixer: {
-        handler: function (mixer) { this.tracks_actives = mixer.tracks.length > 0 },
+        handler: function (mixer) { 
+          this.tracks_actives = (mixer.tracks.length > 0 
+            || (mixer.parametres.metronome_actif && mixer.parametres.loop)
+          );
+        },
         deep: true
       }
     },
