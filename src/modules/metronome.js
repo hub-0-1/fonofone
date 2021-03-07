@@ -19,11 +19,9 @@ export default {
       let coords = this.get_mouse_position(e);
 
       if(this.controlleur_actif == this.$refs.controlleur_aleatoire) { // Aleatoire
-        console.log("la");
         this.aleatoire = this.borner_0_1(coords.x);
       }
       else if(this.controlleur_actif == this.$refs.controlleur_syncope) { // Syncope
-        console.log("ici");
         this.syncope = this.borner_0_1(coords.x);
       } else { // BPM
 
@@ -58,7 +56,7 @@ export default {
   },
   computed: {
     x_controlleur_aleatoire: function () {
-      return this.aleatoire * (1 - Globales.modules.metronome.largeur_controlleur_2);
+      return this.aleatoire * (1 - Globales.modules.metronome.largeur_controlleur_aleatoire);
     },
     x_controlleur_syncope: function () {
       return this.syncope * (1 - Globales.modules.metronome.largeur_controlleur_syncope);
