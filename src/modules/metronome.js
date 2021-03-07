@@ -10,6 +10,7 @@ export default {
     return { 
       aleatoire: this.valeur.aleatoire,
       bpm: this.valeur.bpm,
+      syncope: this.valeur.syncope,
       aimant: false
     }
   },
@@ -17,13 +18,15 @@ export default {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
-      // Potentimetre horizontal
-      if(this.controlleur_actif == this.$refs.controlleur_2) {
+      if(this.controlleur_actif == this.$refs.controlleur_aleatoire) { // Aleatoire
+        console.log("la");
         this.aleatoire = this.borner_0_1(coords.x);
       }
-      // Potentimetre rotatif
-      else {
-        
+      else if(this.controlleur_actif == this.$refs.controlleur_syncope) { // Syncope
+        console.log("ici");
+        this.syncope = this.borner_0_1(coords.x);
+      } else { // BPM
+
         // Recentrer les coordonnees de drag
         let x = coords.x - Globales.modules.metronome.centre_cercle.x;
         let y = coords.y - Globales.modules.metronome.centre_cercle.y;
@@ -46,16 +49,19 @@ export default {
       // Deplacement du point : https://bl.ocks.org/mbostock/1705868
       let arc = this.$refs.arc;
       let point = arc.getPointAtLength(arc.getTotalLength() * (1 - this.bpm));
-      this.$refs.controlleur_1.setAttribute('cx', point.x);
-      this.$refs.controlleur_1.setAttribute('cy', point.y);
+      this.$refs.controlleur_bpm.setAttribute('cx', point.x);
+      this.$refs.controlleur_bpm.setAttribute('cy', point.y);
     },
     update: function () {
-      this.$emit('update:valeur', { actif: this.module_actif, aleatoire: this.aleatoire, bpm: this.bpm });
+      this.$emit('update:valeur', { actif: this.module_actif, syncope: this.syncope, aleatoire: this.aleatoire, bpm: this.bpm });
     }
   },
   computed: {
-    x_controlleur_2: function () {
+    x_controlleur_aleatoire: function () {
       return this.aleatoire * (1 - Globales.modules.metronome.largeur_controlleur_2);
+    },
+    x_controlleur_syncope: function () {
+      return this.syncope * (1 - Globales.modules.metronome.largeur_controlleur_syncope);
     },
     text_bpm: function () {
       return Math.round(Math.pow(this.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm);
@@ -72,9 +78,13 @@ export default {
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.1"/>
         <text x="${Globales.modules.metronome.centre_cercle.x}" y="${Globales.modules.metronome.centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle">{{ text_bpm }}</text>
         <path d="${describeArc(0.5, 0.4, 0.3, (Globales.modules.metronome.taille_arc / -2), (Globales.modules.metronome.taille_arc / 2))}" class="arc" ref="arc"/>
-        <circle class="controlleur-1" r="0.04" ref="controlleur_1"/>
-        <rect class="ligne-2" x="0" width="1" y="0.8" height="0.01" rx="0.02"/>
-        <rect class="controlleur-2" :x="x_controlleur_2" width="${Globales.modules.metronome.largeur_controlleur_2}" y="0.75" height="0.1" rx="0.02" ref="controlleur_2"/>
+        <circle class="controlleur-bpm" r="0.04" ref="controlleur_bpm"/>
+
+        <rect class="ligne-syncope" x="0" width="1" y="0.75" height="0.01" rx="0.02"/>
+        <rect class="controlleur-syncope" :x="x_controlleur_syncope" width="${Globales.modules.metronome.largeur_controlleur_syncope}" y="0.70" height="0.1" rx="0.02" ref="controlleur_syncope"/>
+
+        <rect class="ligne-aleatoire" x="0" width="1" y="0.9" height="0.01" rx="0.02"/>
+        <rect class="controlleur-aleatoire" :x="x_controlleur_aleatoire" width="${Globales.modules.metronome.largeur_controlleur_aleatoire}" y="0.85" height="0.1" rx="0.02" ref="controlleur_aleatoire"/>
       </svg>
 
       <template v-slot:footer>
