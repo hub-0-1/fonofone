@@ -17,6 +17,7 @@ class Mixer {
     this.ctx_audio = ctx_audio;
     this.is_webkitAudioContext = (this.ctx_audio.constructor.name == "webkitAudioContext"); // Test safari
     this.chargement = true;
+    this.audio_blob = null;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.parametres = {};
     this.tracks = [];
@@ -33,10 +34,7 @@ class Mixer {
     };
     this.session.recorder.ondataavailable = (evt) => { this.session.chunks.push(evt.data); };
 
-    // Representation graphique du son
-    this.paint();
-
-        // Initialisation
+    // Initialisation
     this.nodes.n0 = this.ctx_audio.createGain(); // Noeud initial qu'on passe a toutes les tracks pour qu'elles se connectent a la destination
 
     // Pan
@@ -93,7 +91,7 @@ class Mixer {
   }
 
   paint () {
-    // TODO trouver une facon de repaint responsive;
+    if(this.wavesurfer) this.wavesurfer.destroy();
     
     // Afficher
     this.wavesurfer = WaveSurfer.create({
@@ -102,15 +100,18 @@ class Mixer {
       height: 100, // TODO determiner par CSS si possible
       plugins: [ Regions.create() ]
     });
+
+    this.wavesurfer.loadBlob(this.audio_blob);
   }
 
   charger_blob (blob) {
+    this.audio_blob = blob;
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
         return this.buffer2audio_buffer(array_buffer);
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
-        this.wavesurfer.loadBlob(blob);
+        this.paint();
         resolve(true);
       });
     });

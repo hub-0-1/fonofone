@@ -139,7 +139,7 @@ export default function (id, archive, ctx_audio) {
         this.mixer.toggle_pause();
       },
       repaint: function () {
-        console.log("TODO : repaint");
+        this.mixer.paint();
       },
       toggle_enregistrement: function () {
         this.get_recorder().then((recorder) => {
