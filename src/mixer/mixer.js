@@ -173,19 +173,20 @@ class Mixer {
 
       // Partie syncope
       if(this.parametres.syncope) {
-        console.log(this.parametres.syncope);
+
+        var coeff = 2 * (this.parametres.syncope / 2.0);
+
         if(this.parametres.prochaine_syncope_courte){
-          interval = interval;
+          interval = interval * (1 - coeff) +  interval * ((2/3) * coeff);
         } else {
-          interval = interval;
+          interval = interval * (1 - coeff) +  interval * ((4/3) * coeff);
         }
-        this.parametres.prochaine_syncope_courte != this.parametres.prochaine_syncope_courte;
+        this.parametres.prochaine_syncope_courte = !this.parametres.prochaine_syncope_courte;
       }
 
       // Partie aleatoire
       interval = interval * (1 - (this.parametres.aleatoire / 2)) + (Math.random() * interval * this.parametres.aleatoire);// + (60 / Globales.modules.metronome.min_bpm) * 1000;
 
-      console.log(interval);
       setTimeout(this.jouer.bind(this), interval);
     }
   }
