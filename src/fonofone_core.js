@@ -251,7 +251,7 @@ export default function (id, archive, ctx_audio) {
               <img src="${Folder}" @click="mode_importation = !mode_importation"/>
               <input v-model="configuration.parametres.nom" class="texte-nom-archive" placeholder="Archive"/>
             </div>
-            <div :id="waveform_id" class="wavesurfer"></div>
+            <div :id="waveform_id" class="wavesurfer" @click.prevent></div>
             <div class="menu">
               <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
               <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>

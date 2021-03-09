@@ -104,7 +104,7 @@ class Mixer {
       container: `#${this.waveform_element_id}`,
       waveColor: '#418ACA',
       height: 100, // TODO determiner par CSS si possible
-      plugins: [ Regions.create() ]
+      plugins: [ Regions.create({ }) ]
     });
 
     //this.wavesurfer.loadBlob(this.audio_blob);
@@ -229,7 +229,7 @@ class Mixer {
 
     // Visuel
     this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232'});
+    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232', drag: false, resize: false});
   }
 
   set_metronome (valeur) {
