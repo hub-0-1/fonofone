@@ -272,7 +272,9 @@ export default function (id, archive, ctx_audio) {
               <h3>Liste des sons</h3>
               <main>
                 <ul>
-                  <li v-for="son in globales.sons" @click="charger_son(son)">{{ son.nom }}</li>
+                  <li v-for="son in globales.sons" @click="charger_son(son)">
+                    <input @click.stop v-model="son.nom" type="text"/>
+                  </li>
                 </ul>
                 <h3>Importation</h3>
                 <div ref="filepond"></div>
