@@ -68,15 +68,13 @@ export default {
   mounted: function () {
     this.update_position_point_arc();
   },
+  // Voir contenteditable pour svg text
   template: `
     <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.2"/>
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.15"/>
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.1"/>
-        <foreignObject x="${Globales.modules.metronome.centre_cercle.x}" y="${Globales.modules.metronome.centre_cercle.y}" width="0.1" height="0.1">
-          <input v-model.number="bpm" type="number" class="text-bpm" xmlns="http://www.w3.org/1999/xhtml"/>
-        </foreignObject>
         <text x="${Globales.modules.metronome.centre_cercle.x}" y="${Globales.modules.metronome.centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle">{{ text_bpm }}</text>
         <path d="${describeArc(0.5, 0.4, 0.3, (Globales.modules.metronome.taille_arc / -2), (Globales.modules.metronome.taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-bpm" r="0.04" ref="controlleur_bpm"/>

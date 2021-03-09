@@ -163,7 +163,9 @@
     }
 
     &.session.actif {
-      border: 1px solid white;
+      animation-name: flash;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
     }
 
     &.sens {
@@ -189,5 +191,14 @@
     &.actif {
       box-shadow: 1px 1px white;
     }
+  }
+}
+
+@keyframes flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
   }
 }
