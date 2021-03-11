@@ -1,13 +1,11 @@
 import WaveSurfer from 'wavesurfer.js';
 import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
-import toWav from 'audiobuffer-to-wav';
+import Enregistreur from '../enregistreur.js';
 
 import Track from "./track.js";
 import Globales from "../globales.js";
 
 const pct_bpm_aleatoire = 0.6;
-
-// Hacks Safari : https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Migrating_from_webkitAudioContext
 
 // TODO Refact constantes de tout le fonofone dans globales.js
 class Mixer {
@@ -23,16 +21,11 @@ class Mixer {
     this.tracks = [];
     this.prochaines_tracks = [];
     this.nodes = {};
+    this.session = { };
 
     // Enregistrement de session
     this.nodes.media_stream_destination = ctx_audio.createMediaStreamDestination();
-    this.session = {
-      blob: null,
-      encours: false,
-      chunks: [],
-      recorder: new MediaRecorder(this.nodes.media_stream_destination.stream)
-    };
-    this.session.recorder.ondataavailable = (evt) => { this.session.chunks.push(evt.data); };
+    this.enregistreur = new Enregistreur(this.nodes.media_stream_destination.stream);
 
     // Visualisation
     this.paint();
@@ -304,31 +297,12 @@ class Mixer {
     });
   }
 
-  exporter () {
-    return new Promise ((resolve) => {
-      this.session.recorder.onstop = () => { 
-        let blob = this.session.blob = new Blob(this.session.chunks, { 'type': 'audio/ogg; codecs=opus' }); 
-        this.session.chunks = [];
-
-        // Il doit y avoir moyen de faire plus simple ...
-        // Marche pas
-        new Response(blob).arrayBuffer().then((buffer) => {
-          return this.buffer2audio_buffer(buffer);
-        }).then((audio_buffer) => {
-          return toWav(audio_buffer);
-        }).then((wav_buffer) => {
-          return new Response(wav_buffer).blob();
-        }).then((audio_blob) => {
-          //resolve(audio_blob);
-          resolve(this.session.blob);
-        })
-      };
-      this.session.recorder.stop();
-    }) 
+  terminer_session () {
+    return this.enregistreur.terminer();
   }
 
-  start_session () {
-    this.session.recorder.start();
+  debuter_session () {
+    this.enregistreur.debuter();
   }
 
   buffer2audio_buffer (buffer) {

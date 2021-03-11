@@ -64,6 +64,19 @@
           background-color: @charcoal;
           color: @blanc;
           font-weight: normal;
+          display: flex;
+          align-items: center;
+
+          img {
+            margin-right: 10px;
+            height: 20px;
+          }
+
+          &.actif {
+            animation-name: flash;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+          }
         }
 
         main {

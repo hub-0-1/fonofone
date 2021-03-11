@@ -19,7 +19,8 @@ export default {
       filepond_el.addEventListener('FilePond:addfile', e => { 
         let fichier = e.detail.file;
 
-        if(fichier.fileType.match(/audio/)) {
+        console.log(fichier);
+        if(fichier.fileType.match(/audio|webm/)) {
           new Response(fichier.file).blob().then((blob) =>{
             this.globales.sons.push({ nom: fichier.filenameWithoutExtension, blob: blob });
           });

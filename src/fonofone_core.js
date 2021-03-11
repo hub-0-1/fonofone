@@ -13,6 +13,7 @@ import { saveAs } from 'file-saver';
 import toWav from 'audiobuffer-to-wav';
 
 import Filepond from './mixins/filepond.js';
+import Enregistreur from './enregistreur.js';
 
 import Mixer from './mixer/mixer.js';
 import Filtre from './modules/filtre.js';
@@ -63,8 +64,7 @@ export default function (id, archive, ctx_audio) {
       tracks_actives: false,
       enregistrement: {
         encours: false,
-        chunks: [],
-        recorder: null
+        enregistreur: null
       },
       mixer: {session:{}},
       outils: {
@@ -142,18 +142,22 @@ export default function (id, archive, ctx_audio) {
         // TODO this.mixer.paint();
       },
       toggle_enregistrement: function () {
-        this.get_recorder().then((recorder) => {
-          this.enregistrement.encours ? recorder.stop() : recorder.start();
+        this.get_enregistreur().then((enregistreur) => {
+          if(!this.enregistrement.encours) {
+            enregistreur.debuter();
+          } else {
+            enregistreur.terminer().then((blob) => {
+              this.globales.sons.push({ nom: `son_${Date.now().toString()}`, blob });
+            });
+          } 
           this.enregistrement.encours = !this.enregistrement.encours;
         });
       },
       toggle_session: function () {
         if(this.mixer.session.encours) {
-          this.mixer.exporter().then((blob) => {
-            saveAs(blob, `session_${Date.now().toString()}.ogg`); 
-          });
+          this.mixer.terminer_session().then((blob) => { saveAs(blob, `session_${Date.now().toString()}.webm`); });
         } else {
-          this.mixer.start_session();
+          this.mixer.debuter_session();
         }
         this.mixer.session.encours = !this.mixer.session.encours;
       },
@@ -177,25 +181,17 @@ export default function (id, archive, ctx_audio) {
           });
         }
       },
-      get_recorder: function () {
+      get_enregistreur: function () {
         return new Promise ((resolve) => {
 
           // S'il est deja initialise
-          if(this.enregistrement.recorder) resolve(this.enregistrement.recorder);
+          if(this.enregistrement.enregistreur) resolve(this.enregistrement.enregistreur);
 
           // Sinon
           else {
             navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-              let mediaRecorder = this.enregistrement.recorder = new MediaRecorder(stream);
-              this.enregistrement.recorder.ondataavailable = function(e) { this.enregistrement.chunks.push(e.data); }.bind(this);
-
-              this.enregistrement.recorder.onstop = function (e) {
-                // Retourner un blob parce que les arrayBuffers sont consommes dans le processus
-                this.globales.sons.push({ nom: Date.now().toString(), blob: new Blob(this.enregistrement.chunks, { 'type': 'audio/ogg; codecs=opus' }) });
-                this.enregistrement.chunks = [];
-              }.bind(this);
-
-              resolve(this.enregistrement.recorder);
+              this.enregistrement.enregistreur = new Enregistreur(stream);
+              resolve(this.enregistrement.enregistreur);
             });      
           }
         });
@@ -279,7 +275,7 @@ export default function (id, archive, ctx_audio) {
                 <h3>Importation</h3>
                 <div ref="filepond"></div>
               </main>
-              <h3 @click="toggle_enregistrement"><img src="${Micro}">Enregistrer un son</h3>
+              <h3 @click="toggle_enregistrement" :class="{actif: enregistrement.encours}"><img src="${Micro}">Enregistrer un son</h3>
             </div>
           </div>
         </div>
