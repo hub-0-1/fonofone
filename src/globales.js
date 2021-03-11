@@ -8,6 +8,16 @@ export default {
       largeur_controlleur_syncope: 0.1,
       min_bpm: 20,
       max_bpm: 220
+    },
+    reverberation: {
+      largeur_reverberation: 0.1,
+      dimension_img: 0.1,
+      sons: [
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav" },
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav2" },
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav3" },
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav4" }
+      ]
     }
   },
   sons: [{
