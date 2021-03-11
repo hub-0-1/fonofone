@@ -1,10 +1,7 @@
 import Utils from "./_utils.js";
-import Magnet from "../images/icon-magnet.svg";
+import Globales from "../globales.js";
 
-const hauteur_controlleur = 0.1;
-const largeur_controlleur = 0.1;
-const nb_division = 8;
-const width_division = 0.005;
+import Magnet from "../images/icon-magnet.svg";
 
 export default {
   mixins: [Utils],
@@ -30,28 +27,20 @@ export default {
     x: function () {
       let pos_init = this.pan;
       if(this.aimant) {
-        pos_init = Math.round(pos_init / (1 / nb_division)) * (1 / nb_division);
+        pos_init = Math.round(pos_init / (1 / Globales.modules.volume.nb_division)) * (1 / Globales.modules.volume.nb_division);
       }
-      return pos_init * (1 - largeur_controlleur);
+      return pos_init * (1 - Globales.modules.volume.largeur_controlleur);
     },
     y: function () {
-      return 1 - (this.volume * (1 - hauteur_controlleur) + hauteur_controlleur);
+      return 1 - (this.volume * (1 - Globales.modules.volume.hauteur_controlleur) + Globales.modules.volume.hauteur_controlleur);
     }
   },
   template: `
     <generique :module="$t('modules.volume')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
-        <rect class="ligne" x="${(0 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="ligne" x="${(1 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="ligne" x="${(2 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="ligne" x="${(3 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="ligne" x="${(4 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division)}" y="0" height="1" width="${width_division * 2}" />
-        <rect class="ligne" x="${(5 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="ligne" x="${(6 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="ligne" x="${(7 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="ligne" x="${(8 / nb_division) * (1 - largeur_controlleur) + (largeur_controlleur / 2) - (width_division / 2)}" y="0" height="1" width="${width_division}" />
-        <rect class="controlleur" :x="x" width="${largeur_controlleur}" :y="y" height="${hauteur_controlleur}" rx="0.02" ref="controlleur"/>
+        <rect v-for="i in ${Globales.modules.volume.nb_division + 1}" class="ligne" :x="((i - 1) / ${Globales.modules.volume.nb_division}) * ${(1 - Globales.modules.volume.largeur_controlleur)} + ${(Globales.modules.volume.largeur_controlleur / 2)} - ${(Globales.modules.volume.width_division / 2)}" y="0" height="1" width="${Globales.modules.volume.width_division}" />
+        <rect class="controlleur" :x="x" width="${Globales.modules.volume.largeur_controlleur}" :y="y" height="${Globales.modules.volume.hauteur_controlleur}" rx="0.02" ref="controlleur"/>
       </svg>
 
       <template v-slot:footer>

@@ -1,6 +1,12 @@
 export default {
   min_width_grille: 600,
   modules: {
+    volume: {
+      hauteur_controlleur: 0.1,
+      largeur_controlleur: 0.1,
+      nb_division: 8,
+      width_division: 0.005
+    },
     metronome: {
       taille_arc: 270,
       centre_cercle: { x: 0.5, y: 0.4 },
