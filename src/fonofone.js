@@ -12,7 +12,7 @@ import './fonofone_gestion.js'; // Contient GFonofone
  */
 
 window.Fonofone = class Fonofone {
-  constructor (element, configuration, ctx_audio) {
+  constructor (element, parametres = {}) {
 
     if(!element || element.nodeType !== Node.ELEMENT_NODE) {
       throw "Element d'attache non valide";
@@ -24,15 +24,20 @@ window.Fonofone = class Fonofone {
     app.id = "fnfn-" + window.GestionnaireFonofone.prochainIndex();
     element.appendChild(app);
     
+    // Archive a charger
+    parametres.configuration = (parametres.configuration || "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn");
+
     // Creer le contexte audio si on est pas dans un Fonoimage
     let AudioContext = window.AudioContext || window.webkitAudioContext;
-    ctx_audio = (ctx_audio || new AudioContext);
+    parametres.ctx_audio = (parametres.ctx_audio || new AudioContext);
 
-    return fetch("https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn")
+    // Creer un noeud de sortie controllable par le Fonoimage
+
+    return fetch(parametres.configuration)
       .then((response) => {
         return response.blob()})
       .then((archive) => {
-        ApplicationFonofone(app.id, archive, ctx_audio);
+        ApplicationFonofone(app.id, archive, parametres.ctx_audio);
       });
   }
 }
