@@ -28,7 +28,7 @@ window.Fonofone = class Fonofone {
     parametres.configuration = (parametres.configuration || "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn");
    
     // Si on passe des configurations externes, on assume qu'on est dans un Fonoimage 
-    let integration_fonoimage = (parametres.ctx_audio || parametres.noeud_sortie);
+    let integration_fonoimage = !!(parametres.ctx_audio || parametres.noeud_sortie);
     console.log(integration_fonoimage);
 
     // Creer le contexte audio si on est pas dans un Fonoimage

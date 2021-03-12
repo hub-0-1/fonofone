@@ -43,7 +43,7 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
-export default function (id, archive, ctx_audio, noeud_sortie) {
+export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoimage) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
@@ -56,7 +56,7 @@ export default function (id, archive, ctx_audio, noeud_sortie) {
       "vitesse": Vitesse
     },
     data: {
-      id, archive, ctx_audio, noeud_sortie
+      id, archive, ctx_audio, noeud_sortie, integration_fonoimage,
       configuration: {parametres:{}},
       globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
@@ -66,7 +66,7 @@ export default function (id, archive, ctx_audio, noeud_sortie) {
         encours: false,
         enregistreur: null
       },
-      mixer: {session:{}},
+      mixer: { session:{} },
       outils: {
         filepond: null
       }
@@ -231,7 +231,7 @@ export default function (id, archive, ctx_audio, noeud_sortie) {
         this.mixer.chargement = false;
 
         // TODO Ajouter les breaks points pour l'affichage en mode colonne
-        // compter les enfants, sSelon la largeur, diviser en colonnes
+        // compter les enfants, selon la largeur, diviser en colonnes
         let children = this.$refs.mixer.children;
       });
     },
@@ -249,7 +249,7 @@ export default function (id, archive, ctx_audio, noeud_sortie) {
             </div>
             <div :id="waveform_id" class="wavesurfer" @click.prevent></div>
             <div class="menu">
-              <img src="${Record}" class="icone session" :class="{actif: mixer.enregistreur.recorder.state == 'recording'}" @click="toggle_session"/>
+              <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
               <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
               <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
               <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>

@@ -21,12 +21,11 @@ class Mixer {
     this.tracks = [];
     this.prochaines_tracks = [];
     this.nodes = {};
-    this.session = { };
+    this.session = { encours: false };
 
     // Enregistrement de session
     this.nodes.media_stream_destination = ctx_audio.createMediaStreamDestination();
     this.enregistreur = new Enregistreur(this.nodes.media_stream_destination.stream);
-    console.log(this.enregistreur);
 
     // Visualisation
     this.paint();
