@@ -9,7 +9,7 @@ const pct_bpm_aleatoire = 0.6;
 
 // TODO Refact constantes de tout le fonofone dans globales.js
 class Mixer {
-  constructor (waveform_element_id, fnfn_id, ctx_audio) {
+  constructor (waveform_element_id, fnfn_id, ctx_audio, noeud_sortie) {
     this.waveform_element_id = waveform_element_id;
     this.fnfn_id = fnfn_id;
     this.ctx_audio = ctx_audio;
@@ -26,6 +26,7 @@ class Mixer {
     // Enregistrement de session
     this.nodes.media_stream_destination = ctx_audio.createMediaStreamDestination();
     this.enregistreur = new Enregistreur(this.nodes.media_stream_destination.stream);
+    console.log(this.enregistreur);
 
     // Visualisation
     this.paint();
@@ -82,8 +83,11 @@ class Mixer {
     this.nodes.bandpass_filter.connect(this.nodes.master);
 
     // Gain
-    this.nodes.master.connect(this.ctx_audio.destination);
-    this.nodes.master.connect(this.nodes.media_stream_destination);
+    this.nodes.master.connect(noeud_sortie);
+
+    // Sortie controllable de l'externe du Fonofone
+    noeud_sortie.connect(this.ctx_audio.destination);
+    noeud_sortie.connect(this.nodes.media_stream_destination);
   }
 
   paint () {

@@ -43,7 +43,7 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
-export default function (id, archive, ctx_audio) {
+export default function (id, archive, ctx_audio, noeud_sortie) {
   return new Vue({
     el: "#" + id,
     mixins: [Filepond],
@@ -56,7 +56,7 @@ export default function (id, archive, ctx_audio) {
       "vitesse": Vitesse
     },
     data: {
-      id, archive, ctx_audio,
+      id, archive, ctx_audio, noeud_sortie
       configuration: {parametres:{}},
       globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
@@ -222,7 +222,7 @@ export default function (id, archive, ctx_audio) {
 
       window.addEventListener("resize", this.repaint);
 
-      this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio);
+      this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio, this.noeud_sortie);
 
       this.importer(this.archive).then((configuration) => {
         this.mixer.set_loop(configuration.parametres.loop);
@@ -249,7 +249,7 @@ export default function (id, archive, ctx_audio) {
             </div>
             <div :id="waveform_id" class="wavesurfer" @click.prevent></div>
             <div class="menu">
-              <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
+              <img src="${Record}" class="icone session" :class="{actif: mixer.enregistreur.recorder.state == 'recording'}" @click="toggle_session"/>
               <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
               <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
               <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>

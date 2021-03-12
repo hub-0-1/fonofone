@@ -26,18 +26,23 @@ window.Fonofone = class Fonofone {
     
     // Archive a charger
     parametres.configuration = (parametres.configuration || "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn");
+   
+    // Si on passe des configurations externes, on assume qu'on est dans un Fonoimage 
+    let integration_fonoimage = (parametres.ctx_audio || parametres.noeud_sortie);
+    console.log(integration_fonoimage);
 
     // Creer le contexte audio si on est pas dans un Fonoimage
     let AudioContext = window.AudioContext || window.webkitAudioContext;
     parametres.ctx_audio = (parametres.ctx_audio || new AudioContext);
 
     // Creer un noeud de sortie controllable par le Fonoimage
+    parametres.noeud_sortie = (parametres.noeud_sortie || parametres.ctx_audio.createGain());
 
     return fetch(parametres.configuration)
       .then((response) => {
         return response.blob()})
       .then((archive) => {
-        ApplicationFonofone(app.id, archive, parametres.ctx_audio);
+        ApplicationFonofone(app.id, archive, parametres.ctx_audio, parametres.noeud_sortie);
       });
   }
 }
