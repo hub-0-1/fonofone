@@ -5,7 +5,8 @@ export default {
       hauteur_controlleur: 0.1,
       largeur_controlleur: 0.1,
       nb_division: 8,
-      width_division: 0.005
+      width_division: 0.005,
+      cote_image: 0.1
     },
     metronome: {
       taille_arc: 270,
