@@ -2,7 +2,8 @@ import Utils from "./_utils.js";
 import Globales from "../globales.js";
 
 import Magnet from "../images/icon-magnet.svg";
-import Volume from "../images/icon-volume.svg";
+import Volume from "../images/icon-volume.png";
+import VolumeDroite from "../images/icon-volume_droite.png";
 
 export default {
   mixins: [Utils],
@@ -41,8 +42,8 @@ export default {
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="0" width="1" y="0" height="1"/>
         <rect v-for="i in ${Globales.modules.volume.nb_division + 1}" class="ligne" :x="((i - 1) / ${Globales.modules.volume.nb_division}) * ${(1 - Globales.modules.volume.largeur_controlleur)} + ${(Globales.modules.volume.largeur_controlleur / 2)} - ${(Globales.modules.volume.width_division / 2)}" y="0" height="1" width="${Globales.modules.volume.width_division}" />
-        <image href="${Volume}" x="0.2" width="${Globales.modules.volume.cote_image}" y="${0.5 - (Globales.modules.volume.cote_image / 2)}" height="${Globales.modules.volume.cote_image}"/>
-        <image href="${Volume}" x="0.8" width="${Globales.modules.volume.cote_image}" y="${0.5 - (Globales.modules.volume.cote_image / 2)}" height="${Globales.modules.volume.cote_image}"/>
+        <image href="${Volume}" x="0.1" width="${Globales.modules.volume.cote_image / 2}" y="${0.5 - (Globales.modules.volume.cote_image / 2)}" height="${Globales.modules.volume.cote_image}"/>
+        <image href="${VolumeDroite}" x="0.9" width="${Globales.modules.volume.cote_image / 2}" y="${0.5 - (Globales.modules.volume.cote_image / 2)}" height="${Globales.modules.volume.cote_image}"/>
         <rect class="controlleur" :x="x" width="${Globales.modules.volume.largeur_controlleur}" :y="y" height="${Globales.modules.volume.hauteur_controlleur}" rx="0.02" ref="controlleur"/>
       </svg>
 
