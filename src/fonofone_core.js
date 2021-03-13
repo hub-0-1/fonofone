@@ -37,6 +37,8 @@ import Crop from './images/crop.svg';
 import Export from './images/export.svg';
 import Import from './images/import.svg';
 import Micro from './images/micro.svg';
+import ModeMix from './images/mode_mix.svg';
+import ModePic from './images/mode_pic.svg';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -248,12 +250,18 @@ export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoi
               <input v-model="configuration.parametres.nom" class="texte-nom-archive" placeholder="Archive"/>
             </div>
             <div :id="waveform_id" class="wavesurfer" @click.prevent></div>
-            <div class="menu">
-              <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
-              <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
-              <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
-              <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
-              <img src="${Crop}" class="icone" @click="crop"/>
+            <div class="menu-controlleurs">
+              <div class="gauche">
+                <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
+                <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
+                <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
+                <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
+                <img src="${Crop}" class="icone" @click="crop"/>
+              </div>
+              <div v-if="integration_fonoimage" class="droite">
+                <img src="${ModeMix}" class="icone" @click="mode_fonoimage = 'mix'"/>
+                <img src="${ModePic}" class="icone" @click="mode_fonoimage = 'pic'"/>
+              </div>
             </div>
           </header>
           <main>
