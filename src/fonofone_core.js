@@ -64,6 +64,7 @@ export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoi
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
       tracks_actives: false,
+      mode_fonoimage: 'mix',
       enregistrement: {
         encours: false,
         enregistreur: null
