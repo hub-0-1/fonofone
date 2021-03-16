@@ -19,10 +19,10 @@ window.Fonofone = class Fonofone {
     }
 
     // Creer l'element pour le Vue
-    let app = document.createElement("div");
-    app.className = "fonofone";
-    app.id = "fnfn-" + window.GestionnaireFonofone.prochainIndex();
-    element.appendChild(app);
+    let app_container = document.createElement("div");
+    app_container.className = "fonofone";
+    app_container.id = "fnfn-" + window.GestionnaireFonofone.prochainIndex();
+    element.appendChild(app_container);
     
     // Archive a charger
     parametres.configuration = (parametres.configuration || "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn");
@@ -38,11 +38,13 @@ window.Fonofone = class Fonofone {
     // Creer un noeud de sortie controllable par le Fonoimage
     parametres.noeud_sortie = (parametres.noeud_sortie || parametres.ctx_audio.createGain());
 
-    return fetch(parametres.configuration)
-      .then((response) => {
-        return response.blob()})
-      .then((archive) => {
-        ApplicationFonofone(app.id, archive, parametres.ctx_audio, parametres.noeud_sortie);
-      });
+    return new Promise((resolve) => {
+      fetch(parametres.configuration)
+        .then((response) => {
+          return response.blob();
+        }).then((archive) => {
+          resolve(ApplicationFonofone(app.id, archive, parametres.ctx_audio, parametres.noeud_sortie));
+        });
+    });
   }
 }
