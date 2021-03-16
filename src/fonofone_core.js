@@ -166,7 +166,6 @@ export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoi
       },
       toggle_mode_fonoimage: function () {
         this.mode_fonoimage = this.mode_fonoimage == 'pic' ? 'mix' : 'pic';
-        console.log(this.mode_fonoimage);
       },
       charger_son: function (son) {
         if(son.blob) {
