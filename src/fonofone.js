@@ -42,7 +42,7 @@ window.Fonofone = class Fonofone {
         .then((response) => {
           return response.blob();
         }).then((archive) => {
-          resolve(ApplicationFonofone(app_container.id, archive, parametres.ctx_audio, parametres.noeud_sortie));
+          resolve(ApplicationFonofone(app_container.id, archive, parametres.ctx_audio, parametres.noeud_sortie, !!parametres.integration_fonoimage));
         });
     });
   }
