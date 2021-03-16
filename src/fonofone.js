@@ -29,7 +29,6 @@ window.Fonofone = class Fonofone {
    
     // Si on passe des configurations externes, on assume qu'on est dans un Fonoimage 
     let integration_fonoimage = !!(parametres.ctx_audio || parametres.noeud_sortie);
-    console.log(integration_fonoimage);
 
     // Creer le contexte audio si on est pas dans un Fonoimage
     let AudioContext = window.AudioContext || window.webkitAudioContext;
