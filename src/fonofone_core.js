@@ -164,6 +164,10 @@ export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoi
         }
         this.mixer.session.encours = !this.mixer.session.encours;
       },
+      toggle_mode_fonoimage: function () {
+        this.mode_fonoimage = this.mode_fonoimage == 'pic' ? 'mix' : 'pic';
+        console.log(this.mode_fonoimage);
+      },
       charger_son: function (son) {
         if(son.blob) {
           this.mixer.charger_blob(son.blob).then(() => {
@@ -259,9 +263,9 @@ export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoi
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
                 <img src="${Crop}" class="icone" @click="crop"/>
               </div>
-              <div v-if="integration_fonoimage" class="droite">
-                <img src="${ModeMix}" class="icone" @click="mode_fonoimage = 'mix'"/>
-                <img src="${ModePic}" class="icone" @click="mode_fonoimage = 'pic'"/>
+              <div v-if="integration_fonoimage || true" class="droite">
+                <img src="${ModeMix}" class="icone" @click="toggle_mode_fonoimage"/>
+                <img src="${ModePic}" class="icone" @click="toggle_mode_fonoimage"/>
               </div>
             </div>
           </header>
