@@ -45,20 +45,19 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
-export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoimage) {
-  return new Vue({
-    el: "#" + id,
-    mixins: [Filepond],
-    components: {
-      "filtre": Filtre,
-      "metronome": Metronome,
-      "reverberation": Reverberation,
-      "selecteur": Selecteur,
-      "volume": Volume,
-      "vitesse": Vitesse
-    },
-    data: {
-      id, archive, ctx_audio, noeud_sortie, integration_fonoimage,
+export default {
+  mixins: [Filepond],
+  components: {
+    "filtre": Filtre,
+    "metronome": Metronome,
+    "reverberation": Reverberation,
+    "selecteur": Selecteur,
+    "volume": Volume,
+    "vitesse": Vitesse
+  },
+  props: ['id', 'archive', 'ctx_audio', 'noeud_sortie', 'integration_fonoimage'],
+  data: function () {
+    return {
       configuration: {parametres:{}},
       globales: Globales,
       mode_affichage: "colonne", // "grille" ou "colonne"
@@ -73,175 +72,176 @@ export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoi
       outils: {
         filepond: null
       }
+    };
+  },
+  i18n,
+  methods: {
+    exporter: function () {
+      this.serialiser().then((archive) => { 
+        saveAs(new Blob([archive]), `${this.configuration.parametres.nom}.fnfn`);
+      });
     },
-    i18n,
-    methods: {
-      exporter: function () {
-        this.serialiser().then((archive) => { 
-          saveAs(new Blob([archive]), `${this.configuration.parametres.nom}.fnfn`);
+    serialiser: function () {
+      return new Promise((resolve) => {
+        let audio_blob = new Blob([toWav(this.mixer.audio_buffer)]);
+        blob2base64(audio_blob).then((base64) => {
+          let archive = {
+            parametres: this.configuration.parametres,
+            modules: this.configuration.modules,
+            fichier: base64
+          };
+          resolve(JSON.stringify(archive));
         });
-      },
-      serialiser: function () {
-        return new Promise((resolve) => {
-          let audio_blob = new Blob([toWav(this.mixer.audio_buffer)]);
-          blob2base64(audio_blob).then((base64) => {
-            let archive = {
-              parametres: this.configuration.parametres,
-              modules: this.configuration.modules,
-              fichier: base64
-            };
-            resolve(JSON.stringify(archive));
-          });
+      });
+    },
+    importer: function (fichier) {
+      return new Promise (async (resolve) => {
+        let archive_serialisee = await new Promise((resolve) => {
+          let fileReader = new FileReader();
+          fileReader.onload = (e) => resolve(fileReader.result);
+          fileReader.readAsText(fichier);
         });
-      },
-      importer: function (fichier) {
-        return new Promise (async (resolve) => {
-          let archive_serialisee = await new Promise((resolve) => {
-            let fileReader = new FileReader();
-            fileReader.onload = (e) => resolve(fileReader.result);
-            fileReader.readAsText(fichier);
-          });
 
-          this.configuration = JSON.parse(archive_serialisee);
-          fetch(this.configuration.fichier).then((response) => {
-            return response.blob();
-          }).then((blob) => {
-            return this.mixer.charger_blob(blob);
-          }).then(() => { 
-            resolve(this.configuration);
-          });
+        this.configuration = JSON.parse(archive_serialisee);
+        fetch(this.configuration.fichier).then((response) => {
+          return response.blob();
+        }).then((blob) => {
+          return this.mixer.charger_blob(blob);
+        }).then(() => { 
+          resolve(this.configuration);
         });
-      },
-      synchroniser_modules: function () {
-        _.each(this.configuration.modules, (v, key) => {
-          this.$watch(`configuration.modules.${key}.valeur`, (valeur) => { // https://vuejs.org/v2/api/#vm-watch
-            this.mixer[`set_${key}`](valeur);
-          }, {deep: true, immediate: true});
-        });
-      },
-      crop: function () {
-        this.mixer.crop();
-        this.reset_selecteur();
-      },
-      reset_selecteur: function () {
-        this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
-      },
-      toggle_loop: function () {
-        this.configuration.parametres.loop = !this.configuration.parametres.loop;
-        this.mixer.set_loop(this.configuration.parametres.loop);
-      },
-      toggle_sens: function () {
-        this.configuration.parametres.sens *= -1;
-        this.mixer.set_sens(this.configuration.parametres.sens);
-      },
-      toggle_pause: function () {
-        if(this.playing) {
-          this.mixer.set_loop(false);
-          this.configuration.parametres.loop = false;
-        }
-        this.mixer.toggle_pause();
-      },
-      repaint: function () {
-        // TODO this.mixer.paint();
-      },
-      toggle_enregistrement: function () {
-        this.get_enregistreur().then((enregistreur) => {
-          if(!this.enregistrement.encours) {
-            enregistreur.debuter();
-          } else {
-            enregistreur.terminer().then((blob) => {
-              this.globales.sons.push({ nom: `son_${Date.now().toString()}`, blob });
-            });
-          } 
-          this.enregistrement.encours = !this.enregistrement.encours;
-        });
-      },
-      toggle_session: function () {
-        if(this.mixer.session.encours) {
-          this.mixer.terminer_session().then((blob) => { saveAs(blob, `session_${Date.now().toString()}.webm`); });
+      });
+    },
+    synchroniser_modules: function () {
+      _.each(this.configuration.modules, (v, key) => {
+        this.$watch(`configuration.modules.${key}.valeur`, (valeur) => { // https://vuejs.org/v2/api/#vm-watch
+          this.mixer[`set_${key}`](valeur);
+        }, {deep: true, immediate: true});
+      });
+    },
+    crop: function () {
+      this.mixer.crop();
+      this.reset_selecteur();
+    },
+    reset_selecteur: function () {
+      this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
+    },
+    toggle_loop: function () {
+      this.configuration.parametres.loop = !this.configuration.parametres.loop;
+      this.mixer.set_loop(this.configuration.parametres.loop);
+    },
+    toggle_sens: function () {
+      this.configuration.parametres.sens *= -1;
+      this.mixer.set_sens(this.configuration.parametres.sens);
+    },
+    toggle_pause: function () {
+      if(this.playing) {
+        this.mixer.set_loop(false);
+        this.configuration.parametres.loop = false;
+      }
+      this.mixer.toggle_pause();
+    },
+    repaint: function () {
+      // TODO this.mixer.paint();
+    },
+    toggle_enregistrement: function () {
+      this.get_enregistreur().then((enregistreur) => {
+        if(!this.enregistrement.encours) {
+          enregistreur.debuter();
         } else {
-          this.mixer.debuter_session();
-        }
-        this.mixer.session.encours = !this.mixer.session.encours;
-      },
-      toggle_mode_fonoimage: function () {
-        this.mode_fonoimage = this.mode_fonoimage == 'pic' ? 'mix' : 'pic';
-      },
-      charger_son: function (son) {
-        if(son.blob) {
-          this.mixer.charger_blob(son.blob).then(() => {
-            this.mode_importation = false;
-            this.reset_selecteur();
+          enregistreur.terminer().then((blob) => {
+            this.globales.sons.push({ nom: `son_${Date.now().toString()}`, blob });
           });
-        }
-        else {
-          fetch(son.url, { mode: 'cors' }).then((response) => {
-            return response.blob();
-          }).then((blob) => {
-            return this.mixer.charger_blob(blob);
-          }).then(() => {
-            this.mode_importation = false;
-            this.reset_selecteur();
-          }).catch((e) => {
-            throw e;
-          });
-        }
-      },
-      get_enregistreur: function () {
-        return new Promise ((resolve) => {
-
-          // S'il est deja initialise
-          if(this.enregistrement.enregistreur) resolve(this.enregistrement.enregistreur);
-
-          // Sinon
-          else {
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-              this.enregistrement.enregistreur = new Enregistreur(stream);
-              resolve(this.enregistrement.enregistreur);
-            });      
-          }
+        } 
+        this.enregistrement.encours = !this.enregistrement.encours;
+      });
+    },
+    toggle_session: function () {
+      if(this.mixer.session.encours) {
+        this.mixer.terminer_session().then((blob) => { saveAs(blob, `session_${Date.now().toString()}.webm`); });
+      } else {
+        this.mixer.debuter_session();
+      }
+      this.mixer.session.encours = !this.mixer.session.encours;
+    },
+    toggle_mode_fonoimage: function () {
+      this.mode_fonoimage = this.mode_fonoimage == 'pic' ? 'mix' : 'pic';
+    },
+    charger_son: function (son) {
+      if(son.blob) {
+        this.mixer.charger_blob(son.blob).then(() => {
+          this.mode_importation = false;
+          this.reset_selecteur();
+        });
+      }
+      else {
+        fetch(son.url, { mode: 'cors' }).then((response) => {
+          return response.blob();
+        }).then((blob) => {
+          return this.mixer.charger_blob(blob);
+        }).then(() => {
+          this.mode_importation = false;
+          this.reset_selecteur();
+        }).catch((e) => {
+          throw e;
         });
       }
     },
-    watch: {
-      mixer: {
-        handler: function (mixer) { 
-          this.tracks_actives = (mixer.tracks.length > 0 
-            || (mixer.parametres.metronome_actif && mixer.parametres.loop)
-          );
-        },
-        deep: true
-      }
-    },
-    computed: {
-      waveform_id: function () { return `waveform-${this.id}`; },
-      playing: function () { return this.tracks_actives }
-    },
-    mounted: function () {
+    get_enregistreur: function () {
+      return new Promise ((resolve) => {
 
-      // Initialisation de Filepond par les mixins
+        // S'il est deja initialise
+        if(this.enregistrement.enregistreur) resolve(this.enregistrement.enregistreur);
 
-      // Mode affichage
-      /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
+        // Sinon
+        else {
+          navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            this.enregistrement.enregistreur = new Enregistreur(stream);
+            resolve(this.enregistrement.enregistreur);
+          });      
+        }
+      });
+    }
+  },
+  watch: {
+    mixer: {
+      handler: function (mixer) { 
+        this.tracks_actives = (mixer.tracks.length > 0 
+          || (mixer.parametres.metronome_actif && mixer.parametres.loop)
+        );
+      },
+      deep: true
+    }
+  },
+  computed: {
+    waveform_id: function () { return `waveform-${this.id}`; },
+    playing: function () { return this.tracks_actives }
+  },
+  mounted: function () {
+
+    // Initialisation de Filepond par les mixins
+
+    // Mode affichage
+    /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
         this.mode_affichage = "grille";
       }*/
 
-      window.addEventListener("resize", this.repaint);
+    window.addEventListener("resize", this.repaint);
 
-      this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio, this.noeud_sortie);
+    this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio, this.noeud_sortie);
 
-      this.importer(this.archive).then((configuration) => {
-        this.mixer.set_loop(configuration.parametres.loop);
-        this.mixer.set_sens(configuration.parametres.sens);
-        this.synchroniser_modules();
-        this.mixer.chargement = false;
+    this.importer(this.archive).then((configuration) => {
+      this.mixer.set_loop(configuration.parametres.loop);
+      this.mixer.set_sens(configuration.parametres.sens);
+      this.synchroniser_modules();
+      this.mixer.chargement = false;
 
-        // TODO Ajouter les breaks points pour l'affichage en mode colonne
-        // compter les enfants, selon la largeur, diviser en colonnes
-        let children = this.$refs.mixer.children;
-      });
-    },
-    template: `
+      // TODO Ajouter les breaks points pour l'affichage en mode colonne
+      // compter les enfants, selon la largeur, diviser en colonnes
+      let children = this.$refs.mixer.children;
+    });
+  },
+  template: `
       <div :id="id" class="fonofone" ref="fonofone">
         <menu>
           <img src="${Import}" @click="mode_importation = !mode_importation">
@@ -292,7 +292,6 @@ export default function (id, archive, ctx_audio, noeud_sortie, integration_fonoi
           </div>
         </div>
       </div>`
-  });
 }
 
 function buffer2base64 (arrayBuffer) {

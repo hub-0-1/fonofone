@@ -1,15 +1,9 @@
+import Vue from 'vue';
+
 import ApplicationFonofone from './fonofone_core';
 
 import './style.less';
 import './fonofone_gestion.js'; // Contient GFonofone
-
-/*
- * Classe parente du module en tant que tel.
- * Elle permet d'intergir avec la page
- * - Export
- * parametre 1 : HTML Node auquel on ajoutera le module fonofone
- * parametre 2 : id de scenario ou objet de configuration
- */
 
 window.Fonofone = class Fonofone {
   constructor (element, parametres = {}) {
@@ -20,7 +14,6 @@ window.Fonofone = class Fonofone {
 
     // Creer l'element pour le Vue
     let app_container = document.createElement("div");
-    app_container.className = "fonofone";
     app_container.id = "fnfn-" + window.GestionnaireFonofone.prochainIndex();
     element.appendChild(app_container);
     
@@ -42,7 +35,23 @@ window.Fonofone = class Fonofone {
         .then((response) => {
           return response.blob();
         }).then((archive) => {
-          resolve(ApplicationFonofone(app_container.id, archive, parametres.ctx_audio, parametres.noeud_sortie, !!parametres.integration_fonoimage));
+          //resolve(ApplicationFonofone(app_container.id, archive, parametres.ctx_audio, parametres.noeud_sortie, !!parametres.integration_fonoimage));
+          console.log(app_container);
+          let app = new Vue({
+            el: "#" + app_container.id,
+            components: {
+              "fonofone": ApplicationFonofone
+            },
+            data: {
+              id: app_container.id,
+              archive: archive,
+              ctx_audio: parametres.ctx_audio,
+              noeud_sortie: parametres.noeud_sortie
+            },
+            template: ` <fonofone :id="id" :archive="archive" :ctx_audio="ctx_audio" :noeud_sortie="noeud_sortie"></fonofone> `
+          });
+
+          resolve(app);
         });
     });
   }
