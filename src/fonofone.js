@@ -2,7 +2,8 @@ import Vue from 'vue';
 
 import ApplicationFonofone from './fonofone_core';
 
-import './style.less';
+import Globales from './globales.js';
+
 import './fonofone_gestion.js'; // Contient GFonofone
 
 window.Fonofone = class Fonofone {
@@ -18,7 +19,7 @@ window.Fonofone = class Fonofone {
     element.appendChild(app_container);
     
     // Archive a charger
-    parametres.configuration = (parametres.configuration || "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn");
+    parametres.configuration = (parametres.configuration || Globales.configuration_primitive);
    
     // Si on passe des configurations externes, on assume qu'on est dans un Fonoimage 
     let integration_fonoimage = !!(parametres.ctx_audio || parametres.noeud_sortie);

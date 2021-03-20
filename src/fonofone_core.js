@@ -27,6 +27,7 @@ import Vitesse from './modules/vitesse.js';
 import Globales from './globales.js';
 
 // Icones
+import './style.less';
 import Record from './images/record.svg';
 import Folder from './images/icon-folder.svg';
 import Fleche from './images/arrow.svg';
@@ -99,6 +100,7 @@ export default {
         let archive_serialisee = await new Promise((resolve) => {
           let fileReader = new FileReader();
           fileReader.onload = (e) => resolve(fileReader.result);
+          console.log(fichier);
           fileReader.readAsText(fichier);
         });
 
@@ -166,6 +168,7 @@ export default {
     },
     toggle_mode_fonoimage: function () {
       this.mode_fonoimage = this.mode_fonoimage == 'pic' ? 'mix' : 'pic';
+      console.log(this.mode_fonoimage);
     },
     charger_son: function (son) {
       if(son.blob) {
@@ -216,6 +219,17 @@ export default {
   computed: {
     waveform_id: function () { return `waveform-${this.id}`; },
     playing: function () { return this.tracks_actives }
+  },
+  beforeCreate: async function () {
+    if(!this.achive) {
+      await fetch(Globales.configuration_primitive)
+        .then((response) => {
+          return response.blob();
+        }).then((archive) => {
+          this.archive = archive; 
+        });
+    }
+    console.log(this.archive);
   },
   mounted: function () {
 
