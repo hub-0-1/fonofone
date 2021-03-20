@@ -89,7 +89,10 @@ window.Fonoimage = class Fonoimage {
           });
         },
         ajouter_zone: function (x, y, w, h) {
-          let nouvelle_zone = {id: `zone${Date.now()}${Math.round(Math.random() * 50)}`};
+          let nouvelle_zone = {
+            id: `${Date.now()}${Math.round(Math.random() * 50)}`,
+            mode: 'pic'
+          };
           this.zones[nouvelle_zone.id] = nouvelle_zone;
 
           // Fonctionnalites
@@ -100,16 +103,17 @@ window.Fonoimage = class Fonoimage {
           nouvelle_zone.noeud_sortie.connect(this.media_stream_destination);
 
           // Visuel // TODO Fait nouvelle_zone.ellipse = ... fait planter avec recursion infinie
-          let ellipse = new Fabric.Ellipse({
+          nouvelle_zone.ellipse = new Fabric.Ellipse({
             top: y, left: x, rx: w, ry: h,
             stroke: 'blue',
             strokeWidth: 5,
             fill: 'transparent'
-          }).on('selected', () => { 
+          }).on('selected', (e) => { 
+            console.log(e);
             this.afficher_fonofone(nouvelle_zone); 
           });
 
-          this.canva.add(ellipse);
+          this.canva.add(nouvelle_zone.ellipse);
           this.afficher_fonofone(nouvelle_zone);
         },
         afficher_fonofone: function (zone_active) {
@@ -125,6 +129,35 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_mode_edition: function () {
           this.mode = this.mode.match(/edition/) ? "normal" : "edition";
+        },
+        toggle_mode_zone: function (zone, ev) {
+          zone.mode = ev;
+          if(zone.mode == 'pic') {
+            zone.ellipse.set('fill', new Fabric.Gradient({
+              type: 'radial',
+              r1: 10,
+              r2: 20,
+              colorStops: [
+                {
+                  color: 'rgb(166,111,213)',
+                  offset: 0,
+                },
+                {
+                  color: 'rgba(106, 72, 215, 0.5)',
+                  offset: 0.5,
+                },
+                {    
+                  color: '#200772',
+                  offset: 1,
+                }
+              ]
+            }));
+          } else {
+            zone.ellipse.set('fill', 'orange');
+          }
+
+          // Sinon, pas de rendu
+          this.canva.renderAll();
         },
         debut_session: function () {
           this.mode = "session:active";
@@ -220,7 +253,7 @@ window.Fonoimage = class Fonoimage {
           <div class="shadow" :class="{actif: mode == 'ajout:encours'}" ref="shadow"></div>
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_actif}" ref="panneau_fonofone">
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone"></fonofone>
+          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)"></fonofone>
         </div>
       </div>`
     });

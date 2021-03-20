@@ -61,10 +61,13 @@ export default {
     return {
       configuration: {parametres:{}},
       globales: Globales,
+      fonoimage: {
+        integration: (this.integration_fonoimage || false),
+        mode: 'pic'
+      },
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
       tracks_actives: false,
-      mode_fonoimage: 'mix',
       enregistrement: {
         encours: false,
         enregistreur: null
@@ -100,7 +103,6 @@ export default {
         let archive_serialisee = await new Promise((resolve) => {
           let fileReader = new FileReader();
           fileReader.onload = (e) => resolve(fileReader.result);
-          console.log(fichier);
           fileReader.readAsText(fichier);
         });
 
@@ -167,8 +169,8 @@ export default {
       this.mixer.session.encours = !this.mixer.session.encours;
     },
     toggle_mode_fonoimage: function () {
-      this.mode_fonoimage = this.mode_fonoimage == 'pic' ? 'mix' : 'pic';
-      console.log(this.mode_fonoimage);
+      this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
+      this.$emit('update:mode', this.fonoimage.mode);
     },
     charger_son: function (son) {
       if(son.blob) {
@@ -220,17 +222,6 @@ export default {
     waveform_id: function () { return `waveform-${this.id}`; },
     playing: function () { return this.tracks_actives }
   },
-  beforeCreate: async function () {
-    if(!this.achive) {
-      await fetch(Globales.configuration_primitive)
-        .then((response) => {
-          return response.blob();
-        }).then((archive) => {
-          this.archive = archive; 
-        });
-    }
-    console.log(this.archive);
-  },
   mounted: function () {
 
     // Initialisation de Filepond par les mixins
@@ -276,7 +267,7 @@ export default {
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
                 <img src="${Crop}" class="icone" @click="crop"/>
               </div>
-              <div v-if="integration_fonoimage || true" class="droite">
+              <div v-if="fonoimage.integration" class="droite">
                 <img src="${ModeMix}" class="icone" @click="toggle_mode_fonoimage"/>
                 <img src="${ModePic}" class="icone" @click="toggle_mode_fonoimage"/>
               </div>

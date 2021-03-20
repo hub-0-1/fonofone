@@ -82,7 +82,6 @@ export default {
     disposition: function () { this.redisposer(); }    
   },
   mounted: function () {
-    console.log(this);
     this.getSiblings();
     window.setTimeout(this.redisposer, 0); 
   }
