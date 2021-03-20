@@ -102,15 +102,31 @@ window.Fonoimage = class Fonoimage {
           nouvelle_zone.noeud_sortie = this.ctx_audio.createGain();
           nouvelle_zone.noeud_sortie.connect(this.media_stream_destination);
 
-          // Visuel // TODO Fait nouvelle_zone.ellipse = ... fait planter avec recursion infinie
+          // Visuel // TODO
+          let grad = new Fabric.Gradient({
+            type: 'radial',
+            colorStops: [{
+                color: 'black',
+                offset: 0
+              },
+              {    
+                color: 'white',
+                offset: 1
+              }
+            ]
+          });
+
           nouvelle_zone.ellipse = new Fabric.Ellipse({
             top: y, left: x, rx: w, ry: h,
             stroke: 'blue',
             strokeWidth: 5,
-            fill: 'transparent'
+            fill: grad
           }).on('selected', (e) => { 
-            console.log(e);
             this.afficher_fonofone(nouvelle_zone); 
+          }).on('mouseover', (e) => {
+            console.log('in', e.clientX, e.clientY, e.target.aCoords);
+          }).on('mouseout', (e) => { 
+            console.log('out', e);
           });
 
           this.canva.add(nouvelle_zone.ellipse);
@@ -133,25 +149,7 @@ window.Fonoimage = class Fonoimage {
         toggle_mode_zone: function (zone, ev) {
           zone.mode = ev;
           if(zone.mode == 'pic') {
-            zone.ellipse.set('fill', new Fabric.Gradient({
-              type: 'radial',
-              r1: 10,
-              r2: 20,
-              colorStops: [
-                {
-                  color: 'rgb(166,111,213)',
-                  offset: 0,
-                },
-                {
-                  color: 'rgba(106, 72, 215, 0.5)',
-                  offset: 0.5,
-                },
-                {    
-                  color: '#200772',
-                  offset: 1,
-                }
-              ]
-            }));
+            zone.ellipse.set('fill', 'red');
           } else {
             zone.ellipse.set('fill', 'orange');
           }
