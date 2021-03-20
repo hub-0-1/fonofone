@@ -4,6 +4,7 @@ const Fabric = require("fabric").fabric;
 
 import ApplicationFonofone from './fonofone_core';
 import Enregistreur from './enregistreur.js';
+import Zone from './zone.js';
 import Globales from './globales.js';
 
 import './style_fonoimage.less';
@@ -89,6 +90,8 @@ window.Fonoimage = class Fonoimage {
           });
         },
         ajouter_zone: function (x, y, w, h) {
+          //let nzone = new Zone(x, y, w, h, this.ctx_audio);
+
           let nouvelle_zone = {
             id: `${Date.now()}${Math.round(Math.random() * 50)}`,
             mode: 'pic'
@@ -102,31 +105,17 @@ window.Fonoimage = class Fonoimage {
           nouvelle_zone.noeud_sortie = this.ctx_audio.createGain();
           nouvelle_zone.noeud_sortie.connect(this.media_stream_destination);
 
-          // Visuel // TODO
-          let grad = new Fabric.Gradient({
-            type: 'radial',
-            colorStops: [{
-                color: 'black',
-                offset: 0
-              },
-              {    
-                color: 'white',
-                offset: 1
-              }
-            ]
-          });
-
           nouvelle_zone.ellipse = new Fabric.Ellipse({
             top: y, left: x, rx: w, ry: h,
             stroke: 'blue',
             strokeWidth: 5,
-            fill: grad
-          }).on('selected', (e) => { 
+            fill: 'transparent'
+          }).on('selected', () => { 
             this.afficher_fonofone(nouvelle_zone); 
-          }).on('mouseover', (e) => {
-            console.log('in', e.clientX, e.clientY, e.target.aCoords);
-          }).on('mouseout', (e) => { 
-            console.log('out', e);
+          }).on('mouseover', (options) => {
+            let pointer_pos = this.canva.getPointer(options.e);
+            let aCoords = options.target.aCoords;
+            console.log(pointer_pos.x, ":", aCoords.tl.x, aCoords.tr.x);
           });
 
           this.canva.add(nouvelle_zone.ellipse);
