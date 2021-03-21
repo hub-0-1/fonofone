@@ -105,6 +105,8 @@ window.Fonoimage = class Fonoimage {
           nouvelle_zone.noeud_sortie = this.ctx_audio.createGain();
           nouvelle_zone.noeud_sortie.connect(this.media_stream_destination);
 
+          // Visuel
+          nouvelle_zone.centre_ellipse = { x: rx, y: ry }; // TODO mettre a jour si on deplace / rotate / resize l'ellipse
           nouvelle_zone.ellipse = new Fabric.Ellipse({
             top: y, left: x, rx: rx, ry: ry,
             stroke: 'blue',
@@ -114,42 +116,37 @@ window.Fonoimage = class Fonoimage {
             this.afficher_fonofone(nouvelle_zone); 
           }).on('mousedown', (options) => {
 
+            // Seulement en mode pic
             if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'pic') {
+
+              // Preparation du pointeur
+              let pointer_pos = this.canva.getPointer(options.e);
               if(nouvelle_zone.pointeur) {
                 this.canva.remove(nouvelle_zone.pointeur);
               }
-              let pointer_pos = this.canva.getPointer(options.e);
-              let pointer = new Fabric.Image.fromURL(Micro, (img) => { 
+
+              nouvelle_zone.pointeur = new Fabric.Image.fromURL(Micro, (img) => { 
                 nouvelle_zone.pointeur = img;
-                img.set('left', pointer_pos.x - 10);
-                img.set('top', pointer_pos.y - 10);
-                img.set('width', 20);
-                img.set('height', 20);
+                img.set('left', pointer_pos.x - Globales.taille_pointeur_pic / 2);
+                img.set('top', pointer_pos.y - Globales.taille_pointeur_pic / 2);
+                img.set('width', Globales.taille_pointeur_pic);
+                img.set('height', Globales.taille_pointeur_pic);
                 this.canva.add(img);
               });
-              
+
+              let distance = this.distance_ellipse(options, nouvelle_zone.ellipse);
+              nouvelle_zone.noeud_sortie.gain.setValueAtTime(distance, this.ctx_audio.currentTime);
+
+              console.log(distance, nouvelle_zone.ellipse.get('angle'));
             }
           }).on('mousemove', (options) => {
 
-            // Conditions de calcul
+            // Seulement en mode mix
             if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'mix') {
               
-              // Initialisation
-              let pointer_pos = this.canva.getPointer(options.e);
-              let aCoords = options.target.aCoords;
-
-              // Normaliser
-              let pointer_dans_ellipse = {
-                x: pointer_pos.x - aCoords.tl.x,
-                y: pointer_pos.y - aCoords.tl.y,
-              }
-              let centre_ellipse = { x: rx, y: ry };
-
-              let distance = this.distance_ellipse(pointer_dans_ellipse, centre_ellipse);
-              if(distance > 0) {
-                console.log(distance);
-                nouvelle_zone.noeud_sortie.gain.setValueAtTime(distance, this.ctx_audio.currentTime);
-              }
+              let distance = this.distance_ellipse(options, nouvelle_zone.ellipse);
+              nouvelle_zone.noeud_sortie.gain.setValueAtTime(distance, this.ctx_audio.currentTime);
+              console.log(distance);
             }
           });
 
@@ -157,13 +154,45 @@ window.Fonoimage = class Fonoimage {
           this.afficher_fonofone(nouvelle_zone);
         },
         // TODO Tres mauvais calcul de la distance
-        distance_ellipse: function (coords, centre) {
-          //let coords_centrees = { x: coords.x - centre.x, y: coords.y - centre.y };
-          //let angle = theta(coords_centrees.x, coords_centrees.y);
+        distance_ellipse: function (options, ellipse) {
 
-          let distances = { x: Math.abs(coords.x - centre.x) / centre.x, y: Math.abs(coords.y - centre.y) / centre.y };
-          let distance = distances.x + distances.y;
-          return 1 - Math.min(distance, 1);
+          // Initialisation
+          let pointer_pos = this.canva.getPointer(options.e);
+          let aCoords = options.target.aCoords;
+          let centre = { x: Math.abs(aCoords.tl.x - aCoords.br.x) / 2, y: Math.abs(aCoords.tl.y - aCoords.br.y) / 2 };
+
+          // Enlever la rotation
+          let angle = ellipse.get('angle');
+          let pointer_sans_rotation = this.annuler_rotation(angle, centre, pointer_pos);
+
+          // Normaliser // Pas bon pour l'instant
+          let coords_normalisees = {
+            x: pointer_sans_rotation.x - this.annuler_rotation(angle, centre, aCoords.tl.x),
+            y: pointer_sans_rotation.y - this.annuler_rotation(angle, centre, aCoords.tl.y),
+          }
+
+          // Calculer l'angle entre le centre et le curseur
+          // Calculer les x et y max pour l'angle donne
+          // Calculer la distance entre le centre et les x/y max
+
+          // Calculer la distance entre le centre le curseur
+          let distance_pointeur = Math.abs(coords_normalisees.x - centre.x) / centre.x + Math.abs(coords_normalisees.y - centre.y) / centre.y;
+          console.log(distance_pointeur);
+
+          // Retourner le ratio
+          //ellipse.set('angle', angle_original);
+          return 1 - Math.min(distance_pointeur, 1); // Pas bon pour l'instant
+        },
+        annuler_rotation: function (angle, centre, obj) {
+
+          // Cartesien en polaire
+          let polaire = cartesian2Polar(obj.x - centre.x, obj.y - centre.y);
+
+          // Annuler rotation
+          polaire.radians -= angle * Math.PI / 180;
+
+          // polaire en cartesien
+          return { x: polaire.distance * Math.cos(polaire.radians) + centre.x, y: polaire.distance * Math.sin(polaire.radians) + centre.y };
         },
         afficher_fonofone: function (zone_active) {
           this.zone_actif = zone_active;
@@ -313,4 +342,8 @@ window.Fonoimage = class Fonoimage {
 
 function theta (x, y) {
   return Math.atan2(y, x);
+}
+
+function cartesian2Polar(x, y){
+  return { distance: Math.sqrt(x*x + y*y), radians: Math.atan2(y,x) };
 }
