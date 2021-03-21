@@ -4,10 +4,10 @@ const Fabric = require("fabric").fabric;
 
 import ApplicationFonofone from './fonofone_core';
 import Enregistreur from './enregistreur.js';
-import Zone from './zone.js';
-import Globales from './globales.js';
+import Zone from './fonoimage/zone.js';
+import Globales from './fonoimage/globales.js';
 
-import './style_fonoimage.less';
+import './fonoimage/style.less';
 import Image from './images/image.svg';
 import Ellipse from './images/ellipse.svg';
 import Record from './images/record.svg';
@@ -15,7 +15,7 @@ import Micro from './images/micro.svg';
 import Crayon from './images/crayon.svg';
 
 import VueI18n from 'vue-i18n';
-import i18n from './traductions.js';
+import i18n from './fonoimage/traductions.js';
 Vue.use(VueI18n);
 
 window.Fonoimage = class Fonoimage {
@@ -76,8 +76,8 @@ window.Fonoimage = class Fonoimage {
             this.ajouter_zone(
               Math.min(coords[0].x, coords[1].x), // x
               Math.min(coords[0].y, coords[1].y), // y
-              Math.abs(coords[0].x - coords[1].x) / 2, // width
-              Math.abs(coords[0].y - coords[1].y) / 2// height
+              Math.abs(coords[0].x - coords[1].x) / 2, // rayon width
+              Math.abs(coords[0].y - coords[1].y) / 2// rayon height
             );
 
             this.mode = "edition";
@@ -89,12 +89,12 @@ window.Fonoimage = class Fonoimage {
             shadow_style.height = (options.e.clientY - init_event.clientY) + "px";
           });
         },
-        ajouter_zone: function (x, y, w, h) {
-          //let nzone = new Zone(x, y, w, h, this.ctx_audio);
+        ajouter_zone: function (x, y, rx, ry) {
+          //let nzone = new Zone(x, y, w, h, this.ctx_audio, this.media_stream_destination);
 
           let nouvelle_zone = {
             id: `${Date.now()}${Math.round(Math.random() * 50)}`,
-            mode: 'pic'
+            mode: 'mix'
           };
           this.zones[nouvelle_zone.id] = nouvelle_zone;
 
@@ -106,20 +106,64 @@ window.Fonoimage = class Fonoimage {
           nouvelle_zone.noeud_sortie.connect(this.media_stream_destination);
 
           nouvelle_zone.ellipse = new Fabric.Ellipse({
-            top: y, left: x, rx: w, ry: h,
+            top: y, left: x, rx: rx, ry: ry,
             stroke: 'blue',
             strokeWidth: 5,
             fill: 'transparent'
           }).on('selected', () => { 
             this.afficher_fonofone(nouvelle_zone); 
-          }).on('mouseover', (options) => {
-            let pointer_pos = this.canva.getPointer(options.e);
-            let aCoords = options.target.aCoords;
-            console.log(pointer_pos.x, ":", aCoords.tl.x, aCoords.tr.x);
+          }).on('mousedown', (options) => {
+
+            if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'pic') {
+              if(nouvelle_zone.pointeur) {
+                this.canva.remove(nouvelle_zone.pointeur);
+              }
+              let pointer_pos = this.canva.getPointer(options.e);
+              let pointer = new Fabric.Image.fromURL(Micro, (img) => { 
+                nouvelle_zone.pointeur = img;
+                img.set('left', pointer_pos.x - 10);
+                img.set('top', pointer_pos.y - 10);
+                img.set('width', 20);
+                img.set('height', 20);
+                this.canva.add(img);
+              });
+              
+            }
+          }).on('mousemove', (options) => {
+
+            // Conditions de calcul
+            if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'mix') {
+              
+              // Initialisation
+              let pointer_pos = this.canva.getPointer(options.e);
+              let aCoords = options.target.aCoords;
+
+              // Normaliser
+              let pointer_dans_ellipse = {
+                x: pointer_pos.x - aCoords.tl.x,
+                y: pointer_pos.y - aCoords.tl.y,
+              }
+              let centre_ellipse = { x: rx, y: ry };
+
+              let distance = this.distance_ellipse(pointer_dans_ellipse, centre_ellipse);
+              if(distance > 0) {
+                console.log(distance);
+                nouvelle_zone.noeud_sortie.gain.setValueAtTime(distance, this.ctx_audio.currentTime);
+              }
+            }
           });
 
           this.canva.add(nouvelle_zone.ellipse);
           this.afficher_fonofone(nouvelle_zone);
+        },
+        // TODO Tres mauvais calcul de la distance
+        distance_ellipse: function (coords, centre) {
+          //let coords_centrees = { x: coords.x - centre.x, y: coords.y - centre.y };
+          //let angle = theta(coords_centrees.x, coords_centrees.y);
+
+          let distances = { x: Math.abs(coords.x - centre.x) / centre.x, y: Math.abs(coords.y - centre.y) / centre.y };
+          let distance = distances.x + distances.y;
+          return 1 - Math.min(distance, 1);
         },
         afficher_fonofone: function (zone_active) {
           this.zone_actif = zone_active;
@@ -133,14 +177,31 @@ window.Fonoimage = class Fonoimage {
           this.mode.match(/session/) ? this.fin_session() : this.debut_session();
         },
         toggle_mode_edition: function () {
-          this.mode = this.mode.match(/edition/) ? "normal" : "edition";
+          if(this.mode.match(/edition/)) {
+            this.set_mode_normal();
+          } else {
+            this.set_mode_edition();
+          }
+        },
+        set_mode_normal: function () {
+          this.mode = "normal";
+          _.each(this.zones, (zone) => {
+            zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+          })
+        },
+        set_mode_edition: function () {
+          this.mode = "edition";
+          _.each(this.zones, (zone) => {
+            console.log(zone);
+            zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+          })
         },
         toggle_mode_zone: function (zone, ev) {
           zone.mode = ev;
           if(zone.mode == 'pic') {
-            zone.ellipse.set('fill', 'red');
+            zone.ellipse.set('stroke', 'orange');
           } else {
-            zone.ellipse.set('fill', 'orange');
+            zone.ellipse.set('stroke', 'blue');
           }
 
           // Sinon, pas de rendu
@@ -161,6 +222,7 @@ window.Fonoimage = class Fonoimage {
               // TODO activer l'ecoute
               micro.on('mouseup', function () {
                 // TODO https://stackoverflow.com/questions/39098308/how-to-use-two-coordinates-draw-an-ellipse-with-javascript
+                // https://mathopenref.com/coordparamellipse.html
                 micro.off('mousemove');
                 micro.off('mouseup');
               });
@@ -216,6 +278,8 @@ window.Fonoimage = class Fonoimage {
             if(this.mode == "edition:ajout:pret") { this.dessiner_nouvelle_zone(options); }
           }
         });
+
+        this.set_mode_edition();
       },
       template: `
       <div class="fonoimage">
@@ -245,4 +309,8 @@ window.Fonoimage = class Fonoimage {
       </div>`
     });
   }
+}
+
+function theta (x, y) {
+  return Math.atan2(y, x);
 }
