@@ -19,6 +19,17 @@
   display: flex;
   background-color: @noir;
 
+  .gestion-arriere-plan {
+    display: none;
+    height: 100%;
+    width: 200px;
+    background-color: @gris;
+
+    &.actif {
+      display: block;
+    }
+  }
+
   .panneau-fonoimage {
     height: 100%;
     display: flex;
@@ -118,6 +129,7 @@
   .panneau-fonofone {
     width: 0;
     border: 1px solid @noir;
+    background-color: @gris;
 
     transition: 1s all;
 

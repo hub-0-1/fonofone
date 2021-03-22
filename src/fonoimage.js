@@ -80,6 +80,13 @@ window.Fonoimage = class Fonoimage {
           // Sinon, pas de rendu
           this.canva.renderAll();
         },
+        toggle_mode_ajout: function () {
+          if(this.mode.match(/edition:ajout/)) {
+            this.mode = "edition";
+          } else {
+            this.mode = 'edition:ajout:pret';
+          }
+        },
 
         // Gestion des zones
         dessiner_nouvelle_zone: function (options) {
@@ -312,10 +319,10 @@ window.Fonoimage = class Fonoimage {
           </menu>
           <section class="principal">
             <menu class="vertical" :class="{actif: mode.match(/edition/)}">
-              <div class="icone-wrapper invert" :class="{actif: mode.match(/ajout/)}" @click="mode = 'edition:ajout:pret'">
+              <div class="icone-wrapper invert" :class="{actif: mode.match(/ajout/)}" @click="toggle_mode_ajout">
                 <img src="${Ellipse}">
               </div>
-              <div class="icone-wrapper invert">
+              <div class="icone-wrapper invert" @click="afficher_gestion_arriere_plan = !afficher_gestion_arriere_plan">
                 <img src="${Image}">
               </div>
             </menu>
@@ -324,6 +331,9 @@ window.Fonoimage = class Fonoimage {
             </div>
           </section>
           <div class="shadow" :class="{actif: mode == 'ajout:encours'}" ref="shadow"></div>
+        </div>
+        <div class="gestion-arriere-plan" :class="{actif: afficher_gestion_arriere_plan }" ref="gestion_arriere_plan">
+          
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_actif}" ref="panneau_fonofone">
           <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_actif}"></fonofone>
