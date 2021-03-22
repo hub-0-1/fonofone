@@ -134,19 +134,16 @@ window.Fonoimage = class Fonoimage {
                 this.canva.add(img);
               });
 
-              let distance = this.distance_ellipse(options, nouvelle_zone.ellipse);
-              nouvelle_zone.noeud_sortie.gain.setValueAtTime(distance, this.ctx_audio.currentTime);
-
-              console.log(distance, nouvelle_zone.ellipse.get('angle'));
+              let proximite = this.proximite_centre_ellipse(options, nouvelle_zone.ellipse);
+              nouvelle_zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
             }
           }).on('mousemove', (options) => {
 
             // Seulement en mode mix
             if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'mix') {
               
-              let distance = this.distance_ellipse(options, nouvelle_zone.ellipse);
-              nouvelle_zone.noeud_sortie.gain.setValueAtTime(distance, this.ctx_audio.currentTime);
-              console.log(distance);
+              let proximite = this.proximite_centre_ellipse(options, nouvelle_zone.ellipse);
+              nouvelle_zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
             }
           }).on('mouseout', (options) => {
 
@@ -160,26 +157,33 @@ window.Fonoimage = class Fonoimage {
           this.afficher_fonofone(nouvelle_zone);
         },
         // TODO Tres mauvais calcul de la distance
-        distance_ellipse: function (options, ellipse) {
+        proximite_centre_ellipse: function (options, ellipse) {
 
-          return 1;
 
           // Initialisation
           let pointer_pos = this.canva.getPointer(options.e);
           let aCoords = options.target.aCoords;
-          let centre = { x: Math.abs(aCoords.tl.x - aCoords.br.x) / 2, y: Math.abs(aCoords.tl.y - aCoords.br.y) / 2 };
+          let centre = { x: (aCoords.tl.x + aCoords.br.x) / 2, y: (aCoords.tl.y + aCoords.br.y) / 2 };
 
           // Enlever la rotation
           let angle = ellipse.get('angle');
           let pointer_sans_rotation = this.annuler_rotation(angle, centre, pointer_pos);
+          let tl_sans_rotation = this.annuler_rotation(angle, centre, aCoords.tl);
+          let br_sans_rotation = this.annuler_rotation(angle, centre, aCoords.br);
 
           // Normaliser // Pas bon pour l'instant
+          let rect_normalise = { w: aCoords.tr.x - aCoords.tl.x, h: aCoords.bl.y - aCoords.tl.y };
+          let centre_normalise = { x: rect_normalise.w / 2, y: rect_normalise.h / 2};
           let coords_normalisees = {
             x: pointer_sans_rotation.x - this.annuler_rotation(angle, centre, aCoords.tl.x),
             y: pointer_sans_rotation.y - this.annuler_rotation(angle, centre, aCoords.tl.y),
           }
 
           // Calculer l'angle entre le centre et le curseur
+          let pointeur_sans_rotation_normalise = { x: pointer_sans_rotation.x - centre.x, y: pointer_sans_rotation.y - centre.y };
+          let theta_pointeur_sans_rotation = theta(pointeur_sans_rotation_normalise.x, pointeur_sans_rotation_normalise.y);
+          console.log(rad2deg(theta_pointeur_sans_rotation));
+
           // Calculer les x et y max pour l'angle donne
           // Calculer la distance entre le centre et les x/y max
 
@@ -189,6 +193,7 @@ window.Fonoimage = class Fonoimage {
 
           // Retourner le ratio
           //ellipse.set('angle', angle_original);
+          return 1;
           return 1 - Math.min(distance_pointeur, 1); // Pas bon pour l'instant
         },
         annuler_rotation: function (angle, centre, obj) {
@@ -214,11 +219,7 @@ window.Fonoimage = class Fonoimage {
           this.mode.match(/session/) ? this.fin_session() : this.debut_session();
         },
         toggle_mode_edition: function () {
-          if(this.mode.match(/edition/)) {
-            this.set_mode_normal();
-          } else {
-            this.set_mode_edition();
-          }
+          this.mode.match(/edition/) ? this.set_mode_normal() : this.set_mode_edition();
         },
         set_mode_normal: function () {
           this.mode = "normal";
@@ -230,7 +231,6 @@ window.Fonoimage = class Fonoimage {
         set_mode_edition: function () {
           this.mode = "edition";
           _.each(this.zones, (zone) => {
-            console.log(zone);
             zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
           })
         },
@@ -355,4 +355,12 @@ function theta (x, y) {
 
 function cartesian2Polar(x, y){
   return { distance: Math.sqrt(x*x + y*y), radians: Math.atan2(y,x) };
+}
+
+function rad2deg (rad) {
+  return rad * 180 / Math.PI;
+}
+
+function deg2rad (deg) {
+  return deg * Math.PI / 180;
 }
