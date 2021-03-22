@@ -80,7 +80,7 @@ window.Fonoimage = class Fonoimage {
               Math.abs(coords[0].y - coords[1].y) / 2// rayon height
             );
 
-            this.mode = "edition";
+            this.set_mode_edition();
           });
 
           // Afficher le shadow
@@ -90,7 +90,6 @@ window.Fonoimage = class Fonoimage {
           });
         },
         ajouter_zone: function (x, y, rx, ry) {
-          //let nzone = new Zone(x, y, w, h, this.ctx_audio, this.media_stream_destination);
 
           let nouvelle_zone = {
             id: `${Date.now()}${Math.round(Math.random() * 50)}`,
@@ -103,6 +102,7 @@ window.Fonoimage = class Fonoimage {
 
           // Fonofone
           nouvelle_zone.noeud_sortie = this.ctx_audio.createGain();
+          nouvelle_zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
           nouvelle_zone.noeud_sortie.connect(this.media_stream_destination);
 
           // Visuel
@@ -148,6 +148,12 @@ window.Fonoimage = class Fonoimage {
               nouvelle_zone.noeud_sortie.gain.setValueAtTime(distance, this.ctx_audio.currentTime);
               console.log(distance);
             }
+          }).on('mouseout', (options) => {
+
+            // Seulement en mode mix, arreter quand on sort du cadre
+            if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'mix') {
+              nouvelle_zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+            }
           });
 
           this.canva.add(nouvelle_zone.ellipse);
@@ -155,6 +161,8 @@ window.Fonoimage = class Fonoimage {
         },
         // TODO Tres mauvais calcul de la distance
         distance_ellipse: function (options, ellipse) {
+
+          return 1;
 
           // Initialisation
           let pointer_pos = this.canva.getPointer(options.e);
@@ -216,6 +224,7 @@ window.Fonoimage = class Fonoimage {
           this.mode = "normal";
           _.each(this.zones, (zone) => {
             zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+            this.$refs[zone.id][0].force_play();
           })
         },
         set_mode_edition: function () {

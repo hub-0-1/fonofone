@@ -127,22 +127,32 @@ export default {
       this.mixer.crop();
       this.reset_selecteur();
     },
+    force_play: function () {
+      this.set_loop(true);
+      this.jouer();
+    },
     reset_selecteur: function () {
       this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
     },
     toggle_loop: function () {
-      this.configuration.parametres.loop = !this.configuration.parametres.loop;
-      this.mixer.set_loop(this.configuration.parametres.loop);
+      this.set_loop(!this.configuration.parametres.loop);
+    },
+    set_loop: function (val) {
+      this.configuration.parametres.loop = val;
+      this.mixer.set_loop(val);
     },
     toggle_sens: function () {
       this.configuration.parametres.sens *= -1;
       this.mixer.set_sens(this.configuration.parametres.sens);
     },
     toggle_pause: function () {
-      if(this.playing) {
-        this.mixer.set_loop(false);
-        this.configuration.parametres.loop = false;
-      }
+      this.playing ? this.arreter() : this.jouer();
+    },
+    jouer: function () {
+      this.mixer.toggle_pause();
+    },
+    arreter: function () {
+      this.set_loop(false);
       this.mixer.toggle_pause();
     },
     repaint: function () {
