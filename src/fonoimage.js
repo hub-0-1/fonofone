@@ -156,9 +156,7 @@ window.Fonoimage = class Fonoimage {
           this.canva.add(nouvelle_zone.ellipse);
           this.afficher_fonofone(nouvelle_zone);
         },
-        // TODO Tres mauvais calcul de la distance
         proximite_centre_ellipse: function (options, ellipse) {
-
 
           // Initialisation
           let pointer_pos = this.canva.getPointer(options.e);
@@ -168,33 +166,19 @@ window.Fonoimage = class Fonoimage {
           // Enlever la rotation
           let angle = ellipse.get('angle');
           let pointer_sans_rotation = this.annuler_rotation(angle, centre, pointer_pos);
-          let tl_sans_rotation = this.annuler_rotation(angle, centre, aCoords.tl);
-          let br_sans_rotation = this.annuler_rotation(angle, centre, aCoords.br);
-
-          // Normaliser // Pas bon pour l'instant
-          let rect_normalise = { w: aCoords.tr.x - aCoords.tl.x, h: aCoords.bl.y - aCoords.tl.y };
-          let centre_normalise = { x: rect_normalise.w / 2, y: rect_normalise.h / 2};
-          let coords_normalisees = {
-            x: pointer_sans_rotation.x - this.annuler_rotation(angle, centre, aCoords.tl.x),
-            y: pointer_sans_rotation.y - this.annuler_rotation(angle, centre, aCoords.tl.y),
-          }
 
           // Calculer l'angle entre le centre et le curseur
           let pointeur_sans_rotation_normalise = { x: pointer_sans_rotation.x - centre.x, y: pointer_sans_rotation.y - centre.y };
           let theta_pointeur_sans_rotation = theta(pointeur_sans_rotation_normalise.x, pointeur_sans_rotation_normalise.y);
-          console.log(rad2deg(theta_pointeur_sans_rotation));
 
           // Calculer les x et y max pour l'angle donne
+          let coord_max = { x: options.target.rx * Math.cos(theta_pointeur_sans_rotation), y: options.target.ry * Math.sin(theta_pointeur_sans_rotation) };
+          let distance_max = distance_euclidienne(coord_max);
+
           // Calculer la distance entre le centre et les x/y max
+          let distance_pointeur = distance_euclidienne(pointeur_sans_rotation_normalise);
 
-          // Calculer la distance entre le centre le curseur
-          let distance_pointeur = Math.abs(coords_normalisees.x - centre.x) / centre.x + Math.abs(coords_normalisees.y - centre.y) / centre.y;
-          console.log(distance_pointeur);
-
-          // Retourner le ratio
-          //ellipse.set('angle', angle_original);
-          return 1;
-          return 1 - Math.min(distance_pointeur, 1); // Pas bon pour l'instant
+          return 1 - Math.min(distance_pointeur / distance_max, 1);
         },
         annuler_rotation: function (angle, centre, obj) {
 
@@ -363,4 +347,8 @@ function rad2deg (rad) {
 
 function deg2rad (deg) {
   return deg * Math.PI / 180;
+}
+
+function distance_euclidienne (point) {
+  return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
 }
