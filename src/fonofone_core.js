@@ -63,7 +63,7 @@ export default {
       globales: Globales,
       fonoimage: {
         integration: (this.integration_fonoimage || false),
-        mode: 'pic'
+        mode: 'mix'
       },
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
