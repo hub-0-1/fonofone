@@ -36,6 +36,7 @@ window.Fonoimage = class Fonoimage {
         zone_actif: null,
         ctx_audio: new AudioContext,
         media_stream_destination: null,
+        afficher_gestion_arriere_plan: false,
         enregistrement: {
           encours: false,
           enregistreur: null
@@ -329,11 +330,10 @@ window.Fonoimage = class Fonoimage {
             <div class="app-fonoimage" ref="application_fonoimage">
               <canvas id="canva-fonoimage" ref="canva_fonoimage"></canvas>
             </div>
+            <div class="gestion-arriere-plan" :class="{actif: afficher_gestion_arriere_plan}" ref="gestion_arriere_plan">
+            </div>
           </section>
           <div class="shadow" :class="{actif: mode == 'ajout:encours'}" ref="shadow"></div>
-        </div>
-        <div class="gestion-arriere-plan" :class="{actif: afficher_gestion_arriere_plan }" ref="gestion_arriere_plan">
-          
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_actif}" ref="panneau_fonofone">
           <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_actif}"></fonofone>
