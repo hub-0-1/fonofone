@@ -46,6 +46,42 @@ window.Fonoimage = class Fonoimage {
         exporter: function () {
           console.log(JSON.stringify(this.canva));
         },
+        afficher_fonofone: function (zone_active) {
+          this.zone_actif = zone_active;
+        },
+        // TODO Session vs Enregistrement?
+        toggle_session: function () {
+          this.mode.match(/session/) ? this.fin_session() : this.debut_session();
+        },
+        toggle_mode_edition: function () {
+          this.mode.match(/edition/) ? this.set_mode_normal() : this.set_mode_edition();
+        },
+        set_mode_normal: function () {
+          this.mode = "normal";
+          _.each(this.zones, (zone) => {
+            zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+            this.$refs[zone.id][0].force_play();
+          })
+        },
+        set_mode_edition: function () {
+          this.mode = "edition";
+          _.each(this.zones, (zone) => {
+            zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+          })
+        },
+        toggle_mode_zone: function (zone, ev) {
+          zone.mode = ev;
+          if(zone.mode == 'pic') {
+            zone.ellipse.set('stroke', 'orange');
+          } else {
+            zone.ellipse.set('stroke', 'blue');
+          }
+
+          // Sinon, pas de rendu
+          this.canva.renderAll();
+        },
+
+        // Gestion des zones
         dessiner_nouvelle_zone: function (options) {
           this.mode = "edition:ajout:encours";
 
@@ -92,7 +128,7 @@ window.Fonoimage = class Fonoimage {
         ajouter_zone: function (x, y, rx, ry) {
 
           let nouvelle_zone = {
-            id: `${Date.now()}${Math.round(Math.random() * 50)}`,
+            id: `zone${Date.now()}${Math.round(Math.random() * 50)}`,
             mode: 'mix'
           };
           this.zones[nouvelle_zone.id] = nouvelle_zone;
@@ -191,44 +227,8 @@ window.Fonoimage = class Fonoimage {
           // polaire en cartesien
           return { x: polaire.distance * Math.cos(polaire.radians) + centre.x, y: polaire.distance * Math.sin(polaire.radians) + centre.y };
         },
-        afficher_fonofone: function (zone_active) {
-          this.zone_actif = zone_active;
 
-          // Cacher et afficher les zones
-          _.each(this.zones, (zone) => { zone.container_fonofone.style.display = "none"; });
-          this.zone_actif.container_fonofone.style.display = "initial";
-        },
-        // TODO Session vs Enregistrement?
-        toggle_session: function () {
-          this.mode.match(/session/) ? this.fin_session() : this.debut_session();
-        },
-        toggle_mode_edition: function () {
-          this.mode.match(/edition/) ? this.set_mode_normal() : this.set_mode_edition();
-        },
-        set_mode_normal: function () {
-          this.mode = "normal";
-          _.each(this.zones, (zone) => {
-            zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-            this.$refs[zone.id][0].force_play();
-          })
-        },
-        set_mode_edition: function () {
-          this.mode = "edition";
-          _.each(this.zones, (zone) => {
-            zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-          })
-        },
-        toggle_mode_zone: function (zone, ev) {
-          zone.mode = ev;
-          if(zone.mode == 'pic') {
-            zone.ellipse.set('stroke', 'orange');
-          } else {
-            zone.ellipse.set('stroke', 'blue');
-          }
-
-          // Sinon, pas de rendu
-          this.canva.renderAll();
-        },
+        // Sessions
         debut_session: function () {
           this.mode = "session:active";
           this.get_enregistreur().debuter();
@@ -326,7 +326,7 @@ window.Fonoimage = class Fonoimage {
           <div class="shadow" :class="{actif: mode == 'ajout:encours'}" ref="shadow"></div>
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_actif}" ref="panneau_fonofone">
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)"></fonofone>
+          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_actif}"></fonofone>
         </div>
       </div>`
     });
