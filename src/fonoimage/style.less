@@ -10,6 +10,7 @@
 @charcoal: #323232;
 @temps_transition: 0.5s;
 @border_radius: 10px;
+@largeur_menu_vertical: 40px;
 
 .fonoimage {
   font-family: "Helvetica";
@@ -21,6 +22,9 @@
 
   .gestion-arriere-plan {
     display: none;
+    position: absolute;
+    top: 0;
+    left: @largeur_menu_vertical;
     height: 100%;
     width: 200px;
     background-color: @gris;
@@ -77,7 +81,7 @@
       menu.vertical {
         height: 100%;
         background-color: @noir;
-        width: 40px;
+        width: @largeur_menu_vertical;
         margin: 0;
         padding: 0;
         visibility: hidden;
@@ -101,6 +105,15 @@
 
           img {
             width: 100%;
+          }
+        }
+
+        .supprimer-zone {
+          display: none;
+
+          &.actif {
+            display: initial;
+            background-color: red;
           }
         }
       }

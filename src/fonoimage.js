@@ -13,6 +13,7 @@ import Ellipse from './images/ellipse.svg';
 import Record from './images/record.svg';
 import Micro from './images/micro.svg';
 import Crayon from './images/crayon.svg';
+import Poubelle from './images/trash.svg';
 
 import VueI18n from 'vue-i18n';
 import i18n from './fonoimage/traductions.js';
@@ -33,7 +34,7 @@ window.Fonoimage = class Fonoimage {
         archive_primitive_fonofone: null,
         configuration: {parametres: {}},
         mode: 'normal',
-        zone_actif: null,
+        zone_active: null,
         ctx_audio: new AudioContext,
         media_stream_destination: null,
         afficher_gestion_arriere_plan: false,
@@ -48,7 +49,7 @@ window.Fonoimage = class Fonoimage {
           console.log(JSON.stringify(this.canva));
         },
         afficher_fonofone: function (zone_active) {
-          this.zone_actif = zone_active;
+          this.zone_active = zone_active;
         },
         // TODO Session vs Enregistrement?
         toggle_session: function () {
@@ -198,6 +199,7 @@ window.Fonoimage = class Fonoimage {
           });
 
           this.canva.add(nouvelle_zone.ellipse);
+          this.canva.setActiveObject(nouvelle_zone.ellipse);
           this.afficher_fonofone(nouvelle_zone);
         },
         proximite_centre_ellipse: function (options, ellipse) {
@@ -279,6 +281,11 @@ window.Fonoimage = class Fonoimage {
           if(!this.enregistrement.enregistreur)
             this.enregistrement.enregistreur = new Enregistreur(this.media_stream_destination.stream);
           return this.enregistrement.enregistreur;
+        },
+        supprimer_zone_active: function () {
+          this.canva.remove(this.canva.getActiveObject());
+          delete this.zones[this.zone_active.id];
+          this.zone_active = null;
         }
       },
       created: function () {
@@ -302,7 +309,7 @@ window.Fonoimage = class Fonoimage {
           if(!options.target) { 
 
             // Cacher les fonofones
-            this.zone_actif = null; 
+            this.zone_active = null; 
 
             // Creation d'une nouvelle zone
             if(this.mode == "edition:ajout:pret") { this.dessiner_nouvelle_zone(options); }
@@ -321,10 +328,13 @@ window.Fonoimage = class Fonoimage {
           <section class="principal">
             <menu class="vertical" :class="{actif: mode.match(/edition/)}">
               <div class="icone-wrapper invert" :class="{actif: mode.match(/ajout/)}" @click="toggle_mode_ajout">
-                <img src="${Ellipse}">
+                <img src="${Ellipse}"/>
               </div>
               <div class="icone-wrapper invert" @click="afficher_gestion_arriere_plan = !afficher_gestion_arriere_plan">
-                <img src="${Image}">
+                <img src="${Image}"/>
+              </div>
+              <div class="supprimer-zone icone-wrapper invert" :class="{actif: zone_active}" @click="supprimer_zone_active">
+                <img src="${Poubelle}"/>
               </div>
             </menu>
             <div class="app-fonoimage" ref="application_fonoimage">
@@ -335,8 +345,8 @@ window.Fonoimage = class Fonoimage {
           </section>
           <div class="shadow" :class="{actif: mode == 'ajout:encours'}" ref="shadow"></div>
         </div>
-        <div class="panneau-fonofone" :class="{actif: zone_actif}" ref="panneau_fonofone">
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_actif}"></fonofone>
+        <div class="panneau-fonofone" :class="{actif: zone_active}" ref="panneau_fonofone">
+          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
         </div>
       </div>`
     });
