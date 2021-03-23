@@ -46,7 +46,11 @@ window.Fonoimage = class Fonoimage {
       },
       methods: {
         exporter: function () {
-          console.log(JSON.stringify(this.canva));
+          Promise.all(_.map(this.zones, (zone) => {
+            return this.$refs[zone.id][0].serialiser();
+          })).then((fonofones) => {
+            console.log(fonofones);
+          });
         },
         afficher_fonofone: function (zone_active) {
           this.zone_active = zone_active;
@@ -322,7 +326,7 @@ window.Fonoimage = class Fonoimage {
       <div class="fonoimage">
         <div class="panneau-fonoimage">
           <menu class="horizontal">
-            <img src="${Record}" class="record" :class="{actif: mode.match(/normal|session/), flash: mode == 'session:active'}" @click="toggle_session">
+            <img src="${Record}" class="record" :class="{actif: mode.match(/normal|session/), flash: mode == 'session:active'}" @click="toggle_session"/>
             <img src="${Crayon}" class="crayon" :class="{actif: mode.match(/edition/)}" @click="toggle_mode_edition"/>
           </menu>
           <section class="principal">
@@ -330,7 +334,7 @@ window.Fonoimage = class Fonoimage {
               <div class="icone-wrapper invert" :class="{actif: mode.match(/ajout/)}" @click="toggle_mode_ajout">
                 <img src="${Ellipse}"/>
               </div>
-              <div class="icone-wrapper invert" @click="afficher_gestion_arriere_plan = !afficher_gestion_arriere_plan">
+              <div class="icone-wrapper invert" :class="{actif: afficher_gestion_arriere_plan}" @click="afficher_gestion_arriere_plan = !afficher_gestion_arriere_plan">
                 <img src="${Image}"/>
               </div>
               <div class="supprimer-zone icone-wrapper invert" :class="{actif: zone_active}" @click="supprimer_zone_active">
