@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import _ from 'lodash';
+import { saveAs } from 'file-saver';
 const Fabric = require("fabric").fabric;
 
 import ApplicationFonofone from './fonofone_core';
@@ -14,6 +15,7 @@ import Record from './images/record.svg';
 import Micro from './images/micro.svg';
 import Crayon from './images/crayon.svg';
 import Poubelle from './images/trash.svg';
+import Export from './images/export.svg';
 
 import VueI18n from 'vue-i18n';
 import i18n from './fonoimage/traductions.js';
@@ -46,10 +48,18 @@ window.Fonoimage = class Fonoimage {
       },
       methods: {
         exporter: function () {
-          Promise.all(_.map(this.zones, (zone) => {
+          this.serialiser().then((archive) => {
+            saveAs(new Blob([archive]), `archive.fnmg`);
+          });
+        },
+        serialiser: function () {
+          return Promise.all(_.map(this.zones, (zone) => {
             return this.$refs[zone.id][0].serialiser();
           })).then((fonofones) => {
-            console.log(fonofones);
+            return JSON.stringify({
+              canva: this.canva.toObject(),
+              fonofones
+            });
           });
         },
         afficher_fonofone: function (zone_active) {
@@ -328,6 +338,7 @@ window.Fonoimage = class Fonoimage {
           <menu class="horizontal">
             <img src="${Record}" class="record" :class="{actif: mode.match(/normal|session/), flash: mode == 'session:active'}" @click="toggle_session"/>
             <img src="${Crayon}" class="crayon" :class="{actif: mode.match(/edition/)}" @click="toggle_mode_edition"/>
+            <img src="${Export}" class="export invert" @click="exporter"/>
           </menu>
           <section class="principal">
             <menu class="vertical" :class="{actif: mode.match(/edition/)}">
