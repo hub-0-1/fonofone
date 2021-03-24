@@ -14,6 +14,9 @@ export default {
     return { is_dragging: false, controlleur_actif: null, module_actif: ((this.valeur.actif === true) || true) };
   },
   methods: {
+    borner: function (valeur, min, max) {
+      return Math.min(Math.max(valeur, min), max);
+    },
     borner_0_1: function (valeur) {
       return Math.min(Math.max(valeur, 0), 1);
     },

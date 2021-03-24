@@ -30,7 +30,7 @@ export default {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
-      this.y = this.borner_0_1(coords.y);
+      this.y = this.borner_0_1(coords.y) * (1 - coordonnees_triangle.hauteur / ratio_controlleur);
       this.x = this.borner_0_1(coords.x);
       if(coords.x < 0.5) {
         this.x = Math.max(this.x, this.x_cote_gauche(this.y));
@@ -56,11 +56,11 @@ export default {
       let x_gauche = this.x_cote_gauche(this.y);
       let x_droit  = this.x_cote_droit(this.y);
 
-      this.longueur = 1 - this.y;
+      this.longueur = 1 - (this.y / (1 - coordonnees_triangle.hauteur / ratio_controlleur));
       this.debut = ((1 - this.longueur) * ((this.x - x_gauche) / (x_droit - x_gauche)) || 0);
     },
     mixer_a_svg: function () {
-      this.y = 1 - this.longueur;
+      this.y = 1 - (this.longueur * (1 - coordonnees_triangle.hauteur / ratio_controlleur));
 
       let x_gauche = this.x_cote_gauche(this.y);
       let x_droit  = this.x_cote_droit(this.y);
