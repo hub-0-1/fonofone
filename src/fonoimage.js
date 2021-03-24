@@ -16,8 +16,8 @@ import Micro from './images/micro.svg';
 import Crayon from './images/crayon.svg';
 import Poubelle from './images/trash.svg';
 import Export from './images/export.svg';
+import Maison from './images/maison.jpg';
 
-console.log(Export);
 import VueI18n from 'vue-i18n';
 import i18n from './fonoimage/traductions.js';
 Vue.use(VueI18n);
@@ -41,6 +41,7 @@ window.Fonoimage = class Fonoimage {
         ctx_audio: new AudioContext,
         media_stream_destination: null,
         afficher_gestion_arriere_plan: false,
+        arriere_plan: Maison,
         arrieres_plans: Globales.arrieres_plans,
         enregistrement: {
           encours: false,
@@ -357,7 +358,7 @@ window.Fonoimage = class Fonoimage {
                 <img src="${Poubelle}"/>
               </div>
             </menu>
-            <div class="app-fonoimage" ref="application_fonoimage" style="background-image: url('./src/images/maison.jpg')">
+            <div class="app-fonoimage" ref="application_fonoimage" style="{'background-image' 'url(' + arriere_plan + ')'">
               <canvas id="canva-fonoimage" ref="canva_fonoimage"></canvas>
             </div>
             <div class="gestion-arriere-plan" :class="{actif: afficher_gestion_arriere_plan}" ref="gestion_arriere_plan">
@@ -366,7 +367,7 @@ window.Fonoimage = class Fonoimage {
                 <span>{{ $t('arriereplan') }}</span>
               </h3>
               <div class="container-arrieres-plans">
-                <div v-for="arpl in arrieres_plans" class="img" :style="{backgroundImage: arpl}" @click="set_arriere_plan(arpl)"/>
+                <div v-for="arpl in arrieres_plans" class="img" :style="{'background-image': 'url(' + arpl + ')'}" @click="arriere_plan = arpl"/>
               </div>
               <h3 class="entete">
                 <img src="${Image}"/>
