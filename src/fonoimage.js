@@ -303,9 +303,6 @@ window.Fonoimage = class Fonoimage {
           this.canva.remove(this.canva.getActiveObject());
           delete this.zones[this.zone_active.id];
           this.zone_active = null;
-        },
-        set_arriere_plan: function (url) {
-          this.$refs.application_fonoimage.style.backgroundImage = `url(${url})`;
         }
       },
       created: function () {
