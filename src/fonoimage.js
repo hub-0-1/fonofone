@@ -80,13 +80,44 @@ window.Fonoimage = class Fonoimage {
           _.each(this.zones, (zone) => {
             zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
             this.$refs[zone.id][0].force_play();
-          })
+          });
+
+          // Afficher le micro
+          new Fabric.Image.fromURL(Micro, (micro) => {
+            this.micro = micro;
+            micro.originX = "center";
+            micro.set('left', this.canva.width / 2);
+            micro.set('top', this.canva.height / 2);
+            micro.setCoords();
+            micro.on('mousedown', function (options_down) {
+
+              // TODO activer l'ecoute
+              micro.on('mouseup', function () {
+                micro.off('mousemove');
+                micro.off('mouseup');
+              });
+              micro.on('mousemove', function (options_move) {
+                // 
+                console.log(options_move);
+              })
+            });
+
+            // Empecher le resize
+            micro.hasControls = false;
+            this.canva.add(micro);
+          });
         },
         set_mode_edition: function () {
           this.mode = "edition";
           _.each(this.zones, (zone) => {
             zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-          })
+          });
+
+          if(this.micro) {
+            this.canva.remove(this.micro);
+            this.micro = null;
+          }
+
         },
         toggle_mode_zone: function (zone, ev) {
           zone.mode = ev;
@@ -189,10 +220,10 @@ window.Fonoimage = class Fonoimage {
 
               nouvelle_zone.pointeur = new Fabric.Image.fromURL(Micro, (img) => { 
                 nouvelle_zone.pointeur = img;
-                img.set('left', pointer_pos.x - Globales.taille_pointeur_pic / 2);
-                img.set('top', pointer_pos.y - Globales.taille_pointeur_pic / 2);
-                img.set('width', Globales.taille_pointeur_pic);
-                img.set('height', Globales.taille_pointeur_pic);
+                img.set('left', pointer_pos.x);
+                img.set('top', pointer_pos.y);
+                img.set('originX', "center");
+                img.set('originY', "center");
                 this.canva.add(img);
               });
 
@@ -259,37 +290,9 @@ window.Fonoimage = class Fonoimage {
         debut_session: function () {
           this.mode = "session:active";
           this.get_enregistreur().debuter();
-          new Fabric.Image.fromURL(Micro, (micro) => {
-            console.log(micro);
-            this.micro = micro;
-            micro.originX = "center";
-            micro.set('left', this.canva.width / 2);
-            micro.set('top', this.canva.height / 2);
-            micro.setCoords();
-            micro.on('mousedown', function (options_down) {
-
-              // TODO activer l'ecoute
-              micro.on('mouseup', function () {
-                // TODO https://stackoverflow.com/questions/39098308/how-to-use-two-coordinates-draw-an-ellipse-with-javascript
-                // https://mathopenref.com/coordparamellipse.html
-                micro.off('mousemove');
-                micro.off('mouseup');
-              });
-              micro.on('mousemove', function (options_move) {
-                // 
-                console.log(options_move);
-              })
-            });
-
-            // Empecher le resize
-            micro.hasControls = false;
-            this.canva.add(micro);
-          });
         },
         fin_session: function () {
           this.mode = "normal";
-          this.canva.remove(this.micro);
-          this.micro = null;
           this.get_enregistreur().terminer().then((blob) => {
             console.log(blob);
           })
@@ -333,6 +336,7 @@ window.Fonoimage = class Fonoimage {
           }
         });
 
+        
         this.set_mode_edition();
       },
       template: `
