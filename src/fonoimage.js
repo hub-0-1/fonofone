@@ -355,7 +355,7 @@ window.Fonoimage = class Fonoimage {
                 <img src="${Poubelle}"/>
               </div>
             </menu>
-            <div class="app-fonoimage" ref="application_fonoimage" style="{'background-image' 'url(' + arriere_plan + ')'">
+            <div class="app-fonoimage" ref="application_fonoimage" :style="{'background-image': 'url(' + arriere_plan + ')'}">
               <canvas id="canva-fonoimage" ref="canva_fonoimage"></canvas>
             </div>
             <div class="gestion-arriere-plan" :class="{actif: afficher_gestion_arriere_plan}" ref="gestion_arriere_plan">
