@@ -89,17 +89,15 @@ window.Fonoimage = class Fonoimage {
             micro.set('left', this.canva.width / 2);
             micro.set('top', this.canva.height / 2);
             micro.setCoords();
-            micro.on('mousedown', function (options_down) {
+            micro.on('moving', (options) => { 
+              _.each(this.zones, (zone) => {
 
-              // TODO activer l'ecoute
-              micro.on('mouseup', function () {
-                micro.off('mousemove');
-                micro.off('mouseup');
+                // Seulement pour les zones en mode mix
+                if(this.mode.match(/normal|session/) && zone.mode == 'mix') {
+                  let proximite = this.proximite_centre_ellipse(options, zone.ellipse);
+                  zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
+                }
               });
-              micro.on('mousemove', function (options_move) {
-                // 
-                console.log(options_move);
-              })
             });
 
             // Empecher le resize
@@ -125,6 +123,11 @@ window.Fonoimage = class Fonoimage {
             zone.ellipse.set('stroke', 'orange');
           } else {
             zone.ellipse.set('stroke', 'blue');
+            if(zone.pointeur) {
+              this.canva.remove(zone.pointeur);
+              zone.pointeur = null;
+              zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+            }
           }
 
           // Sinon, pas de rendu
@@ -186,7 +189,8 @@ window.Fonoimage = class Fonoimage {
 
           let nouvelle_zone = {
             id: `zone${Date.now()}${Math.round(Math.random() * 50)}`,
-            mode: 'mix'
+            mode: 'mix',
+            survolee: false
           };
           this.zones[nouvelle_zone.id] = nouvelle_zone;
 
@@ -230,20 +234,6 @@ window.Fonoimage = class Fonoimage {
               let proximite = this.proximite_centre_ellipse(options, nouvelle_zone.ellipse);
               nouvelle_zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
             }
-          }).on('mousemove', (options) => {
-
-            // Seulement en mode mix
-            if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'mix') {
-              
-              let proximite = this.proximite_centre_ellipse(options, nouvelle_zone.ellipse);
-              nouvelle_zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
-            }
-          }).on('mouseout', (options) => {
-
-            // Seulement en mode mix, arreter quand on sort du cadre
-            if(this.mode.match(/normal|session/) && nouvelle_zone.mode == 'mix') {
-              nouvelle_zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-            }
           });
 
           this.canva.add(nouvelle_zone.ellipse);
@@ -254,7 +244,7 @@ window.Fonoimage = class Fonoimage {
 
           // Initialisation
           let pointer_pos = this.canva.getPointer(options.e);
-          let aCoords = options.target.aCoords;
+          let aCoords = ellipse.aCoords;
           let centre = { x: (aCoords.tl.x + aCoords.br.x) / 2, y: (aCoords.tl.y + aCoords.br.y) / 2 };
 
           // Enlever la rotation
@@ -266,7 +256,7 @@ window.Fonoimage = class Fonoimage {
           let theta_pointeur_sans_rotation = theta(pointeur_sans_rotation_normalise.x, pointeur_sans_rotation_normalise.y);
 
           // Calculer les x et y max pour l'angle donne
-          let coord_max = { x: options.target.rx * Math.cos(theta_pointeur_sans_rotation), y: options.target.ry * Math.sin(theta_pointeur_sans_rotation) };
+          let coord_max = { x: ellipse.rx * Math.cos(theta_pointeur_sans_rotation), y: ellipse.ry * Math.sin(theta_pointeur_sans_rotation) };
           let distance_max = distance_euclidienne(coord_max);
 
           // Calculer la distance entre le centre et les x/y max
@@ -336,7 +326,7 @@ window.Fonoimage = class Fonoimage {
           }
         });
 
-        
+
         this.set_mode_edition();
       },
       template: `
