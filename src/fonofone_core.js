@@ -72,7 +72,7 @@ export default {
         encours: false,
         enregistreur: null
       },
-      mixer: { session:{} },
+      mixer: { session: {}, etat: {} },
       outils: {
         filepond: null
       }
@@ -135,10 +135,10 @@ export default {
       this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
     },
     toggle_loop: function () {
-      this.set_loop(!this.configuration.parametres.loop);
+      this.set_loop(!this.mixer.etat.loop);
     },
     set_loop: function (val) {
-      this.configuration.parametres.loop = val;
+      //this.configuration.parametres.loop = val;
       this.mixer.set_loop(val);
     },
     toggle_sens: function () {
@@ -273,7 +273,7 @@ export default {
               <div class="gauche">
                 <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
                 <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
-                <img src="${Loop}" class="icone loop" :class="{actif: configuration.parametres.loop}" @click="toggle_loop"/>
+                <img src="${Loop}" class="icone loop" :class="{actif: mixer.etat.loop}" @click="toggle_loop"/>
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
                 <img src="${Crop}" class="icone" @click="crop"/>
               </div>

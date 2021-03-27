@@ -17,8 +17,10 @@ class Mixer {
     this.chargement = true;
     this.audio_blob = null;
     this.audio_buffer = this.ctx_audio.createBufferSource();
+    this.etat = { jouer: false, loop: false, metronome: false };
     this.parametres = {};
     this.tracks = [];
+    this.tracks_timeouts = [];
     this.prochaines_tracks = [];
     this.nodes = {};
     this.session = { encours: false };
@@ -94,7 +96,7 @@ class Mixer {
     if(this.wavesurfer) {
       this.wavesurfer.destroy();
     }
-    
+
     // Afficher
     this.wavesurfer = WaveSurfer.create({
       container: `#${this.waveform_element_id}`,
@@ -126,17 +128,20 @@ class Mixer {
   }
 
   toggle_pause () {
-    if(this.tracks.length > 0) {
-      // Arreter les tracks qui jouent
-      _.each(this.tracks, (track) => { 
-        track.source.stop();
-      });
+    if(this.tracks.length > 0 || this.tracks_timeouts > 0) {
+      this.etat.jouer = false;
+
+      // Arreter les tracks qui jouent ou qui vont jouer
+      _.each(this.tracks, (track) => { track.source.stop(); });
+      _.each(this.tracks_timeouts, (timeout) => { clearTimeout(timeout); });
+      this.tracks = [];
+      this.tracks_timeouts = [];
     }
     else {
+      this.etat.jouer = true;
       if(this.ctx_audio.state == "running") {
         this.jouer();
-      } else {
-        // Politique autoplay
+      } else { // Politique autoplay
         this.ctx_audio.resume().then(() => { this.jouer(); });
       }
     }
@@ -157,34 +162,43 @@ class Mixer {
       // Supprimer la track de la liste
       this.tracks.splice(this.tracks.indexOf(track), 1); 
 
-      // Si loop mais pas metronome
-      if(this.tracks.length == 0 && this.parametres.loop && !this.parametres.metronome_actif) {
+      // Loop sans metronome
+      if(this.tracks.length == 0 && this.etat.loop && !this.etat.metronome) {
         this.jouer();
       }
     }
 
     // Loop avec metronome
-    if(this.parametres.metronome_actif && this.parametres.loop) { 
-      let interval = (60 / this.parametres.bpm) * 1000;
-
-      // Partie syncope
-      if(this.parametres.syncope) {
-
-        var coeff = 2 * (this.parametres.syncope / 2.0);
-
-        if(this.parametres.prochaine_syncope_courte){
-          interval = interval * (1 - coeff) +  interval * ((2/3) * coeff);
-        } else {
-          interval = interval * (1 - coeff) +  interval * ((4/3) * coeff);
-        }
-        this.parametres.prochaine_syncope_courte = !this.parametres.prochaine_syncope_courte;
-      }
-
-      // Partie aleatoire
-      interval = interval * (1 - (this.parametres.aleatoire / 2)) + (Math.random() * interval * this.parametres.aleatoire);// + (60 / Globales.modules.metronome.min_bpm) * 1000;
-
-      setTimeout(this.jouer.bind(this), interval);
+    if(this.etat.metronome && this.etat.loop) {
+      this.planifier_prochain_metronome();
     }
+  }
+
+  planifier_prochain_metronome () {
+    let interval = (60 / this.parametres.bpm) * 1000;
+
+    // Partie syncope
+    if(this.parametres.syncope) {
+
+      var coeff = 2 * (this.parametres.syncope / 2.0);
+
+      if(this.parametres.prochaine_syncope_courte){
+        interval = interval * (1 - coeff) +  interval * ((2/3) * coeff);
+      } else {
+        interval = interval * (1 - coeff) +  interval * ((4/3) * coeff);
+      }
+      this.parametres.prochaine_syncope_courte = !this.parametres.prochaine_syncope_courte;
+    }
+
+    // Partie aleatoire
+    interval = interval * (1 - (this.parametres.aleatoire / 2)) + (Math.random() * interval * this.parametres.aleatoire);// + (60 / Globales.modules.metronome.min_bpm) * 1000;
+
+    // Planifier la track et en garder une trace
+    let track_timeout = setTimeout(() => {
+      this.jouer();
+      this.tracks_timeouts.splice(this.tracks_timeouts.indexOf(track_timeout), 1); 
+    }, interval);
+    this.tracks_timeouts.push(track_timeout);
   }
 
   set_volume (valeur) {
@@ -231,7 +245,7 @@ class Mixer {
   set_metronome (valeur) {
 
     // Rythme aleatoire
-    this.parametres.metronome_actif = valeur.actif;
+    this.etat.metronome = valeur.actif;
     this.parametres.syncope = valeur.syncope;
     this.parametres.aleatoire = valeur.aleatoire;
     this.parametres.bpm = Math.pow(valeur.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm;
@@ -279,8 +293,11 @@ class Mixer {
   }
 
   set_loop (valeur) {
-    this.parametres.loop = valeur;
-    // TODO Faire jouer automaituqment valeur ? this.set_interval_metronome() : this.stop_metronome(); 
+    this.etat.loop = valeur;
+
+    if(this.etat.metronome && this.etat.loop && this.etat.jouer) {
+      this.planifier_prochain_metronome();
+    }
   }
 
   set_sens (valeur) {
