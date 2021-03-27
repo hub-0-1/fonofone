@@ -150,14 +150,14 @@
           img {
             width: 100%;
           }
-        }
 
-        .supprimer-zone {
-          display: none;
-
-          &.actif {
-            display: initial;
+          &.supprimer-zone {
+            visibility: hidden;
             background-color: red;
+
+            &.actif {
+              visibility: initial;
+            }
           }
         }
       }

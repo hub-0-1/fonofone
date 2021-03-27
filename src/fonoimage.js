@@ -345,7 +345,7 @@ window.Fonoimage = class Fonoimage {
               <div class="icone-wrapper invert" :class="{actif: afficher_gestion_arriere_plan}" @click="afficher_gestion_arriere_plan = !afficher_gestion_arriere_plan">
                 <img src="${Image}"/>
               </div>
-              <div class="supprimer-zone icone-wrapper invert" :class="{actif: zone_active}" @click="supprimer_zone_active">
+              <div class="icone-wrapper invert supprimer-zone" :class="{actif: zone_active}" @click="supprimer_zone_active">
                 <img src="${Poubelle}"/>
               </div>
             </menu>
