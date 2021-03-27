@@ -19,7 +19,7 @@ import Export from './images/export.svg';
 import Maison from './images/maison.jpg';
 
 import VueI18n from 'vue-i18n';
-import i18n from './fonoimage/traductions.js';
+import i18n from './traductions.js';
 Vue.use(VueI18n);
 
 window.Fonoimage = class Fonoimage {
@@ -284,7 +284,7 @@ window.Fonoimage = class Fonoimage {
         fin_session: function () {
           this.mode = "normal";
           this.get_enregistreur().terminer().then((blob) => {
-            console.log(blob);
+            saveAs(blob, `session_${Date.now().toString()}.webm`)
           })
         },
         get_enregistreur: function () {

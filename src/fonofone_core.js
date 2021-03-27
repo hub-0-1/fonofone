@@ -129,7 +129,7 @@ export default {
     },
     force_play: function () {
       this.set_loop(true);
-      this.jouer();
+      this.mixer.lancer();
     },
     reset_selecteur: function () {
       this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
@@ -138,7 +138,6 @@ export default {
       this.set_loop(!this.mixer.etat.loop);
     },
     set_loop: function (val) {
-      //this.configuration.parametres.loop = val;
       this.mixer.set_loop(val);
     },
     toggle_sens: function () {

@@ -138,12 +138,16 @@ class Mixer {
       this.tracks_timeouts = [];
     }
     else {
-      this.etat.jouer = true;
-      if(this.ctx_audio.state == "running") {
-        this.jouer();
-      } else { // Politique autoplay
-        this.ctx_audio.resume().then(() => { this.jouer(); });
-      }
+      this.lancer();
+    }
+  }
+
+  lancer () {
+    this.etat.jouer = true;
+    if(this.ctx_audio.state == "running") {
+      this.jouer();
+    } else { // Politique autoplay
+      this.ctx_audio.resume().then(() => { this.jouer(); });
     }
   }
 
