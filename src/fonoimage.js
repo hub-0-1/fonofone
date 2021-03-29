@@ -55,8 +55,18 @@ window.Fonoimage = class Fonoimage {
         zones: {}
       },
       methods: {
-        importer: function (archive) {
-          console.log(archive);
+        importer: function (fichier) {
+          return new Promise (async (resolve) => {
+            let archive_serialisee = await new Promise((resolve) => {
+              let fileReader = new FileReader();
+              fileReader.onload = (e) => resolve(fileReader.result);
+              fileReader.readAsText(fichier);
+            });
+
+            let configuration_archive = JSON.parse(archive_serialisee);
+            // TODO https://stackoverflow.com/questions/19444812/load-from-json-in-fabric-js-loading-default-properties
+            console.log(configuration_archive);
+          })
         },
         exporter: function () {
           this.serialiser().then((archive) => {
