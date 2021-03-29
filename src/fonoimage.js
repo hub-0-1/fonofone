@@ -64,9 +64,21 @@ window.Fonoimage = class Fonoimage {
             });
 
             let configuration_archive = JSON.parse(archive_serialisee);
-            // TODO https://stackoverflow.com/questions/19444812/load-from-json-in-fabric-js-loading-default-properties
-            console.log(configuration_archive);
-          })
+
+            // Faire le menage
+            this.zone_active = null;
+            this.zones = [];
+            this.clearCanva();
+            console.log(this);
+
+            // Ajouter les zones et les fonofones
+            _.each(configuration_archive.zones, (zone) => {
+              console.log(zone);
+            })
+          });
+        },
+        clearCanva: function () {
+          _.each(this.canva._objects, (obj) => { this.canva.remove(obj); });
         },
         exporter: function () {
           this.serialiser().then((archive) => {
@@ -74,13 +86,15 @@ window.Fonoimage = class Fonoimage {
           });
         },
         serialiser: function () {
-          return Promise.all(_.map(this.zones, (zone) => {
-            return this.$refs[zone.id][0].serialiser();
-          })).then((fonofones) => {
-            return JSON.stringify({
-              canva: this.canva.toObject(),
-              fonofones
-            });
+          return Promise.all(_.map(this.zones, async (zone) => {
+            return {
+              zone: zone,
+              fonofone: await this.$refs[zone.id][0].serialiser()
+            }
+          })).then(async (zones) => {
+            return JSON.stringify({ 
+              arriere_plan: null /*await getDataUri(this.arriere_plan)*/,
+              zones });
           });
         },
         afficher_fonofone: function (zone_active) {
@@ -430,4 +444,34 @@ function deg2rad (deg) {
 
 function distance_euclidienne (point) {
   return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
+}
+
+async function img2DataURL (url) {
+  let blob = await fetch(url).then(r => r.blob());
+  let dataUrl = await new Promise(resolve => {
+    let reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+  return dataUrl;
+}
+
+function getDataUri(url) {
+  return new Promise((resolve) => {
+    var image = new Image();
+
+    image.onload = function () {
+      var canvas = document.createElement('canvas');
+      canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+      canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+      canvas.getContext('2d').drawImage(this, 0, 0);
+
+      // ... or get as Data URI
+      resolve(canvas.toDataURL('image/jpg'));
+
+    };
+
+    image.src = url;
+  });
 }
