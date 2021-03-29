@@ -73,9 +73,7 @@ export default {
         enregistreur: null
       },
       mixer: { session: {}, etat: {} },
-      outils: {
-        filepond: null
-      }
+      filepond: null
     };
   },
   i18n,

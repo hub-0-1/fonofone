@@ -31,6 +31,7 @@ window.Fonoimage = class Fonoimage {
     this.app = new Vue({
       el,
       i18n,
+      mixins: [Filepond],
       components: {
         "fonofone": ApplicationFonofone
       },
@@ -50,9 +51,13 @@ window.Fonoimage = class Fonoimage {
           encours: false,
           enregistreur: null
         },
+        filepond: null,
         zones: {}
       },
       methods: {
+        importer: function (archive) {
+          console.log(archive);
+        },
         exporter: function () {
           this.serialiser().then((archive) => {
             saveAs(new Blob([archive]), `archive.fnmg`);
@@ -312,6 +317,16 @@ window.Fonoimage = class Fonoimage {
       mounted: function () {
         let application = this.$refs.application_fonoimage;
 
+        // Filepond
+        console.log(this.$refs.filepond);
+        this.init_filepond(this.$refs.filepond, (fichier) => { 
+
+          if (fichier.fileExtension == "fnmg") { this.importer(fichier.file); }
+          else { throw "type de fichier non valide"; }
+
+          this.mode_importation = false;
+        });
+
         // Creer le canva
         this.canva = new Fabric.Canvas('canva-fonoimage', {
           width: application.offsetWidth,
@@ -328,7 +343,6 @@ window.Fonoimage = class Fonoimage {
             if(this.mode == "edition:ajout:pret") { this.dessiner_nouvelle_zone(options); }
           }
         });
-
 
         this.set_mode_edition();
       },
