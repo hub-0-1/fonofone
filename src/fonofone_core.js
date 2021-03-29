@@ -234,6 +234,27 @@ export default {
   mounted: function () {
 
     // Initialisation de Filepond par les mixins
+    this.init_filepond(this.$refs.filepond, (fichier) => { 
+
+      // Importation de nouveau fichier audio
+      if(fichier.fileType.match(/audio|webm/)) {
+        new Response(fichier.file).blob().then((blob) => {
+          this.globales.sons.push({ nom: fichier.filenameWithoutExtension, blob: blob });
+        }); 
+      }
+
+      // Importation de fichier fonofone
+      else if (fichier.fileExtension == "fnfn") {
+        this.mode_importation = false;
+        this.importer(fichier.file);
+      }
+
+      // Fichier non valide
+      else {
+        this.mode_importation = false;
+        throw "type de fichier non valide";
+      }
+    });
 
     // Mode affichage
     /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {

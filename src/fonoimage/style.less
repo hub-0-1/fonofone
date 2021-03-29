@@ -213,6 +213,18 @@
     }
   }
 
+  .panneau-importation {
+    width: 0;
+    border: 1px solid @noir;
+    background-color: @gris;
+
+    transition: 1s all;
+
+    &.actif {
+      width: 30%;
+    }
+  }
+
   .inverser {
     filter: invert(1);
   }

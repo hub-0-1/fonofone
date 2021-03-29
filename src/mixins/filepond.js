@@ -3,7 +3,8 @@ import 'filepond/dist/filepond.min.css';
 
 export default {
   methods: {
-    init_filepond: function () {
+    // Passer l'element, et une liste de callbacks
+    init_filepond: function (parent_el, callback) {
 
       // Upload fichiers
       let filepond = this.outils.filepond = FilePond.create({ 
@@ -11,30 +12,9 @@ export default {
         credits: false
       });
 
-//      filepond.labelIdle = this.$t("filepond.idle");
-
-      this.$refs.filepond.appendChild(this.outils.filepond.element);
-
-      let filepond_el = this.$refs.filepond.firstChild;
-      filepond_el.addEventListener('FilePond:addfile', e => { 
-        let fichier = e.detail.file;
-
-        console.log(fichier);
-        if(fichier.fileType.match(/audio|webm/)) {
-          new Response(fichier.file).blob().then((blob) =>{
-            this.globales.sons.push({ nom: fichier.filenameWithoutExtension, blob: blob });
-          });
-        } else if (fichier.fileExtension == "fnfn") {
-          this.mode_importation = false;
-          this.importer(fichier.file);
-        } else {
-          this.mode_importation = false;
-          throw "type de fichier non valide";
-        }
-      });
+      //  filepond.labelIdle = this.$t("filepond.idle");
+      parent_el.appendChild(filepond.element);
+      filepond.element.addEventListener('FilePond:addfile', (e) => { callback(e.detail.file); });
     }
-  },
-  mounted: function () {
-    this.init_filepond();
   }
 }

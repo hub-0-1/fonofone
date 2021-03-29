@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 const Fabric = require("fabric").fabric;
 
 import ApplicationFonofone from './fonofone_core';
+import Filepond from './mixins/filepond.js';
 import Enregistreur from './enregistreur.js';
 import Zone from './fonoimage/zone.js';
 import Globales from './fonoimage/globales.js';
@@ -16,6 +17,7 @@ import Micro from './images/micro.svg';
 import Crayon from './images/crayon.svg';
 import Poubelle from './images/trash.svg';
 import Export from './images/export.svg';
+import Import from './images/import.svg';
 import Maison from './images/maison.jpg';
 
 import VueI18n from 'vue-i18n';
@@ -40,6 +42,7 @@ window.Fonoimage = class Fonoimage {
         zone_active: null,
         ctx_audio: new AudioContext,
         media_stream_destination: null,
+        mode_importation: false,
         afficher_gestion_arriere_plan: false,
         arriere_plan: Maison,
         arrieres_plans: Globales.arrieres_plans,
@@ -336,6 +339,7 @@ window.Fonoimage = class Fonoimage {
             <img src="${Record}" class="record" :class="{actif: mode.match(/normal|session/), flash: mode == 'session:active'}" @click="toggle_session"/>
             <img src="${Crayon}" class="crayon" :class="{actif: mode.match(/edition/)}" @click="toggle_mode_edition"/>
             <img src="${Export}" class="export invert" @click="exporter"/>
+            <img src="${Import}" class="import invert" @click="mode_importation = !mode_importation"/>
           </menu>
           <section class="principal">
             <menu class="vertical" :class="{actif: mode.match(/edition/)}">
@@ -366,10 +370,18 @@ window.Fonoimage = class Fonoimage {
               </h3>
             </div>
           </section>
-          <div class="shadow" :class="{actif: mode == 'ajout:encours'}" ref="shadow"></div>
+          <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_active}" ref="panneau_fonofone">
           <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
+        </div>
+        <div class="panneau-importation" :class="{actif: mode_importation}">
+          <div class="background-importation">
+            <div class="fenetre-importation">
+              Importation
+              <div ref="filepond"></div>
+            </div>
+          </div>
         </div>
       </div>`
     });
