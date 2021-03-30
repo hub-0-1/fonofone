@@ -73,8 +73,8 @@ window.Fonoimage = class Fonoimage {
             // Ajouter les zones et les fonofones
             _.each(configuration_archive.zones, (zone) => {
               let ellipse = zone.zone.ellipse;
-              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry);
-              console.log(zone.zone.ellipse);
+              // TODO importer le bon fonofone
+              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, zone.fonofone);
             })
           });
         },
@@ -218,7 +218,7 @@ window.Fonoimage = class Fonoimage {
             shadow_style.height = (options.e.clientY - init_event.clientY) + "px";
           });
         },
-        ajouter_zone: function (x, y, rx, ry) {
+        ajouter_zone: function (x, y, rx, ry, fonofone = null) {
 
           let nouvelle_zone = {
             id: `zone${Date.now()}${Math.round(Math.random() * 50)}`,
@@ -266,6 +266,8 @@ window.Fonoimage = class Fonoimage {
 
               let proximite = this.proximite_centre_ellipse(options, nouvelle_zone.ellipse);
               nouvelle_zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
+              
+              console.log("faire quelque chose avec ", fonofone);
             }
           });
 
