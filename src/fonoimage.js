@@ -67,13 +67,14 @@ window.Fonoimage = class Fonoimage {
 
             // Faire le menage
             this.zone_active = null;
-            this.zones = [];
+            this.zones = {};
             this.clearCanva();
-            console.log(this);
 
             // Ajouter les zones et les fonofones
             _.each(configuration_archive.zones, (zone) => {
-              console.log(zone);
+              let ellipse = zone.zone.ellipse;
+              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry);
+              console.log(zone.zone.ellipse);
             })
           });
         },
