@@ -10,7 +10,7 @@ import Zone from './fonoimage/zone.js';
 import Globales from './fonoimage/globales.js';
 
 import './fonoimage/style.less';
-import Image from './images/image.svg';
+import Images from './images/image.svg';
 import Ellipse from './images/ellipse.svg';
 import Record from './images/record.svg';
 import Micro from './images/micro.svg';
@@ -94,12 +94,27 @@ window.Fonoimage = class Fonoimage {
             }
           })).then(async (zones) => {
             return JSON.stringify({ 
-              arriere_plan: null /*await getDataUri(this.arriere_plan)*/,
-              zones });
+              arriere_plan: this.canva.backgroundImage.toDataURL(), //await getDataUri(this.arriere_plan),
+              zones 
+            });
           });
         },
         afficher_fonofone: function (zone_active) {
           this.zone_active = zone_active;
+        },
+        set_arriere_plan: function (url) {
+          if(url.match(/^data/)) {
+            let img = new Image();
+            img.onload = function() {
+              var f_img = new Fabric.Image(img);
+              this.canva.setBackgroundImage(f_img);
+              this.canva.renderAll();
+            };
+            img.src = url;
+          }
+          else {
+            this.canva.setBackgroundImage(url, this.canva.renderAll.bind(this.canva), { backgroundImageStretch: true });
+          }
         },
         // TODO Session vs Enregistrement?
         toggle_session: function () {
@@ -266,7 +281,7 @@ window.Fonoimage = class Fonoimage {
 
               let proximite = this.proximite_centre_ellipse(options, nouvelle_zone.ellipse);
               nouvelle_zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
-              
+
               console.log("faire quelque chose avec ", fonofone);
             }
           });
@@ -345,7 +360,6 @@ window.Fonoimage = class Fonoimage {
         let application = this.$refs.application_fonoimage;
 
         // Filepond
-        console.log(this.$refs.filepond);
         this.init_filepond(this.$refs.filepond, (fichier) => { 
 
           if (fichier.fileExtension == "fnmg") { this.importer(fichier.file); }
@@ -371,6 +385,8 @@ window.Fonoimage = class Fonoimage {
           }
         });
 
+        this.set_arriere_plan(Maison);
+
         this.set_mode_edition();
       },
       template: `
@@ -388,25 +404,25 @@ window.Fonoimage = class Fonoimage {
                 <img src="${Ellipse}"/>
               </div>
               <div class="icone-wrapper invert" :class="{actif: afficher_gestion_arriere_plan}" @click="afficher_gestion_arriere_plan = !afficher_gestion_arriere_plan">
-                <img src="${Image}"/>
+                <img src="${Images}"/>
               </div>
               <div class="icone-wrapper invert supprimer-zone" :class="{actif: zone_active}" @click="supprimer_zone_active">
                 <img src="${Poubelle}"/>
               </div>
             </menu>
-            <div class="app-fonoimage" ref="application_fonoimage" :style="{'background-image': 'url(' + arriere_plan + ')'}">
+            <div class="app-fonoimage" ref="application_fonoimage">
               <canvas id="canva-fonoimage" ref="canva_fonoimage"></canvas>
             </div>
             <div class="gestion-arriere-plan" :class="{actif: afficher_gestion_arriere_plan}" ref="gestion_arriere_plan">
               <h3 class="entete">
-                <img src="${Image}"/>
+                <img src="${Images}"/>
                 <span>{{ $t('arriereplan') }}</span>
               </h3>
               <div class="container-arrieres-plans">
-                <div v-for="arpl in arrieres_plans" class="img" :style="{'background-image': 'url(' + arpl + ')'}" @click="arriere_plan = arpl"/>
+                <div v-for="arpl in arrieres_plans" class="img" :style="{'background-image': 'url(' + arpl + ')'}" @click="set_arriere_plan(arpl)"/>
               </div>
               <h3 class="entete">
-                <img src="${Image}"/>
+                <img src="${Images}"/>
                 <span>{{ $t('formes') }}</span>
               </h3>
             </div>
@@ -470,9 +486,7 @@ function getDataUri(url) {
 
       canvas.getContext('2d').drawImage(this, 0, 0);
 
-      // ... or get as Data URI
       resolve(canvas.toDataURL('image/jpg'));
-
     };
 
     image.src = url;
