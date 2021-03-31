@@ -132,7 +132,8 @@ window.Fonoimage = class Fonoimage {
             this.$refs[zone.id][0].force_play();
             zone.ellipse.hasControls = false;
             zone.ellipse.hasBorders = false;
-            //zone.ellipse.evented = false;
+            zone.ellipse.lockMovementX = true;
+            zone.ellipse.lockMovementY = true;
           });
 
           // Afficher le micro
@@ -164,7 +165,8 @@ window.Fonoimage = class Fonoimage {
             zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
             zone.ellipse.hasControls = true;
             zone.ellipse.hasBorders = true;
-            //zone.ellipse.evented = true;
+            zone.ellipse.lockMovementX = false;
+            zone.ellipse.lockMovementY = false;
           });
 
           if(this.micro) {
