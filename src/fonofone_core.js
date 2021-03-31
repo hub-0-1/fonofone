@@ -98,13 +98,15 @@ export default {
     },
     importer: function (fichier) {
       return new Promise (async (resolve) => {
-        let archive_serialisee = await new Promise((resolve) => {
-          let fileReader = new FileReader();
-          fileReader.onload = (e) => resolve(fileReader.result);
-          fileReader.readAsText(fichier);
-        });
+        if(fichier instanceof Blob) {
+          fichier = await new Promise((resolve) => {
+            let fileReader = new FileReader();
+            fileReader.onload = (e) => resolve(fileReader.result);
+            fileReader.readAsText(fichier);
+          });
+        }
 
-        this.configuration = JSON.parse(archive_serialisee);
+        this.configuration = JSON.parse(fichier);
         fetch(this.configuration.fichier).then((response) => {
           return response.blob();
         }).then((blob) => {

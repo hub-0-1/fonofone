@@ -73,7 +73,6 @@ window.Fonoimage = class Fonoimage {
             // Ajouter les zones et les fonofones
             _.each(configuration_archive.zones, (zone) => {
               let ellipse = zone.zone.ellipse;
-              // TODO importer le bon fonofone
               this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, zone.fonofone);
             });
 
@@ -241,6 +240,7 @@ window.Fonoimage = class Fonoimage {
           let nouvelle_zone = {
             id: `zone${Date.now()}${Math.round(Math.random() * 50)}`,
             mode: 'mix',
+            configuration_fonofone: fonofone,
             survolee: false
           };
           this.zones[nouvelle_zone.id] = nouvelle_zone;
@@ -433,7 +433,7 @@ window.Fonoimage = class Fonoimage {
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_active}" ref="panneau_fonofone">
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
+          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="zone.configuration_fonofone || archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">
