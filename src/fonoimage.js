@@ -130,6 +130,9 @@ window.Fonoimage = class Fonoimage {
           _.each(this.zones, (zone) => {
             zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
             this.$refs[zone.id][0].force_play();
+            zone.ellipse.hasControls = false;
+            zone.ellipse.hasBorders = false;
+            //zone.ellipse.evented = false;
           });
 
           // Afficher le micro
@@ -159,6 +162,9 @@ window.Fonoimage = class Fonoimage {
           this.mode = "edition";
           _.each(this.zones, (zone) => {
             zone.noeud_sortie.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+            zone.ellipse.hasControls = true;
+            zone.ellipse.hasBorders = true;
+            //zone.ellipse.evented = true;
           });
 
           if(this.micro) {
@@ -409,7 +415,7 @@ window.Fonoimage = class Fonoimage {
               <div class="icone-wrapper invert" :class="{actif: afficher_gestion_arriere_plan}" @click="afficher_gestion_arriere_plan = !afficher_gestion_arriere_plan">
                 <img src="${Images}"/>
               </div>
-              <div class="icone-wrapper invert supprimer-zone" :class="{actif: zone_active}" @click="supprimer_zone_active">
+              <div class="icone-wrapper invert supprimer-zone" :class="{actif: (zone_active && mode.match(/edition/))}" @click="supprimer_zone_active">
                 <img src="${Poubelle}"/>
               </div>
             </menu>
