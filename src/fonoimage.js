@@ -75,7 +75,10 @@ window.Fonoimage = class Fonoimage {
               let ellipse = zone.zone.ellipse;
               // TODO importer le bon fonofone
               this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, zone.fonofone);
-            })
+            });
+
+            // Charger l'arriere-plan
+            this.set_arriere_plan(configuration_archive.arriere_plan);
           });
         },
         clearCanva: function () {
@@ -92,9 +95,9 @@ window.Fonoimage = class Fonoimage {
               zone: zone,
               fonofone: await this.$refs[zone.id][0].serialiser()
             }
-          })).then(async (zones) => {
+          })).then((zones) => {
             return JSON.stringify({ 
-              arriere_plan: this.canva.backgroundImage.toDataURL(), //await getDataUri(this.arriere_plan),
+              arriere_plan: this.canva.backgroundImage.toDataURL(),
               zones 
             });
           });
@@ -105,7 +108,7 @@ window.Fonoimage = class Fonoimage {
         set_arriere_plan: function (url) {
           if(url.match(/^data/)) {
             let img = new Image();
-            img.onload = function() {
+            img.onload = () => {
               var f_img = new Fabric.Image(img);
               this.canva.setBackgroundImage(f_img);
               this.canva.renderAll();
@@ -465,30 +468,3 @@ function distance_euclidienne (point) {
   return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
 }
 
-async function img2DataURL (url) {
-  let blob = await fetch(url).then(r => r.blob());
-  let dataUrl = await new Promise(resolve => {
-    let reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
-  return dataUrl;
-}
-
-function getDataUri(url) {
-  return new Promise((resolve) => {
-    var image = new Image();
-
-    image.onload = function () {
-      var canvas = document.createElement('canvas');
-      canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-      canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-
-      canvas.getContext('2d').drawImage(this, 0, 0);
-
-      resolve(canvas.toDataURL('image/jpg'));
-    };
-
-    image.src = url;
-  });
-}
