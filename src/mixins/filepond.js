@@ -1,5 +1,8 @@
 import * as FilePond from 'filepond';
 import 'filepond/dist/filepond.min.css';
+import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
+
+FilePond.registerPlugin(FilePondPluginFileEncode);
 
 export default {
   methods: {

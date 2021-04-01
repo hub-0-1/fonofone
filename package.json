@@ -38,6 +38,7 @@
     "fabric": "^4.3.1",
     "file-saver": "^2.0.5",
     "filepond": "^4.24.0",
+    "filepond-plugin-file-encode": "^2.1.10",
     "i18n": "^0.13.2",
     "lodash": "^4.17.20",
     "vue": "^2.6.12",

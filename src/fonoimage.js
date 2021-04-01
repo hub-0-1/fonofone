@@ -292,8 +292,6 @@ window.Fonoimage = class Fonoimage {
 
               let proximite = this.proximite_centre_ellipse(options, nouvelle_zone.ellipse);
               nouvelle_zone.noeud_sortie.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
-
-              console.log("faire quelque chose avec ", fonofone);
             }
           });
 
@@ -371,9 +369,17 @@ window.Fonoimage = class Fonoimage {
         let application = this.$refs.application_fonoimage;
 
         // Filepond
-        this.init_filepond(this.$refs.filepond, (fichier) => { 
+        this.init_filepond(this.$refs.filepond_archive, (fichier) => { 
 
           if (fichier.fileExtension == "fnmg") { this.importer(fichier.file); }
+          else { throw "type de fichier non valide"; }
+
+          this.mode_importation = false;
+        });
+
+        this.init_filepond(this.$refs.filepond_arriereplan, (fichier) => { 
+
+          if (fichier.fileType.match(/image/)) { this.arrieres_plans.push(fichier.getFileEncodeDataURL()); }
           else { throw "type de fichier non valide"; }
 
           this.mode_importation = false;
@@ -436,6 +442,7 @@ window.Fonoimage = class Fonoimage {
                 <img src="${Images}"/>
                 <span>{{ $t('formes') }}</span>
               </h3>
+              <div ref="filepond_arriereplan"></div>
             </div>
           </section>
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
@@ -446,8 +453,7 @@ window.Fonoimage = class Fonoimage {
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">
             <div class="fenetre-importation">
-              Importation
-              <div ref="filepond"></div>
+              <div ref="filepond_archive"></div>
             </div>
           </div>
         </div>
