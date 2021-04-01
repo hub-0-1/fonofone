@@ -88,39 +88,9 @@ class Mixer {
     fonofone.noeud_sortie.connect(this.nodes.media_stream_destination);
   }
 
-  paint () {
-
-    if(this.wavesurfer) {
-      this.wavesurfer.destroy();
-    }
-
-    // Afficher
-    setTimeout(() => {
-
-      this.wavesurfer = WaveSurfer.create({
-        container: `#${this.waveform_element_id}`,
-        waveColor: '#418ACA',
-        height: 100, // TODO determiner par CSS si possible
-        plugins: [ Regions.create({ }) ]
-      });
-
-      this.wavesurfer.loadBlob(this.audio_blob);
-      this.paint_regions();
-    }, 1000);
-  }
-
-  paint_regions () {
-    if(!this.wavesurfer) return;
-    this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232', drag: false, resize: false});
-  }
-
   charger_blob (blob) {
 
-    // Affichage
-    // TODO recursion infinie ...
     this.audio_blob = blob;
-    this.paint();
 
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
@@ -245,9 +215,6 @@ class Mixer {
 
     this.parametres.debut = (valeur.debut * this.audio_buffer.duration || 0);
     this.parametres.longueur = (valeur.longueur * this.audio_buffer.duration || 0);
-
-    // Visuel
-    this.paint_regions();
   }
 
   set_metronome (valeur) {

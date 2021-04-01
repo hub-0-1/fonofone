@@ -11,6 +11,8 @@ import Vue from 'vue';
 import _ from 'lodash';
 import { saveAs } from 'file-saver';
 import toWav from 'audiobuffer-to-wav';
+import WaveSurfer from 'wavesurfer.js';
+import Regions from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 
 import Filepond from './mixins/filepond.js';
 import Enregistreur from './enregistreur.js';
@@ -73,7 +75,8 @@ export default {
         enregistreur: null
       },
       mixer: { session: {}, etat: {} },
-      filepond: null
+      filepond: null,
+      wavesurfer: null
     };
   },
   i18n,
@@ -154,8 +157,32 @@ export default {
       this.set_loop(false);
       this.mixer.toggle_pause();
     },
-    repaint: function () {
-      // TODO this.mixer.paint();
+    paint: function () {
+
+      if(this.wavesurfer) {
+        this.wavesurfer.destroy();
+        this.wavesurfer = null;
+      }
+
+      // Afficher
+      this.$nextTick(() => {
+
+        this.wavesurfer = WaveSurfer.create({
+
+          container: `#${this.waveform_id}`,
+          waveColor: '#418ACA',
+          height: 100, // TODO determiner par CSS si possible
+          plugins: [ Regions.create({ }) ]
+        });
+
+        this.wavesurfer.loadBlob(this.mixer.audio_blob);
+        this.paint_regions();
+      });
+    },
+    paint_regions: function () {
+      if(!this.wavesurfer) return;
+      this.wavesurfer.clearRegions();
+      this.wavesurfer.addRegion({id: `selected-${this.id}`, start: this.mixer.parametres.debut, end: this.mixer.parametres.debut + this.mixer.parametres.longueur, color: '#323232', drag: false, resize: false});
     },
     toggle_enregistrement: function () {
       this.get_enregistreur().then((enregistreur) => {
@@ -225,6 +252,12 @@ export default {
         );
       },
       deep: true
+    },
+    'configuration.modules.selecteur': {
+      handler: function (config) {
+        this.paint_regions();
+      },
+      deep: true
     }
   },
   computed: {
@@ -261,7 +294,7 @@ export default {
         this.mode_affichage = "grille";
       }*/
 
-    window.addEventListener("resize", this.repaint);
+    window.addEventListener("resize", this.paint);
 
     this.mixer = new Mixer(this);
 
@@ -270,6 +303,7 @@ export default {
       this.mixer.set_sens(configuration.parametres.sens);
       this.synchroniser_modules();
       this.mixer.chargement = false;
+      this.paint();
 
       // TODO Ajouter les breaks points pour l'affichage en mode colonne
       // compter les enfants, selon la largeur, diviser en colonnes
