@@ -37,7 +37,7 @@ window.Fonoimage = class Fonoimage {
       },
       data: {
         archive,
-        archive_primitive_fonofone: null,
+        fonofone_pardefaut: null,
         configuration: {parametres: {}},
         mode: 'normal',
         zone_active: null,
@@ -361,10 +361,10 @@ window.Fonoimage = class Fonoimage {
       },
       created: function () {
         this.media_stream_destination = this.ctx_audio.createMediaStreamDestination(); 
-        fetch(Globales.configuration_primitive).then((response) => {
+        fetch(Globales.fonofone_pardefaut).then((response) => {
           return response.blob();
         }).then((archive) => {
-          this.archive_primitive_fonofone = archive; 
+          this.fonofone_pardefaut = archive; 
         });
       },
       mounted: function () {
@@ -441,7 +441,7 @@ window.Fonoimage = class Fonoimage {
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_active}" ref="panneau_fonofone">
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="zone.configuration_fonofone || archive_primitive_fonofone" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
+          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.noeud_sortie" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">

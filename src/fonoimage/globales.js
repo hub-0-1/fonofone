@@ -1,10 +1,10 @@
+import Maison from '../images/maison.jpg';
+import Ocean from '../images/ocean.jpg';
+import Montagnes from '../images/montagnes.jpg';
+import Montreal from '../images/montreal.jpg';
+
 export default {
-  configuration_primitive: "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn",
+  fonofone_pardefaut: "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn",
   taille_pointeur_pic: 10,
-  arrieres_plans: [
-    "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png",
-    "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png",
-    "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png",
-    "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png"
-  ]
+  arrieres_plans: [ Maison, Ocean, Montagnes, Montreal ]
 };
