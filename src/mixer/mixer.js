@@ -9,10 +9,10 @@ const pct_bpm_aleatoire = 0.6;
 
 // TODO Refact constantes de tout le fonofone dans globales.js
 class Mixer {
-  constructor (waveform_element_id, fnfn_id, ctx_audio, noeud_sortie) {
-    this.waveform_element_id = waveform_element_id;
-    this.fnfn_id = fnfn_id;
-    this.ctx_audio = ctx_audio;
+  constructor (fonofone) {
+    this.waveform_element_id = fonofone.waveform_id;
+    this.fnfn_id = fonofone.id;
+    this.ctx_audio = fonofone.ctx_audio;
     this.is_webkitAudioContext = (this.ctx_audio.constructor.name == "webkitAudioContext"); // Test safari
     this.chargement = true;
     this.audio_blob = null;
@@ -26,11 +26,8 @@ class Mixer {
     this.session = { encours: false };
 
     // Enregistrement de session
-    this.nodes.media_stream_destination = ctx_audio.createMediaStreamDestination();
+    this.nodes.media_stream_destination = this.ctx_audio.createMediaStreamDestination();
     this.enregistreur = new Enregistreur(this.nodes.media_stream_destination.stream);
-
-    // Visualisation
-    this.paint();
 
     // Initialisation
     this.nodes.n0 = this.ctx_audio.createGain(); // Noeud initial qu'on passe a toutes les tracks pour qu'elles se connectent a la destination
@@ -84,11 +81,11 @@ class Mixer {
     this.nodes.bandpass_filter.connect(this.nodes.master);
 
     // Gain
-    this.nodes.master.connect(noeud_sortie);
+    this.nodes.master.connect(fonofone.noeud_sortie);
 
     // Sortie controllable de l'externe du Fonofone
-    noeud_sortie.connect(this.ctx_audio.destination);
-    noeud_sortie.connect(this.nodes.media_stream_destination);
+    fonofone.noeud_sortie.connect(this.ctx_audio.destination);
+    fonofone.noeud_sortie.connect(this.nodes.media_stream_destination);
   }
 
   paint () {
@@ -98,14 +95,24 @@ class Mixer {
     }
 
     // Afficher
-    this.wavesurfer = WaveSurfer.create({
-      container: `#${this.waveform_element_id}`,
-      waveColor: '#418ACA',
-      height: 100, // TODO determiner par CSS si possible
-      plugins: [ Regions.create({ }) ]
-    });
+    setTimeout(() => {
 
-    //this.wavesurfer.loadBlob(this.audio_blob);
+      this.wavesurfer = WaveSurfer.create({
+        container: `#${this.waveform_element_id}`,
+        waveColor: '#418ACA',
+        height: 100, // TODO determiner par CSS si possible
+        plugins: [ Regions.create({ }) ]
+      });
+
+      this.wavesurfer.loadBlob(this.audio_blob);
+      this.paint_regions();
+    }, 1000);
+  }
+
+  paint_regions () {
+    if(!this.wavesurfer) return;
+    this.wavesurfer.clearRegions();
+    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232', drag: false, resize: false});
   }
 
   charger_blob (blob) {
@@ -113,15 +120,13 @@ class Mixer {
     // Affichage
     // TODO recursion infinie ...
     this.audio_blob = blob;
-    //this.paint();
+    this.paint();
 
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
         return this.buffer2audio_buffer(array_buffer);
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
-        // TODO tout enlever paint et mettre cette ligne si recursion infinie
-        this.wavesurfer.loadBlob(this.audio_blob);
         resolve(true);
       });
     });
@@ -242,8 +247,7 @@ class Mixer {
     this.parametres.longueur = (valeur.longueur * this.audio_buffer.duration || 0);
 
     // Visuel
-    this.wavesurfer.clearRegions();
-    this.wavesurfer.addRegion({id: `selected-${this.fnfn_id}`, start: this.parametres.debut, end: this.parametres.debut + this.parametres.longueur, color: '#323232', drag: false, resize: false});
+    this.paint_regions();
   }
 
   set_metronome (valeur) {

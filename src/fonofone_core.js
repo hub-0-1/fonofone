@@ -263,7 +263,7 @@ export default {
 
     window.addEventListener("resize", this.repaint);
 
-    this.mixer = new Mixer(this.waveform_id, this.id, this.ctx_audio, this.noeud_sortie);
+    this.mixer = new Mixer(this);
 
     this.importer(this.archive).then((configuration) => {
       this.mixer.set_loop(configuration.parametres.loop);
