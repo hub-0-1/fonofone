@@ -37,7 +37,7 @@ export default {
         let segment_arc = angle / (Globales.modules.metronome.taille_arc / 2);
 
         // Projeter sur l'interval [0..1]
-        this.bpm = (segment_arc / 2) + 0.5; // TODO peut retourner des valeurs negatives ... ne devrait pas
+        this.bpm = this.borner_0_1((segment_arc / 2) + 0.5); // TODO peut retourner des valeurs negatives ... ne devrait pas
         this.update_position_point_arc();
       }
       this.update();
@@ -62,7 +62,8 @@ export default {
       return this.syncope * (1 - Globales.modules.metronome.largeur_controlleur_syncope);
     },
     text_bpm: function () {
-      return Math.round(Math.pow(this.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm);
+      console.log(this.bpm);
+      return Math.round(Math.pow(this.bpm, 2) * (Globales.modules.metronome.max_bpm - Globales.modules.metronome.min_bpm) + Globales.modules.metronome.min_bpm);
     }
   },
   mounted: function () {

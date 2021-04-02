@@ -223,7 +223,7 @@ class Mixer {
     this.etat.metronome = valeur.actif;
     this.parametres.syncope = valeur.syncope;
     this.parametres.aleatoire = valeur.aleatoire;
-    this.parametres.bpm = Math.pow(valeur.bpm, 2) * Globales.modules.metronome.max_bpm + Globales.modules.metronome.min_bpm;
+    this.parametres.bpm = Math.pow(valeur.bpm, 2) * (Globales.modules.metronome.max_bpm - Globales.modules.metronome.min_bpm) + Globales.modules.metronome.min_bpm;
   }
 
   // TODO Confirmer que ca fonctionne

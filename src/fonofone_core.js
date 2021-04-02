@@ -242,6 +242,9 @@ export default {
           });      
         }
       });
+    },
+    region_updated: function () {
+      console.log(this.wavesurfer.regions.list);
     }
   },
   watch: {
@@ -322,7 +325,7 @@ export default {
               <img src="${Folder}" @click="mode_importation = !mode_importation"/>
               <input v-model="configuration.parametres.nom" class="texte-nom-archive" placeholder="Archive"/>
             </div>
-            <div :id="waveform_id" class="wavesurfer" @click.prevent></div>
+            <div :id="waveform_id" class="wavesurfer" @click="region_updated"></div>
             <div class="menu-controlleurs">
               <div class="gauche">
                 <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>

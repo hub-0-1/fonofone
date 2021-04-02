@@ -14,8 +14,8 @@ export default {
       centre_cercle: { x: 0.5, y: 0.4 },
       largeur_controlleur_aleatoire: 0.1,
       largeur_controlleur_syncope: 0.1,
-      min_bpm: 20,
-      max_bpm: 220
+      min_bpm: 5,
+      max_bpm: 1000
     },
     reverberation: {
       largeur_reverberation: 0.1,
