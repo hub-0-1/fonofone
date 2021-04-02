@@ -198,7 +198,7 @@ export default {
     },
     toggle_session: function () {
       if(this.mixer.session.encours) {
-        this.mixer.terminer_session().then((blob) => { saveAs(blob, `session_${Date.now().toString()}.webm`); });
+        this.mixer.terminer_session().then((blob) => { saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.webm`); });
       } else {
         this.mixer.debuter_session();
       }
