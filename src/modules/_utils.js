@@ -14,6 +14,10 @@ export default {
     return { is_dragging: false, controlleur_actif: null, module_actif: ((this.valeur.actif === true) || true) };
   },
   methods: {
+    arrondir: function (valeur, divisions) {
+      divisions -= 1;
+      return Math.round(valeur * divisions) / divisions;
+    },
     borner: function (valeur, min, max) {
       return Math.min(Math.max(valeur, min), max);
     },

@@ -19,6 +19,7 @@ export default {
       let coords = this.get_mouse_position(e);
       this.volume = this.borner(0.5 - coords.y, 0, 0.5) * 2;
       this.pan = this.borner_0_1(coords.x);
+      if(this.aimant) this.pan = this.arrondir(this.pan, Globales.modules.volume.nb_division + 1);
       this.update();
     },
     update: function () {
@@ -27,11 +28,7 @@ export default {
   },
   computed: {
     x: function () {
-      let pos_init = this.pan;
-      if(this.aimant) {
-        pos_init = Math.round(pos_init / (1 / Globales.modules.volume.nb_division)) * (1 / Globales.modules.volume.nb_division);
-      }
-      return pos_init * (1 - Globales.modules.volume.largeur_controlleur);
+      return this.pan * (1 - Globales.modules.volume.largeur_controlleur);
     },
     y: function () {
       return (0.5 - (this.volume * (0.5 - Globales.modules.volume.hauteur_controlleur) + Globales.modules.volume.hauteur_controlleur));

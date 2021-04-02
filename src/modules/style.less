@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Helvetica';
+  src:  url('../fonts/HelveticaNeue-01.woff') format('woff');
+}
+
 @hauteur_header_module: 25px; 
 @temps_transition: 0.5s;
 @padding_module: 10px;
@@ -192,9 +197,13 @@
       }
 
       &.reverberation {
-        .bg {
-          fill: @mauve2;
-          fill-opacity: 0.5;
+
+        text {
+          font-family: "Helvetica";
+          font-size: 0.2%;
+          font-weight: bold;
+          letter-spacing: 0.05em;
+          fill: @gris;
         }
 
         .centre {
@@ -204,7 +213,7 @@
         .controlleur-wet, .controlleur-traine {
           fill: @mauve2;
           stroke: @blanc;
-          stroke-width: 0.02;
+          stroke-width: 0.01;
         }
       }
 

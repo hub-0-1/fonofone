@@ -23,6 +23,9 @@ export default {
       }
       else if(this.controlleur_actif == this.$refs.controlleur_syncope) { // Syncope
         this.syncope = this.borner_0_1(coords.x);
+        if(this.aimant) {
+          this.syncope = this.arrondir(this.syncope, 3);
+        }
       } else { // BPM
 
         // Recentrer les coordonnees de drag

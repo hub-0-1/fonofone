@@ -18,8 +18,9 @@ export default {
       max_bpm: 1000
     },
     reverberation: {
-      largeur_reverberation: 0.1,
-      dimension_img: 0.1,
+      largeur_controlleur: 0.1,
+      hauteur_controlleur: 0.075,
+      dimension_img: 0.15,
       sons: [
         { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav" },
         { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav2" },

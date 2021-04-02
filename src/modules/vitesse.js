@@ -21,6 +21,7 @@ export default {
   methods: {
     drag: function (e) {
       this.vitesse = this.borner_0_1(this.get_mouse_position(e).x);
+      if(this.aimant) this.vitesse = this.arrondir(this.vitesse, nb_division + 1);
       this.update();
     },
     update: function () {
@@ -33,11 +34,7 @@ export default {
   },
   computed: {
     x: function () {
-      let pos_init = this.vitesse;
-      if(this.aimant) {
-        pos_init = Math.round(pos_init / (1 / nb_division)) * (1 / nb_division);
-      }
-      return pos_init * (1 - largeur_vitesse);
+      return this.vitesse * (1 - largeur_vitesse);
     },
     affichage_mode: function () {
       let mode = "";
