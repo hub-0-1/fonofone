@@ -181,14 +181,24 @@ export default {
           plugins: [ Regions.create({ }) ]
         });
 
+        this.wavesurfer.on('region-update-end', (region) => {
+          let start = region.start / this.mixer.audio_buffer.duration;
+          let end = region.end / this.mixer.audio_buffer.duration;
+          let longueur = end - start;
+          console.log(start, end, longueur);
+
+          this.$refs.selecteur[0].set_plage(start, longueur);
+        });
+
         this.wavesurfer.loadBlob(this.mixer.audio_blob);
         this.paint_regions();
       });
     },
     paint_regions: function () {
+      // TODO Bug dans le drag / resize de la region
       if(!this.wavesurfer) return;
       this.wavesurfer.clearRegions();
-      this.wavesurfer.addRegion({id: `selected-${this.id}`, start: this.mixer.parametres.debut, end: this.mixer.parametres.debut + this.mixer.parametres.longueur, color: '#323232', drag: false, resize: false});
+      this.wavesurfer.addRegion({id: `selected-${this.id}`, start: this.mixer.parametres.debut, end: this.mixer.parametres.debut + this.mixer.parametres.longueur, color: '#323232' });
     },
     toggle_enregistrement: function () {
       this.get_enregistreur().then((enregistreur) => {
@@ -312,6 +322,7 @@ export default {
       this.mixer.set_sens(configuration.parametres.sens);
       this.synchroniser_modules();
       this.mixer.chargement = false;
+      this.paint();
 
       // TODO Ajouter les breaks points pour l'affichage en mode colonne
       // compter les enfants, selon la largeur, diviser en colonnes

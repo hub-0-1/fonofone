@@ -24,6 +24,14 @@ export default {
     }
   },
   methods: {
+    set_plage: function (debut, longueur) {
+      this.debut = debut;
+      this.longueur = longueur;
+      this.mixer_a_svg();
+      this.update_position_controlleur();
+
+      this.update();
+    },
     update: function () {
       this.$emit('update:valeur', { actif: this.module_actif, debut: this.debut, longueur: this.longueur });
     },
