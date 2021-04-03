@@ -57,7 +57,17 @@ export default {
       this.$emit('update:valeur', { actif: this.module_actif, syncope: this.syncope, aleatoire: this.aleatoire, bpm: this.bpm });
     },
     update_bpm_manuel: function (e) {
-      console.log(e);
+      if(isInt(e.target.value)) {
+        let val = parseInt(e.target.value);
+        this.bpm = this.borner_0_1(Math.pow((val - Globales.modules.metronome.min_bpm) / (Globales.modules.metronome.max_bpm - Globales.modules.metronome.min_bpm), 1/2) || 0);
+      }
+      else if (e.target.value == "") {
+        this.bpm = 0;
+      }
+
+      e.target.value = this.text_bpm;
+      this.update_position_point_arc();
+      this.update();
     }
   },
   computed: {
@@ -76,12 +86,12 @@ export default {
   },
   // Voir contenteditable pour svg text
   template: `
-    <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition" contenteditable="true">
+    <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.2"/>
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.15"/>
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.1"/>
-        <text x="${Globales.modules.metronome.centre_cercle.x}" y="${Globales.modules.metronome.centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle" @keydown="update_bpm_manuel" @click="update_bpm_manuel">{{ text_bpm }}</text>
+
         <path d="${describeArc(0.5, 0.4, 0.3, (Globales.modules.metronome.taille_arc / -2), (Globales.modules.metronome.taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-bpm" r="0.04" ref="controlleur_bpm"/>
         <rect class="ligne-syncope" x="0" width="1" y="0.75" height="0.01" rx="0.02"/>
@@ -90,6 +100,7 @@ export default {
         <rect class="ligne-aleatoire" x="0" width="1" y="0.9" height="0.01" rx="0.02"/>
         <rect class="controlleur-aleatoire" :x="x_controlleur_aleatoire" width="${Globales.modules.metronome.largeur_controlleur_aleatoire}" y="0.85" height="0.1" rx="0.02" ref="controlleur_aleatoire"/>
       </svg>
+      <input class="affichage_bpm" type="text" :value="text_bpm" @input="update_bpm_manuel"/>
 
       <template v-slot:footer>
         <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
@@ -129,3 +140,6 @@ function theta (x, y) {
   return Math.atan2(y, x);
 }
 
+function isInt (val) {
+  return /^[-+]?(\d+|Infinity)$/.test(val);
+}
