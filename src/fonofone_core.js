@@ -37,6 +37,7 @@ import Jouer from './images/jouer.svg';
 import Loop from './images/loop.svg';
 import Sens from './images/fleche-sens.svg';
 import Crop from './images/crop.svg';
+import Solo from './images/solo.svg';
 import Export from './images/export.svg';
 import Import from './images/import.svg';
 import Micro from './images/micro.svg';
@@ -65,7 +66,8 @@ export default {
       globales: Globales,
       fonoimage: {
         integration: (this.integration_fonoimage || false),
-        mode: 'mix'
+        mode: 'mix',
+        solo: false
       },
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
@@ -115,6 +117,7 @@ export default {
         }).then((blob) => {
           return this.mixer.charger_blob(blob);
         }).then(() => { 
+          this.paint();
           resolve(this.configuration);
         });
       });
@@ -142,6 +145,9 @@ export default {
     },
     set_loop: function (val) {
       this.mixer.set_loop(val);
+    },
+    toggle_solo: function () {
+      this.fonoimage.solo = !this.fonoimage.solo;
     },
     toggle_sens: function () {
       this.configuration.parametres.sens *= -1;
@@ -306,7 +312,6 @@ export default {
       this.mixer.set_sens(configuration.parametres.sens);
       this.synchroniser_modules();
       this.mixer.chargement = false;
-      this.paint();
 
       // TODO Ajouter les breaks points pour l'affichage en mode colonne
       // compter les enfants, selon la largeur, diviser en colonnes
@@ -328,10 +333,11 @@ export default {
             <div :id="waveform_id" class="wavesurfer" @click="region_updated"></div>
             <div class="menu-controlleurs">
               <div class="gauche">
-                <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
                 <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
+                <img v-if="fonoimage.integration" src="${Solo}" class="icone solo" :class="{actif: fonoimage.solo}" @click="toggle_solo"/>
                 <img src="${Loop}" class="icone loop" :class="{actif: mixer.etat.loop}" @click="toggle_loop"/>
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
+                <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
                 <img src="${Crop}" class="icone" @click="crop"/>
               </div>
               <div v-if="fonoimage.integration" class="droite">

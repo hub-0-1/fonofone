@@ -55,6 +55,9 @@ export default {
     },
     update: function () {
       this.$emit('update:valeur', { actif: this.module_actif, syncope: this.syncope, aleatoire: this.aleatoire, bpm: this.bpm });
+    },
+    update_bpm_manuel: function (e) {
+      console.log(e);
     }
   },
   computed: {
@@ -65,7 +68,6 @@ export default {
       return this.syncope * (1 - Globales.modules.metronome.largeur_controlleur_syncope);
     },
     text_bpm: function () {
-      console.log(this.bpm);
       return Math.round(Math.pow(this.bpm, 2) * (Globales.modules.metronome.max_bpm - Globales.modules.metronome.min_bpm) + Globales.modules.metronome.min_bpm);
     }
   },
@@ -74,12 +76,12 @@ export default {
   },
   // Voir contenteditable pour svg text
   template: `
-    <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
+    <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition" contenteditable="true">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.2"/>
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.15"/>
         <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.1"/>
-        <text x="${Globales.modules.metronome.centre_cercle.x}" y="${Globales.modules.metronome.centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle">{{ text_bpm }}</text>
+        <text x="${Globales.modules.metronome.centre_cercle.x}" y="${Globales.modules.metronome.centre_cercle.y}" width="0.1" height="0.5" dominant-baseline="central" text-anchor="middle" @keydown="update_bpm_manuel" @click="update_bpm_manuel">{{ text_bpm }}</text>
         <path d="${describeArc(0.5, 0.4, 0.3, (Globales.modules.metronome.taille_arc / -2), (Globales.modules.metronome.taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-bpm" r="0.04" ref="controlleur_bpm"/>
         <rect class="ligne-syncope" x="0" width="1" y="0.75" height="0.01" rx="0.02"/>
