@@ -27,7 +27,7 @@ class Mixer {
 
     // Enregistrement de session
     this.nodes.media_stream_destination = this.ctx_audio.createMediaStreamDestination();
-    this.enregistreur = new Enregistreur(this.nodes.media_stream_destination.stream);
+    this.enregistreur = new Enregistreur(this.ctx_audio, this.nodes.media_stream_destination.stream);
 
     // Initialisation
     this.nodes.n0 = this.ctx_audio.createGain(); // Noeud initial qu'on passe a toutes les tracks pour qu'elles se connectent a la destination

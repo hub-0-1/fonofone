@@ -140,6 +140,7 @@ export default {
     },
     reset_selecteur: function () {
       this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
+      this.paint();
     },
     toggle_loop: function () {
       this.set_loop(!this.mixer.etat.loop);
@@ -221,7 +222,7 @@ export default {
     },
     toggle_session: function () {
       if(this.mixer.session.encours) {
-        this.mixer.terminer_session().then((blob) => { saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.webm`); });
+        this.mixer.terminer_session().then((blob) => { saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.wav`); });
       } else {
         this.mixer.debuter_session();
       }
@@ -260,7 +261,7 @@ export default {
         // Sinon
         else {
           navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-            this.enregistrement.enregistreur = new Enregistreur(stream);
+            this.enregistrement.enregistreur = new Enregistreur(this.ctx_audio, stream);
             resolve(this.enregistrement.enregistreur);
           });      
         }

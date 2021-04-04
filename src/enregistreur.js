@@ -1,10 +1,10 @@
-const mimeType = "audio/webm";
+import Recorder from "recorder-js";
+import Globales from "./globales.js";
 
 export default class Enregistreur {
-  constructor(stream) {
-    this.recorder = new MediaRecorder(stream, { mimeType });
-    this.chunks = [];
-    this.recorder.ondataavailable = (evt) => { this.chunks.push(evt.data); };
+  constructor(ctx, stream) {
+    this.recorder = new Recorder(ctx);
+    this.recorder.init(stream);
   }
 
   debuter () {
@@ -13,12 +13,7 @@ export default class Enregistreur {
 
   terminer () {
     return new Promise ((resolve) => {
-      this.recorder.onstop = () => { 
-        let blob = new Blob(this.chunks);
-        this.chunks = [];
-        resolve(blob); 
-      };
-      this.recorder.stop();
+      this.recorder.stop().then(({blob, buffer}) => { resolve(blob); });
     });
   }
 }

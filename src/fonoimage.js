@@ -343,12 +343,12 @@ window.Fonoimage = class Fonoimage {
         fin_session: function () {
           this.mode = "normal";
           this.get_enregistreur().terminer().then((blob) => {
-            saveAs(blob, `session_${Date.now().toString()}.webm`)
+            saveAs(blob, `session_${Date.now().toString()}.wav`)
           })
         },
         get_enregistreur: function () {
           if(!this.enregistrement.enregistreur)
-            this.enregistrement.enregistreur = new Enregistreur(this.media_stream_destination.stream);
+            this.enregistrement.enregistreur = new Enregistreur(this.ctx_audio, this.media_stream_destination.stream);
           return this.enregistrement.enregistreur;
         },
         supprimer_zone_active: function () {

@@ -1,6 +1,7 @@
 export default {
   configuration_primitive: "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn",
   min_width_grille: 600,
+  mimetype_export: "audio/wav",
   modules: {
     volume: {
       hauteur_controlleur: 0.1,
