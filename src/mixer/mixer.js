@@ -15,7 +15,6 @@ class Mixer {
     this.ctx_audio = fonofone.ctx_audio;
     this.is_webkitAudioContext = (this.ctx_audio.constructor.name == "webkitAudioContext"); // Test safari
     this.chargement = true;
-    this.audio_blob = null;
     this.audio_buffer = this.ctx_audio.createBufferSource();
     this.etat = { jouer: false, loop: false, metronome: false };
     this.parametres = {};
@@ -89,9 +88,6 @@ class Mixer {
   }
 
   charger_blob (blob) {
-
-    this.audio_blob = blob;
-
     return new Promise((resolve) => {
       new Response(blob).arrayBuffer().then((array_buffer) => {
         return this.buffer2audio_buffer(array_buffer);
@@ -282,8 +278,7 @@ class Mixer {
 
   // TODO plante dans Safari
   crop () {
-    this.audio_buffer = crop_audio_buffer(this.ctx_audio, this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur, null);
-    this.wavesurfer.loadDecodedBuffer(this.audio_buffer);
+    return this.audio_buffer = crop_audio_buffer(this.ctx_audio, this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur);
   }
 
   update_tracks () {
@@ -313,6 +308,7 @@ class Mixer {
 export default Mixer;
 
 // https://miguelmota.com/bytes/slice-audiobuffer/
+// TODO pour safari : https://developer.mozilla.org/fr/docs/Web/API/AudioBuffer/getChannelData
 function crop_audio_buffer(ctx_audio, buffer, begin, end) {
 
   let channels = buffer.numberOfChannels;

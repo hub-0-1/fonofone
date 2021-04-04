@@ -132,6 +132,7 @@ export default {
     },
     crop: function () {
       this.mixer.crop();
+      this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
       this.reset_selecteur();
     },
     force_play: function () {
@@ -182,7 +183,7 @@ export default {
           height: 100, // TODO determiner par CSS si possible
           plugins: [ Regions.create({ }) ]
         });
-        this.wavesurfer.loadBlob(this.mixer.audio_blob);
+        this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
 
         this.wavesurfer.on('region-updated', (region) => {
           let start = region.start / this.mixer.audio_buffer.duration;
