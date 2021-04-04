@@ -29,8 +29,8 @@ export default {
     },
     start_drag: function (e) {
       this.controlleur_actif = e.target;
-      this.$el.addEventListener('mousemove', this.drag);
-      this.$el.addEventListener('touchmove', this.drag, { passive: true });
+      this.$root.$el.addEventListener('mousemove', this.drag);
+      this.$root.$el.addEventListener('touchmove', this.drag, { passive: true });
       this.is_dragging = true;
     },
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
@@ -60,8 +60,8 @@ export default {
       return pt.matrixTransform(this.$refs.canvas.getScreenCTM().inverse());
     },
     end_drag: function (e) {
-      this.$el.removeEventListener('mousemove', this.drag);
-      this.$el.removeEventListener('touchmove', this.drag);
+      this.$root.$el.removeEventListener('mousemove', this.drag);
+      this.$root.$el.removeEventListener('touchmove', this.drag);
       this.controlleur_actif = null;
       this.is_dragging = false;
     },
@@ -80,10 +80,10 @@ export default {
     });
 
     // Ajouter des listeners pour la fin du drag
-    // On peut dragger dans tout le module
-    this.$el.addEventListener('mouseup', this.end_drag);
-    this.$el.addEventListener('mouseleave', this.end_drag);
-    this.$el.addEventListener('touchend', this.end_drag);
+    // On peut dragger dans tout le fonofone
+    this.$root.$el.addEventListener('mouseup', this.end_drag);
+    this.$root.$el.addEventListener('mouseleave', this.end_drag);
+    this.$root.$el.addEventListener('touchend', this.end_drag);
   }
 }
 

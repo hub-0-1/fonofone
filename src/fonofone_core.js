@@ -202,6 +202,7 @@ export default {
       });
     },
     paint_regions: function () {
+      if(!this.wavesurfer_region) return;
       this.wavesurfer_region.start = this.mixer.parametres.debut;
       this.wavesurfer_region.end = this.mixer.parametres.debut + this.mixer.parametres.longueur;
       this.wavesurfer_region.updateRender();
