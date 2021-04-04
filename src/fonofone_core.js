@@ -78,7 +78,8 @@ export default {
       },
       mixer: { session: {}, etat: {} },
       filepond: null,
-      wavesurfer: null
+      wavesurfer: null,
+      wavesurfer_region: null
     };
   },
   i18n,
@@ -180,25 +181,30 @@ export default {
           height: 100, // TODO determiner par CSS si possible
           plugins: [ Regions.create({ }) ]
         });
+        this.wavesurfer.loadBlob(this.mixer.audio_blob);
 
-        this.wavesurfer.on('region-update-end', (region) => {
+        this.wavesurfer.on('region-updated', (region) => {
           let start = region.start / this.mixer.audio_buffer.duration;
           let end = region.end / this.mixer.audio_buffer.duration;
           let longueur = end - start;
-          console.log(start, end, longueur);
 
           this.$refs.selecteur[0].set_plage(start, longueur);
+          this.$nextTick(() => { this.paint_regions(); });
         });
 
-        this.wavesurfer.loadBlob(this.mixer.audio_blob);
+        this.wavesurfer_region = this.wavesurfer.addRegion({
+          id: `wavesurfer-region-${this.id}`,
+          start: this.mixer.parametres.debut,
+          end: this.mixer.parametres.debut + this.mixer.parametres.longueur,
+          color: '#323232' 
+        });
         this.paint_regions();
       });
     },
     paint_regions: function () {
-      // TODO Bug dans le drag / resize de la region
-      if(!this.wavesurfer) return;
-      this.wavesurfer.clearRegions();
-      this.wavesurfer.addRegion({id: `selected-${this.id}`, start: this.mixer.parametres.debut, end: this.mixer.parametres.debut + this.mixer.parametres.longueur, color: '#323232' });
+      this.wavesurfer_region.start = this.mixer.parametres.debut;
+      this.wavesurfer_region.end = this.mixer.parametres.debut + this.mixer.parametres.longueur;
+      this.wavesurfer_region.updateRender();
     },
     toggle_enregistrement: function () {
       this.get_enregistreur().then((enregistreur) => {
