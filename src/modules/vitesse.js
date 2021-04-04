@@ -1,10 +1,11 @@
 import Utils from "./_utils.js";
+import Globales from "../globales.js";
 
 import Magnet from "../images/icon-magnet.svg";
 import Power from "../images/icon-power.svg";
 
-const largeur_vitesse = 0.1;
-const nb_division = 7;
+const Vitesse = Globales.modules.vitesse;
+
 const width_c2 = 0.02;
 const width_c4 = 0.01;
 const width_c8 = 0.01;
@@ -21,7 +22,7 @@ export default {
   methods: {
     drag: function (e) {
       this.vitesse = this.borner_0_1(this.get_mouse_position(e).x);
-      if(this.aimant) this.vitesse = this.arrondir(this.vitesse, nb_division + 1);
+      if(this.aimant) this.vitesse = this.arrondir(this.vitesse, Vitesse.nb_divisions + 1);
       this.update();
     },
     update: function () {
@@ -34,7 +35,7 @@ export default {
   },
   computed: {
     x: function () {
-      return this.vitesse * (1 - largeur_vitesse);
+      return this.borner(this.vitesse - (Vitesse.largeur_controlleur / 2), Vitesse.border_width / 2, Vitesse.largeur_module - (Vitesse.largeur_controlleur + Vitesse.border_width / 2));
     },
     affichage_mode: function () {
       let mode = "";
@@ -44,17 +45,10 @@ export default {
   },
   template: `
     <generique :module="$t('modules.vitesse')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
-      <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-        <rect class="bg" x="0" width="1" y="0" height="1"/>
-        <rect class="coche c8" x="${(0 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="coche c8" x="${(1 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="coche c8" x="${(2 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="coche c8" x="${(3 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="coche c8" x="${(4 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="coche c8" x="${(5 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="coche c8" x="${(6 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="coche c8" x="${(7 / nb_division) * (1 - largeur_vitesse) + (largeur_vitesse / 2) - (width_c8 / 2)}" y="0.4" height="0.2" width="${width_c8}" />
-        <rect class="controlleur" :x="x" width="${largeur_vitesse}" y="0" height="1" rx="0.02" ref="controlleur"/>
+      <svg viewBox="0 0 1 0.5" preserveAspectRatio="none" ref="canvas">
+        <rect class="bg" x="${Vitesse.border_width / 2}" width="${Vitesse.largeur_module - Vitesse.border_width}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}"/>
+        <rect v-for="i in ${Vitesse.nb_divisions + 1}" class="coche c8" :x="((i - 1) / ${Vitesse.nb_divisions}) * (1 - ${Vitesse.largeur_controlleur}) + ${(Vitesse.largeur_controlleur / 2) - (width_c8 / 2)}" y="0.2" height="0.1" width="${width_c8}" />
+        <rect class="controlleur" :x="x" width="${Vitesse.largeur_controlleur}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}" rx="0.02" ref="controlleur"/>
       </svg>
 
       <template v-slot:footer>
