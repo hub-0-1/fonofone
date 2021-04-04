@@ -1,16 +1,15 @@
 import Utils from "./_utils.js";
+import Globales from "../globales.js";
 
 import Power from "../images/icon-power.svg";
 
-const hauteur_controlleur = 0.1;
+const Filtre = Globales.modules.filtre;
 
 // TODO Refact des x, y, debut, longueur
 export default {
   mixins: [Utils],
   data: function () {
     return { 
-      x: 0,
-      y: 0,
       debut: this.valeur.debut,
       longueur: this.valeur.longueur
     }
@@ -22,30 +21,25 @@ export default {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
-      this.y = this.borner_0_1(coords.y) - (hauteur_controlleur / 2);
-      let x = this.borner_0_1(coords.x) - (this.width / 2)
-      this.x = Math.min(Math.max(x, 0), 1 - this.width);
+      // Calculer hauteur en premier
+      this.longueur = this.borner_0_1(coords.y);
 
-      this.debut = this.x;
-      this.longueur = this.y;
+      let x = this.borner_0_1(coords.x) - (this.width / 2);
+      this.debut = this.borner(x, Filtre.border_width / 2, Filtre.largeur_module - this.width - Filtre.border_width / 2); // TODO Valeur du x bonne?
 
       this.update();
     },
   },
   computed: {
-    width: function () { return Math.max(this.y, 0.05); },
-    hauteur: function ()  { return Math.min(this.y, 1 - hauteur_controlleur); }
-  },
-  mounted: function () {
-    this.y = this.longueur;
-    this.x = this.debut - (this.width / 2);
+    width: function () { return Math.max(this.longueur, Filtre.largeur_controlleur_minimale); },
+    hauteur: function ()  { return this.borner(this.longueur - Filtre.hauteur_controlleur / 2, Filtre.border_width / 2, Filtre.hauteur_module - Filtre.hauteur_controlleur - Filtre.border_width / 2); }
   },
   template: `
     <generique :module="$t('modules.filtre')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
-      <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-        <rect class="bg" x="0" width="1" y="0" height="1"/>
+      <svg viewBox="0 0 ${Filtre.largeur_module} ${Filtre.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="centre" x="0.49" width="0.02" y="0.9" height="0.1"/>
-        <rect class="controlleur" :x="x" :y="hauteur" :width="width" height="${hauteur_controlleur}" ref="controlleur"/>
+        <rect class="bg" x="${Filtre.border_width / 2}" width="${Filtre.largeur_module - Filtre.border_width}" y="${Filtre.border_width / 2}" height="${Filtre.hauteur_module - Filtre.border_width}"/>
+        <rect class="controlleur" :x="debut" :y="hauteur" :width="width" height="${Filtre.hauteur_controlleur}" ref="controlleur"/>
       </svg>
 
       <template v-slot:footer>
