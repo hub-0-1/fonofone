@@ -292,6 +292,7 @@ class Mixer {
   }
 
   debuter_session () {
+    // TODO Attendre d'etre en mode jouer
     this.enregistreur.debuter();
   }
 

@@ -84,6 +84,8 @@ export default {
   },
   i18n,
   methods: {
+
+    // IMPORT / EXPORT
     exporter: function () {
       this.serialiser().then((archive) => { 
         saveAs(new Blob([archive]), `${this.configuration.parametres.nom}.fnfn`);
@@ -130,11 +132,28 @@ export default {
         }, {deep: true, immediate: true});
       });
     },
-    crop: function () {
-      this.mixer.crop();
-      this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
-      this.reset_selecteur();
+    charger_son: function (son) {
+      if(son.blob) {
+        this.mixer.charger_blob(son.blob).then(() => {
+          this.mode_importation = false;
+          this.reset_selecteur();
+        });
+      }
+      else {
+        fetch(son.url, { mode: 'cors' }).then((response) => {
+          return response.blob();
+        }).then((blob) => {
+          return this.mixer.charger_blob(blob);
+        }).then(() => {
+          this.mode_importation = false;
+          this.reset_selecteur();
+        }).catch((e) => {
+          throw e;
+        });
+      }
     },
+
+    // CONTROLLEURS
     force_play: function () {
       this.set_loop(true);
       this.mixer.lancer();
@@ -166,6 +185,32 @@ export default {
       this.set_loop(false);
       this.mixer.toggle_pause();
     },
+    toggle_enregistrement: function () {
+      this.get_enregistreur().then((enregistreur) => {
+        if(!this.enregistrement.encours) {
+          enregistreur.debuter();
+        } else {
+          enregistreur.terminer().then((blob) => {
+            this.globales.sons.push({ nom: `son_${Date.now().toString()}`, blob });
+          });
+        } 
+        this.enregistrement.encours = !this.enregistrement.encours;
+      });
+    },
+    toggle_session: function () {
+      if(this.mixer.session.encours) {
+        this.mixer.terminer_session().then((blob) => { saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.wav`); });
+      } else {
+        this.mixer.debuter_session();
+      }
+      this.mixer.session.encours = !this.mixer.session.encours;
+    },
+    toggle_mode_fonoimage: function () {
+      this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
+      this.$emit('update:mode', this.fonoimage.mode);
+    },
+    
+    // UI
     paint: function () {
 
       if(this.wavesurfer) {
@@ -209,49 +254,12 @@ export default {
       this.wavesurfer_region.end = this.mixer.parametres.debut + this.mixer.parametres.longueur;
       this.wavesurfer_region.updateRender();
     },
-    toggle_enregistrement: function () {
-      this.get_enregistreur().then((enregistreur) => {
-        if(!this.enregistrement.encours) {
-          enregistreur.debuter();
-        } else {
-          enregistreur.terminer().then((blob) => {
-            this.globales.sons.push({ nom: `son_${Date.now().toString()}`, blob });
-          });
-        } 
-        this.enregistrement.encours = !this.enregistrement.encours;
-      });
-    },
-    toggle_session: function () {
-      if(this.mixer.session.encours) {
-        this.mixer.terminer_session().then((blob) => { saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.wav`); });
-      } else {
-        this.mixer.debuter_session();
-      }
-      this.mixer.session.encours = !this.mixer.session.encours;
-    },
-    toggle_mode_fonoimage: function () {
-      this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
-      this.$emit('update:mode', this.fonoimage.mode);
-    },
-    charger_son: function (son) {
-      if(son.blob) {
-        this.mixer.charger_blob(son.blob).then(() => {
-          this.mode_importation = false;
-          this.reset_selecteur();
-        });
-      }
-      else {
-        fetch(son.url, { mode: 'cors' }).then((response) => {
-          return response.blob();
-        }).then((blob) => {
-          return this.mixer.charger_blob(blob);
-        }).then(() => {
-          this.mode_importation = false;
-          this.reset_selecteur();
-        }).catch((e) => {
-          throw e;
-        });
-      }
+    
+    // OUTILS
+    crop: function () {
+      this.mixer.crop();
+      this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
+      this.reset_selecteur();
     },
     get_enregistreur: function () {
       return new Promise ((resolve) => {
@@ -267,9 +275,6 @@ export default {
           });      
         }
       });
-    },
-    region_updated: function () {
-      console.log(this.wavesurfer.regions.list);
     }
   },
   watch: {
@@ -350,7 +355,7 @@ export default {
               <img src="${Folder}" @click="mode_importation = !mode_importation"/>
               <input v-model="configuration.parametres.nom" class="texte-nom-archive" placeholder="Archive"/>
             </div>
-            <div :id="waveform_id" class="wavesurfer" @click="region_updated"></div>
+            <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu-controlleurs">
               <div class="gauche">
                 <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
