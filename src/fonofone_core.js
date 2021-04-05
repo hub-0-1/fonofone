@@ -31,6 +31,7 @@ import Globales from './globales.js';
 // Icones
 import './style.less';
 import Record from './images/record.svg';
+import Reload from './images/reload.png';
 import Folder from './images/icon-folder.svg';
 import Fleche from './images/arrow.svg';
 import Jouer from './images/jouer.svg';
@@ -210,6 +211,9 @@ export default {
       this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
       this.$emit('update:mode', this.fonoimage.mode);
     },
+    reset: function () {
+      console.log("reset");
+    },
     
     // UI
     paint: function () {
@@ -348,6 +352,7 @@ export default {
   template: `
       <div :id="id" class="fonofone" ref="fonofone">
         <menu>
+          <img src="${Reload}" @click="reset">
           <img src="${Import}" @click="mode_importation = !mode_importation">
           <img src="${Export}" @click="exporter">
         </menu>
