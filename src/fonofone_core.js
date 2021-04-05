@@ -332,7 +332,9 @@ export default {
       // Importation de fichier fonofone
       else if (fichier.fileExtension == "fnfn") {
         this.mode_importation = false;
-        this.importer(fichier.file);
+        this.importer(fichier.file).then((configuration) => {
+          this.appliquer_configuration(configuration);
+        });
       }
 
       // Fichier non valide

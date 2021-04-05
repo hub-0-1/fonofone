@@ -28,8 +28,7 @@ export default {
       this.debut = this.valeur.debut;
       this.longueur = this.valeur.longueur;
       this.mixer_a_svg();
-      console.log(this);
-      if(this.isMounted) this.update_position_controlleur();
+      if(this._isMounted) this.update_position_controlleur();
     },
     set_plage: function (debut, longueur) {
       this.debut = debut;
@@ -75,11 +74,11 @@ export default {
       this.debut = ((1 - this.longueur) * ((this.x - x_gauche) / (x_droit - x_gauche)) || 0);
     },
     mixer_a_svg: function () {
-      this.y = 1 - (this.longueur * (1 - coordonnees_triangle.hauteur / ratio_controlleur));
+      this.y = (1 - this.longueur) * (1 - coordonnees_triangle.hauteur / ratio_controlleur);
 
       let x_gauche = this.x_cote_gauche(this.y);
       let x_droit  = this.x_cote_droit(this.y);
-      this.x = ((this.debut / (1 - this.longueur)) * (x_droit - x_gauche)) + x_gauche;
+      this.x = (((this.debut / (1 - this.longueur)) || 0) * (x_droit - x_gauche)) + x_gauche;
     }
   },
   mounted: function () {
