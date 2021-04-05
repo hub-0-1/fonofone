@@ -4,18 +4,20 @@ import Globales from "../globales.js";
 import Magnet from "../images/icon-magnet.svg";
 import Power from "../images/icon-power.svg";
 
+const Metronome = Globales.modules.metronome;
+
 export default {
   mixins: [Utils],
   data: function () {
-    return { 
-      aleatoire: this.valeur.aleatoire,
-      bpm: this.valeur.bpm,
-      syncope: this.valeur.syncope,
-      aimant: false,
-      font_size_bpm: "medium"
-    }
+    return { aleatoire: null, bpm: null, syncope: null, aimant: false, font_size_bpm: "medium" };
   },
   methods: {
+    charger_props: function () {
+      this.aleatoire = this.valeur.aleatoire;
+      this.bpm = this.valeur.bpm;
+      this.syncope = this.valeur.syncope;
+      if(this._isMounted) { this.update_position_point_arc(); }
+    },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
@@ -30,15 +32,15 @@ export default {
       } else { // BPM
 
         // Recentrer les coordonnees de drag
-        let x = coords.x - Globales.modules.metronome.centre_cercle.x;
-        let y = coords.y - Globales.modules.metronome.centre_cercle.y;
+        let x = coords.x - Metronome.centre_cercle.x;
+        let y = coords.y - Metronome.centre_cercle.y;
 
         // Hack, aucune idée pourquoi il faut inverser x et y et multiplier y par -1.
         // Donne les bonnes coordonnes
         let angle = cartesianToPolar(-y, x).degrees;
 
         // Reporter l'angle sur l'arc
-        let segment_arc = angle / (Globales.modules.metronome.taille_arc / 2);
+        let segment_arc = angle / (Metronome.taille_arc / 2);
 
         // Projeter sur l'interval [0..1]
         this.bpm = this.borner_0_1((segment_arc / 2) + 0.5);
@@ -60,7 +62,7 @@ export default {
     update_bpm_manuel: function (e) {
       if(isInt(e.target.value)) {
         let val = parseInt(e.target.value);
-        this.bpm = this.borner_0_1(Math.pow((val - Globales.modules.metronome.min_bpm) / (Globales.modules.metronome.max_bpm - Globales.modules.metronome.min_bpm), 1/2) || 0);
+        this.bpm = this.borner_0_1(Math.pow((val - Metronome.min_bpm) / (Metronome.max_bpm - Metronome.min_bpm), 1/2) || 0);
       }
       else if (e.target.value == "") {
         this.bpm = 0;
@@ -76,13 +78,13 @@ export default {
   },
   computed: {
     x_controlleur_aleatoire: function () {
-      return this.aleatoire * (1 - Globales.modules.metronome.largeur_controlleur_aleatoire);
+      return this.aleatoire * (1 - Metronome.largeur_controlleur_aleatoire);
     },
     x_controlleur_syncope: function () {
-      return this.syncope * (1 - Globales.modules.metronome.largeur_controlleur_syncope);
+      return this.syncope * (1 - Metronome.largeur_controlleur_syncope);
     },
     text_bpm: function () {
-      return Math.round(Math.pow(this.bpm, 2) * (Globales.modules.metronome.max_bpm - Globales.modules.metronome.min_bpm) + Globales.modules.metronome.min_bpm);
+      return Math.round(Math.pow(this.bpm, 2) * (Metronome.max_bpm - Metronome.min_bpm) + Metronome.min_bpm);
     }
   },
   mounted: function () {
@@ -92,17 +94,17 @@ export default {
   template: `
     <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-        <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.2"/>
-        <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.15"/>
-        <circle class="concentrique" cx="${Globales.modules.metronome.centre_cercle.x}" cy="${Globales.modules.metronome.centre_cercle.y}" r="0.1"/>
+        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.2"/>
+        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.15"/>
+        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.1"/>
 
-        <path d="${describeArc(0.5, 0.4, 0.3, (Globales.modules.metronome.taille_arc / -2), (Globales.modules.metronome.taille_arc / 2))}" class="arc" ref="arc"/>
+        <path d="${describeArc(0.5, 0.4, 0.3, (Metronome.taille_arc / -2), (Metronome.taille_arc / 2))}" class="arc" ref="arc"/>
         <circle class="controlleur-bpm" r="0.04" ref="controlleur_bpm"/>
         <rect class="ligne-syncope" x="0" width="1" y="0.75" height="0.01" rx="0.02"/>
-        <rect class="controlleur-syncope" :x="x_controlleur_syncope" width="${Globales.modules.metronome.largeur_controlleur_syncope}" y="0.70" height="0.1" rx="0.02" ref="controlleur_syncope"/>
+        <rect class="controlleur-syncope" :x="x_controlleur_syncope" width="${Metronome.largeur_controlleur_syncope}" y="0.70" height="0.1" rx="0.02" ref="controlleur_syncope"/>
 
         <rect class="ligne-aleatoire" x="0" width="1" y="0.9" height="0.01" rx="0.02"/>
-        <rect class="controlleur-aleatoire" :x="x_controlleur_aleatoire" width="${Globales.modules.metronome.largeur_controlleur_aleatoire}" y="0.85" height="0.1" rx="0.02" ref="controlleur_aleatoire"/>
+        <rect class="controlleur-aleatoire" :x="x_controlleur_aleatoire" width="${Metronome.largeur_controlleur_aleatoire}" y="0.85" height="0.1" rx="0.02" ref="controlleur_aleatoire"/>
       </svg>
       <input class="affichage_bpm" type="text" ref="text" :value="text_bpm" @input="update_bpm_manuel" :style="{fontSize: font_size_bpm}"/>
 

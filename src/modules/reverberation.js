@@ -3,14 +3,19 @@ import Globales from "../globales.js";
 
 import Power from "../images/icon-power.svg";
 
-const espacement_images = (1 - Globales.modules.reverberation.dimension_img) / (Globales.modules.reverberation.sons.length - 1);
+const Reverberation = Globales.modules.reverberation;
+const espacement_images = (1 - Reverberation.dimension_img) / (Reverberation.sons.length - 1);
 
 export default {
   mixins: [Utils],
   data: function () {
-    return { wet: this.valeur.wet, url: this.valeur.url, sons: Globales.modules.reverberation.sons };
+    return { wet: null, url: null, sons: Reverberation.sons };
   },
   methods: {
+    charger_props: function () {
+      this.wet = this.valeur.wet;
+      this.url = this.valeur.url;
+    },
     drag: function (e) {
       if(this.controlleur_actif == this.$refs.controlleur_wet) {
         this.wet = this.borner_0_1(this.get_mouse_position(e).x);
@@ -27,7 +32,7 @@ export default {
   },
   computed: {
     x_wet: function () {
-      return this.wet * (1 - Globales.modules.reverberation.largeur_controlleur);
+      return this.wet * (1 - Reverberation.largeur_controlleur);
     }
   },
   template: `
@@ -36,8 +41,8 @@ export default {
         <text x="0" y="0.05" width="0.1">0%</text>
         <text x="0.9" y="0.05" width="0.1">100%</text>
         <rect class="centre" x="0" width="1" y="0.1" height="0.01"/>
-        <rect class="controlleur-wet" :x="x_wet" width="${Globales.modules.reverberation.largeur_controlleur}" y="${0.15 - Globales.modules.reverberation.hauteur_controlleur}" height="${Globales.modules.reverberation.hauteur_controlleur}" rx="0.02" ref="controlleur_wet"/>
-        <image v-for="son in sons" :href="son.image" height="${Globales.modules.reverberation.dimension_img}" width="${Globales.modules.reverberation.dimension_img}" :x="sons.indexOf(son) * ${espacement_images}" y="${0.3 - (Globales.modules.reverberation.dimension_img / 2)}" @click="update_son(son)"/>
+        <rect class="controlleur-wet" :x="x_wet" width="${Reverberation.largeur_controlleur}" y="${0.15 - Reverberation.hauteur_controlleur}" height="${Reverberation.hauteur_controlleur}" rx="0.02" ref="controlleur_wet"/>
+        <image v-for="son in sons" :href="son.image" height="${Reverberation.dimension_img}" width="${Reverberation.dimension_img}" :x="sons.indexOf(son) * ${espacement_images}" y="${0.3 - (Reverberation.dimension_img / 2)}" @click="update_son(son)"/>
       </svg>
 
       <template v-slot:footer>

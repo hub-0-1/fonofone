@@ -70,6 +70,9 @@ export default {
       this.update();
     }
   },
+  created: function () {
+    this.charger_props();
+  },
   mounted: function () {
     // Ajouter un listener a tous les controlleurs
     _.each(this.$refs, (ref) => {

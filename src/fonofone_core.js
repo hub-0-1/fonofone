@@ -27,6 +27,7 @@ import Vitesse from './modules/vitesse.js';
 
 // Configuration de base pour l'application
 import Globales from './globales.js';
+import Config0 from './configurations/Fonofone.fnfn';
 
 // Icones
 import './style.less';
@@ -126,6 +127,12 @@ export default {
         });
       });
     },
+    appliquer_configuration: function (configuration) {
+      this.mixer.set_loop(configuration.parametres.loop);
+      this.mixer.set_sens(configuration.parametres.sens);
+      this.synchroniser_modules();
+      this.paint();
+    },
     synchroniser_modules: function () {
       _.each(this.configuration.modules, (v, key) => {
         this.$watch(`configuration.modules.${key}.valeur`, (valeur) => { // https://vuejs.org/v2/api/#vm-watch
@@ -212,7 +219,12 @@ export default {
       this.$emit('update:mode', this.fonoimage.mode);
     },
     reset: function () {
-      console.log("reset");
+      this.importer(JSON.stringify(Config0)).then(() => {
+        _.each(this.configuration.modules, (v, key) => {
+          let module = this.$refs[key][0];
+          if(module.charger_props) module.charger_props();
+        });
+      })
     },
     
     // UI
@@ -338,11 +350,7 @@ export default {
     window.addEventListener("resize", this.paint);
 
     this.importer(this.archive).then((configuration) => {
-      this.mixer.set_loop(configuration.parametres.loop);
-      this.mixer.set_sens(configuration.parametres.sens);
-      this.synchroniser_modules();
-      this.mixer.etat.chargement = false;
-      this.paint();
+      this.appliquer_configuration(configuration);
 
       // TODO Ajouter les breaks points pour l'affichage en mode colonne
       // compter les enfants, selon la largeur, diviser en colonnes
@@ -381,7 +389,7 @@ export default {
           </header>
           <main>
             <div class="mixer" :class="mode_affichage" ref="mixer">
-              <component v-for="(module, key) in configuration.modules" :is="key" :key="key" v-bind.sync="module" :modifiable="mode_affichage == 'grille'" :class="key" :ref="key"></component>
+              <component v-for="(module, key) in configuration.modules" :is="key" :key="key" :valeur="module.valeur" :disposition="module.disposition" :modifiable="mode_affichage == 'grille'" @update:valeur="module.valeur = $event" @update:disposition="module.disposition = $event" :class="key" :ref="key"></component>
             </div>
           </main>
         </section>

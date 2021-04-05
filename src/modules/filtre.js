@@ -9,12 +9,13 @@ const Filtre = Globales.modules.filtre;
 export default {
   mixins: [Utils],
   data: function () {
-    return { 
-      debut: this.valeur.debut,
-      longueur: this.valeur.longueur
-    }
+    return { debut: null, longueur: null };
   },
   methods: {
+    charger_props: function () {
+      this.debut = this.valeur.debut;
+      this.longueur = this.valeur.longueur;
+    },
     update: function () {
       console.log(this.debut, this.longueur);
       this.$emit('update:valeur', { actif: this.module_actif, debut: this.debut, longueur: this.longueur });

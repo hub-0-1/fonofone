@@ -13,13 +13,13 @@ const width_c8 = 0.01;
 export default {
   mixins: [Utils],
   data: function () {
-    return { 
-      vitesse: this.valeur.vitesse,
-      mode: this.valeur.mode,
-      aimant: false
-    }
+    return { vitesse: null, mode: null, aimant: false };
   },
   methods: {
+    charger_props: function () {
+      this.vitesse = this.valeur.vitesse;
+      this.mode = this.valeur.mode;
+    },
     drag: function (e) {
       this.vitesse = this.borner_0_1(this.get_mouse_position(e).x);
       if(this.aimant) this.vitesse = this.arrondir(this.vitesse, Vitesse.nb_divisions + 1);

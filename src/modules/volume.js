@@ -8,13 +8,13 @@ import VolumeDroite from "../images/icon-volume_droite.png";
 export default {
   mixins: [Utils],
   data: function () {
-    return { 
-      volume: this.valeur.volume,
-      pan: this.valeur.pan,
-      aimant: false
-    };
+    return { volume: null, pan: null, aimant: false };
   },
   methods: {
+    charger_props: function () {
+      this.volume = this.valeur.volume;
+      this.pan = this.valeur.pan;
+    },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
       this.volume = this.borner(0.5 - coords.y, 0, 0.5) * 2;

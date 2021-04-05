@@ -19,11 +19,18 @@ export default {
         pente: (coordonnees_triangle.hauteur - 0) / (coordonnees_triangle.largeur - (coordonnees_triangle.largeur / 2)),
         y0: null
       },
-      debut: this.valeur.debut,
-      longueur: this.valeur.longueur
+      debut: null,
+      longueur: null
     }
   },
   methods: {
+    charger_props: function () {
+      this.debut = this.valeur.debut;
+      this.longueur = this.valeur.longueur;
+      this.mixer_a_svg();
+      console.log(this);
+      if(this.isMounted) this.update_position_controlleur();
+    },
     set_plage: function (debut, longueur) {
       this.debut = debut;
       this.longueur = longueur;
