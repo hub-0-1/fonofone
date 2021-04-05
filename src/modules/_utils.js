@@ -73,7 +73,7 @@ export default {
   mounted: function () {
     // Ajouter un listener a tous les controlleurs
     _.each(this.$refs, (ref) => {
-      if(ref.className.baseVal.match(/controlleur/)) { 
+      if(typeof ref.className == "object" && ref.className.baseVal.match(/controlleur/)) { 
         ref.addEventListener('mousedown', this.start_drag);
         ref.addEventListener('touchstart', this.start_drag, { passive: true }); // Optimisation pour le scrolling
       }

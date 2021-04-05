@@ -11,7 +11,8 @@ export default {
       aleatoire: this.valeur.aleatoire,
       bpm: this.valeur.bpm,
       syncope: this.valeur.syncope,
-      aimant: false
+      aimant: false,
+      font_size_bpm: "medium"
     }
   },
   methods: {
@@ -40,7 +41,7 @@ export default {
         let segment_arc = angle / (Globales.modules.metronome.taille_arc / 2);
 
         // Projeter sur l'interval [0..1]
-        this.bpm = this.borner_0_1((segment_arc / 2) + 0.5); // TODO peut retourner des valeurs negatives ... ne devrait pas
+        this.bpm = this.borner_0_1((segment_arc / 2) + 0.5);
         this.update_position_point_arc();
       }
       this.update();
@@ -68,6 +69,9 @@ export default {
       e.target.value = this.text_bpm;
       this.update_position_point_arc();
       this.update();
+    },
+    update_font_size_bpm: function () {
+      this.font_size_bpm = `${this.$refs.text.offsetHeight}px`;
     }
   },
   computed: {
@@ -83,8 +87,8 @@ export default {
   },
   mounted: function () {
     this.update_position_point_arc();
+    this.update_font_size_bpm();
   },
-  // Voir contenteditable pour svg text
   template: `
     <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
@@ -100,7 +104,7 @@ export default {
         <rect class="ligne-aleatoire" x="0" width="1" y="0.9" height="0.01" rx="0.02"/>
         <rect class="controlleur-aleatoire" :x="x_controlleur_aleatoire" width="${Globales.modules.metronome.largeur_controlleur_aleatoire}" y="0.85" height="0.1" rx="0.02" ref="controlleur_aleatoire"/>
       </svg>
-      <input class="affichage_bpm" type="text" :value="text_bpm" @input="update_bpm_manuel"/>
+      <input class="affichage_bpm" type="text" ref="text" :value="text_bpm" @input="update_bpm_manuel" :style="{fontSize: font_size_bpm}"/>
 
       <template v-slot:footer>
         <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
