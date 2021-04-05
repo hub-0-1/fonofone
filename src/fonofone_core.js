@@ -76,7 +76,7 @@ export default {
         encours: false,
         enregistreur: null
       },
-      mixer: { session: {}, etat: {} },
+      mixer: null,
       filepond: null,
       wavesurfer: null,
       wavesurfer_region: null
@@ -198,13 +198,13 @@ export default {
       });
     },
     toggle_session: function () {
-      if(this.mixer.session.encours) {
+      if(this.mixer.etat.en_session) {
         this.mixer.terminer_session().then((blob) => { 
           if(blob) saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.wav`); });
       } else {
         this.mixer.debuter_session();
       }
-      this.mixer.session.encours = !this.mixer.session.encours;
+      this.mixer.etat.en_session = !this.mixer.etat.en_session;
     },
     toggle_mode_fonoimage: function () {
       this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
@@ -298,6 +298,9 @@ export default {
     waveform_id: function () { return `waveform-${this.id}`; },
     playing: function () { return this.tracks_actives }
   },
+  created: function () {
+    this.mixer = new Mixer(this);
+  },
   mounted: function () {
 
     // Initialisation de Filepond par les mixins
@@ -330,13 +333,11 @@ export default {
 
     window.addEventListener("resize", this.paint);
 
-    this.mixer = new Mixer(this);
-
     this.importer(this.archive).then((configuration) => {
       this.mixer.set_loop(configuration.parametres.loop);
       this.mixer.set_sens(configuration.parametres.sens);
       this.synchroniser_modules();
-      this.mixer.chargement = false;
+      this.mixer.etat.chargement = false;
       this.paint();
 
       // TODO Ajouter les breaks points pour l'affichage en mode colonne
@@ -363,7 +364,8 @@ export default {
                 <img v-if="fonoimage.integration" src="${Solo}" class="icone solo" :class="{actif: fonoimage.solo}" @click="toggle_solo"/>
                 <img src="${Loop}" class="icone loop" :class="{actif: mixer.etat.loop}" @click="toggle_loop"/>
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
-                <img src="${Record}" class="icone session" :class="{actif: mixer.session.encours}" @click="toggle_session"/>
+                <img src="${Record}" class="icone session" :class="{actif: mixer.etat.en_session}" @click="toggle_session"/>
+                <span v-show="mixer.etat.en_session && !mixer.etat.en_enregistrement">{{ $t('session.activer') }}</span>
                 <img src="${Crop}" class="icone" @click="crop"/>
               </div>
               <div v-if="fonoimage.integration" class="droite">

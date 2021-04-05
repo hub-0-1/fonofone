@@ -2,6 +2,9 @@ export default {
   locale: 'fr',
   messages: {
     fr: {
+      session: {
+        activer: "Appuyez sur le bouton jouer"
+      },
       arriereplan: "Arrière-plan",
       formes: "Formes",
       menu: {

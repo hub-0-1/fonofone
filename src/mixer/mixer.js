@@ -11,15 +11,13 @@ class Mixer {
     this.fnfn_id = fonofone.id;
     this.ctx_audio = fonofone.ctx_audio;
     this.is_webkitAudioContext = (this.ctx_audio.constructor.name == "webkitAudioContext"); // Test safari
-    this.chargement = true;
     this.audio_buffer = this.ctx_audio.createBufferSource();
-    this.etat = { jouer: false, loop: false, metronome: false, en_enregistrement: false };
+    this.etat = { chargement: true, jouer: false, loop: false, metronome: false, en_enregistrement: false, en_session: false };
     this.parametres = {};
     this.tracks = [];
     this.tracks_timeouts = [];
     this.prochaines_tracks = [];
     this.nodes = {};
-    this.session = { encours: false };
 
     // Enregistrement de session
     this.nodes.media_stream_destination = this.ctx_audio.createMediaStreamDestination();
@@ -122,10 +120,10 @@ class Mixer {
   jouer () {
 
     // Ne pas jouer au chargement
-    if(this.chargement) return;
+    if(this.etat.chargement) return;
 
     // Enregistrer
-    if(this.session.encours && !this.etat.en_enregistrement) this.debuter_session();
+    if(this.etat.en_session && !this.etat.en_enregistrement) this.debuter_session();
 
     // Creer et lancer la track
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.n0, this.parametres);
@@ -301,7 +299,7 @@ class Mixer {
       return this.enregistreur.terminer();
     }
     else {
-      return null;
+      return new Promise((resolve) => { resolve(null); });
     }
   }
 
