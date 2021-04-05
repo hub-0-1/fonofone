@@ -199,7 +199,8 @@ export default {
     },
     toggle_session: function () {
       if(this.mixer.session.encours) {
-        this.mixer.terminer_session().then((blob) => { saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.wav`); });
+        this.mixer.terminer_session().then((blob) => { 
+          if(blob) saveAs(blob, `${this.configuration.parametres.nom} ${new Date().toLocaleString()}.wav`); });
       } else {
         this.mixer.debuter_session();
       }

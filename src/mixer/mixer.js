@@ -5,9 +5,6 @@ import Enregistreur from '../enregistreur.js';
 import Track from "./track.js";
 import Globales from "../globales.js";
 
-const pct_bpm_aleatoire = 0.6;
-
-// TODO Refact constantes de tout le fonofone dans globales.js
 class Mixer {
   constructor (fonofone) {
     this.waveform_element_id = fonofone.waveform_id;
@@ -16,7 +13,7 @@ class Mixer {
     this.is_webkitAudioContext = (this.ctx_audio.constructor.name == "webkitAudioContext"); // Test safari
     this.chargement = true;
     this.audio_buffer = this.ctx_audio.createBufferSource();
-    this.etat = { jouer: false, loop: false, metronome: false };
+    this.etat = { jouer: false, loop: false, metronome: false, en_enregistrement: false };
     this.parametres = {};
     this.tracks = [];
     this.tracks_timeouts = [];
@@ -126,6 +123,9 @@ class Mixer {
 
     // Ne pas jouer au chargement
     if(this.chargement) return;
+
+    // Enregistrer
+    if(this.session.encours && !this.etat.en_enregistrement) this.debuter_session();
 
     // Creer et lancer la track
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.n0, this.parametres);
@@ -287,13 +287,22 @@ class Mixer {
     });
   }
 
-  terminer_session () {
-    return this.enregistreur.terminer();
-  }
-
   debuter_session () {
     // TODO Attendre d'etre en mode jouer
-    this.enregistreur.debuter();
+    if(this.etat.jouer) {
+      this.enregistreur.debuter();
+      this.etat.en_enregistrement = true;
+    }
+  }
+
+  terminer_session () {
+    if(this.etat.en_enregistrement) {
+      this.etat.en_enregistrement = false;
+      return this.enregistreur.terminer();
+    }
+    else {
+      return null;
+    }
   }
 
   buffer2audio_buffer (buffer) {
