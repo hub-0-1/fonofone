@@ -13,6 +13,7 @@
 @orange: #F35524;
 @rouge: #F9085A;
 @blanc: white;
+@border_width: 0.02;
 
 .fonofone {
   .mixer {
@@ -52,7 +53,7 @@
       &.filtre {
         .bg {
           stroke: @rouge;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
           fill: @rouge;
           fill-opacity: 0.5;
         }
@@ -64,7 +65,7 @@
         .controlleur {
           fill: @rouge;
           stroke: @blanc;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
           fill-opacity: 0.5;
         }
       }
@@ -92,7 +93,7 @@
         .controlleur {
           fill: @vert;
           stroke: white;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
           fill-opacity: 0.5;
         }
       }
@@ -123,7 +124,7 @@
 
         .bg {
           stroke: @mauve;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
           fill: @mauve;
           fill-opacity: 0.5;
         }
@@ -139,7 +140,7 @@
         .controlleur {
           fill: @mauve;
           stroke: white;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
           fill-opacity: 0.5;
         }
       }
@@ -149,14 +150,14 @@
           fill: @jaune;
           fill-opacity: 0.5;
           stroke: @jaune;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
           //stroke-linejoin: round;
         }
 
         .controlleur {
           fill: @jaune;
           stroke: @blanc;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
         }
       }
 
@@ -206,7 +207,7 @@
         .controlleur-aleatoire, .controlleur-syncope {
           fill: @orange;
           stroke: @blanc;
-          stroke-width: 0.02;
+          stroke-width: @border_width;
         }
 
         .ligne-aleatoire, .ligne-syncope {
@@ -215,6 +216,11 @@
       }
 
       &.reverberation {
+
+        // Aspect ratio du module. Par defaut 1:1
+        main {
+          padding-top: 50%;
+        }
 
         text {
           font-family: "Helvetica";
@@ -228,10 +234,10 @@
           fill: @mauve2;
         }
 
-        .controlleur-wet, .controlleur-traine {
+        .controlleur {
           fill: @mauve2;
           stroke: @blanc;
-          stroke-width: 0.01;
+          stroke-width: @border_width;
         }
       }
 

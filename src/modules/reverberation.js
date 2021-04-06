@@ -4,22 +4,29 @@ import Globales from "../globales.js";
 import Power from "../images/icon-power.svg";
 
 const Reverberation = Globales.modules.reverberation;
-const espacement_images = (1 - Reverberation.dimension_img) / (Reverberation.sons.length - 1);
+const min_x = Reverberation.border_width / 2;
+const max_x = Reverberation.largeur_module - Reverberation.largeur_controlleur - Reverberation.border_width / 2;
+const espacement_images = (Reverberation.largeur_module - Reverberation.dimension_relative_img) / (Reverberation.sons.length - 1);
 
 export default {
   mixins: [Utils],
   data: function () {
-    return { wet: null, url: null, sons: Reverberation.sons };
+    return { wet: null, url: null, sons: Reverberation.sons, x: 0 };
   },
   methods: {
     charger_props: function () {
       this.wet = this.valeur.wet;
       this.url = this.valeur.url;
+
+      this.x = (this.wet * (max_x - min_x)) + min_x;
     },
     drag: function (e) {
-      if(this.controlleur_actif == this.$refs.controlleur_wet) {
-        this.wet = this.borner_0_1(this.get_mouse_position(e).x);
-      }
+      let coords = this.get_mouse_position(e);
+
+      let x = coords.x - (Reverberation.largeur_controlleur / 2);
+      this.x = this.borner(x, min_x, max_x);
+      this.wet = (this.x - min_x) / (max_x - min_x);
+      console.log(this.x, this.wet);
       this.update();
     },
     update_son: function (son) {
@@ -30,19 +37,14 @@ export default {
       this.$emit('update:valeur', { actif: this.module_actif, wet: this.wet, url: this.url });
     }
   },
-  computed: {
-    x_wet: function () {
-      return this.wet * (1 - Reverberation.largeur_controlleur);
-    }
-  },
   template: `
     <generique :module="$t('modules.reverberation')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
-      <svg viewBox="0 0 1 0.4" preserveAspectRatio="none" ref="canvas">
+      <svg viewBox="0 0 ${Reverberation.largeur_module} ${Reverberation.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <text x="0" y="0.05" width="0.1">0%</text>
         <text x="0.9" y="0.05" width="0.1">100%</text>
-        <rect class="centre" x="0" width="1" y="0.1" height="0.01"/>
-        <rect class="controlleur-wet" :x="x_wet" width="${Reverberation.largeur_controlleur}" y="${0.15 - Reverberation.hauteur_controlleur}" height="${Reverberation.hauteur_controlleur}" rx="0.02" ref="controlleur_wet"/>
-        <image v-for="son in sons" :href="son.image" height="${Reverberation.dimension_img}" width="${Reverberation.dimension_img}" :x="sons.indexOf(son) * ${espacement_images}" y="${0.3 - (Reverberation.dimension_img / 2)}" @click="update_son(son)"/>
+        <rect class="centre" x="0" width="${Reverberation.largeur_module}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_controlleur - Reverberation.hauteur_centre_controlleur / 2}" height="${Reverberation.hauteur_centre_controlleur}"/>
+        <rect class="controlleur" :x="x" width="${Reverberation.largeur_controlleur}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_controlleur - Reverberation.hauteur_controlleur / 2}" height="${Reverberation.hauteur_controlleur}" rx="0.02" ref="controlleur"/>
+        <image v-for="son in sons" :href="son.image" height="${Reverberation.dimension_relative_img}" width="${Reverberation.dimension_relative_img}" :x="sons.indexOf(son) * ${espacement_images}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_images - (Reverberation.dimension_relative_img / 2)}" @click="update_son(son)"/>
       </svg>
 
       <template v-slot:footer>

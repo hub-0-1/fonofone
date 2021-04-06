@@ -1,3 +1,9 @@
+/*
+ * Attention
+ * Les valeurs borde_width et hauteur_module
+ * doivent aussi etre definies dans src/modules/styles.less
+ */
+
 export default {
   configuration_primitive: "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn",
   min_width_grille: 600,
@@ -8,6 +14,8 @@ export default {
       hauteur_module: 0.5,
       hauteur_controlleur: 0.1,
       largeur_controlleur: 0.1,
+      x_relatif_img_gauche: 0.1,
+      x_relatif_img_droite: 0.9,
       border_width: 0.02,
       nb_divisions: 2,
       width_division: 0.005,
@@ -22,9 +30,15 @@ export default {
       max_bpm: 1000
     },
     reverberation: {
+      largeur_module: 1,
+      hauteur_module: 0.4,
       largeur_controlleur: 0.1,
-      hauteur_controlleur: 0.075,
-      dimension_img: 0.15,
+      hauteur_controlleur: 0.1,
+      hauteur_centre_controlleur: 0.01,
+      y_relatif_centre_controlleur: 0.35,
+      y_relatif_centre_images: 0.80,
+      dimension_relative_img: 0.15,
+      border_width: 0.02,
       sons: [
         { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav" },
         { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav2" },
