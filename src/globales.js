@@ -17,15 +17,23 @@ export default {
       x_relatif_img_gauche: 0.1,
       x_relatif_img_droite: 0.9,
       border_width: 0.02,
-      nb_divisions: 2,
+      nb_divisions: 7,
       width_division: 0.005,
       cote_image: 0.1
     },
     metronome: {
+      largeur_module: 1,
+      hauteur_module: 1,
       taille_arc: 270,
       centre_cercle: { x: 0.5, y: 0.4 },
-      largeur_controlleur_aleatoire: 0.1,
-      largeur_controlleur_syncope: 0.1,
+      largeur_controlleur: 0.1,
+      hauteur_controlleur: 0.1,
+      taille_centre_controlleur: 0.01,
+      taille_cercle_controlleur: 0.04,
+      y_relatif_centre_syncope: 0.75,
+      y_relatif_centre_aleatoire: 0.9,
+      border_width: 0.02,
+      nb_divisions: 1,
       min_bpm: 5,
       max_bpm: 1000
     },
@@ -47,10 +55,12 @@ export default {
       ]
     },
     vitesse: {
-      nb_divisions: 7,
-      largeur_controlleur: 0.1,
       largeur_module: 1,
       hauteur_module: 0.5,
+      largeur_controlleur: 0.1,
+      hauteur_controlleur: 1,
+      nb_divisions: 7,
+      width_division: 0.005,
       width_demie: 0.02,
       border_width: 0.02
     },

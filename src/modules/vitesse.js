@@ -5,6 +5,8 @@ import Magnet from "../images/icon-magnet.svg";
 import Power from "../images/icon-power.svg";
 
 const Vitesse = Globales.modules.vitesse;
+const min_x = Vitesse.border_width / 2;
+const max_x = Vitesse.largeur_module - Vitesse.largeur_controlleur - Vitesse.border_width / 2;
 
 const width_c2 = 0.02;
 const width_c4 = 0.01;
@@ -13,16 +15,21 @@ const width_c8 = 0.01;
 export default {
   mixins: [Utils],
   data: function () {
-    return { vitesse: null, mode: null, aimant: false };
+    return { vitesse: null, mode: null, aimant: false, x: 0 };
   },
   methods: {
     charger_props: function () {
       this.vitesse = this.valeur.vitesse;
       this.mode = this.valeur.mode;
+
+      this.x = (this.vitesse * (max_x - min_x)) + min_x;
     },
     drag: function (e) {
-      this.vitesse = this.borner_0_1(this.get_mouse_position(e).x);
-      if(this.aimant) this.vitesse = this.arrondir(this.vitesse, Vitesse.nb_divisions + 1);
+      let coords = this.get_mouse_position(e);
+
+      let x = (this.aimant ? this.arrondir(coords.x, (Vitesse.nb_divisions * this.mode) + 2) : coords.x) - (Vitesse.largeur_controlleur / 2);
+      this.x = this.borner(x, min_x, max_x);
+      this.vitesse = (this.x - min_x) / (max_x - min_x);
       this.update();
     },
     update: function () {
@@ -34,9 +41,6 @@ export default {
     }
   },
   computed: {
-    x: function () {
-      return this.borner(this.vitesse - (Vitesse.largeur_controlleur / 2), Vitesse.border_width / 2, Vitesse.largeur_module - (Vitesse.largeur_controlleur + Vitesse.border_width / 2));
-    },
     affichage_mode: function () {
       let mode = "";
       for(let i = 0; i < this.mode; ++i) mode += "I";
@@ -45,9 +49,9 @@ export default {
   },
   template: `
     <generique :module="$t('modules.vitesse')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
-      <svg viewBox="0 0 1 0.5" preserveAspectRatio="none" ref="canvas">
+      <svg viewBox="0 0 ${Vitesse.largeur_module} ${Vitesse.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="${Vitesse.border_width / 2}" width="${Vitesse.largeur_module - Vitesse.border_width}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}"/>
-        <rect v-for="i in ${Vitesse.nb_divisions + 1}" class="coche c8" :x="((i - 1) / ${Vitesse.nb_divisions}) * (1 - ${Vitesse.largeur_controlleur}) + ${(Vitesse.largeur_controlleur / 2) - (width_c8 / 2)}" y="0.2" height="0.1" width="${width_c8}" />
+        <rect v-for="i in (${Vitesse.nb_divisions} * mode)" class="coche c8" :x="((i / (${Vitesse.nb_divisions} * mode + 1)) * ${Vitesse.largeur_module}) - ${Vitesse.width_division / 2}" y="0.2" height="0.1" :width="${Vitesse.width_division}" />
         <rect class="controlleur" :x="x" width="${Vitesse.largeur_controlleur}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}" rx="0.02" ref="controlleur"/>
       </svg>
 
