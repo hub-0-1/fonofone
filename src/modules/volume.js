@@ -27,7 +27,7 @@ export default {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
-      let y = coords.y - (Volume.largeur_controlleur / 2);
+      let y = coords.y - (Volume.hauteur_controlleur / 2);
       this.y = this.borner(y, min_y, max_y);
       this.volume = (this.y - min_y) / (max_y - min_y);
 

@@ -4,45 +4,54 @@ import Globales from "../globales.js";
 import Power from "../images/icon-power.svg";
 
 const Filtre = Globales.modules.filtre;
+const min_x = Filtre.border_width / 2;
+const min_y = Filtre.border_width / 2;
+const max_y = Filtre.hauteur_module - Filtre.hauteur_controlleur - Filtre.border_width / 2;
 
 // TODO Refact des x, y, debut, longueur
 export default {
   mixins: [Utils],
   data: function () {
-    return { debut: null, longueur: null };
+    return { debut: null, longueur: null, x: 0, y: 0 };
   },
   methods: {
     charger_props: function () {
       this.debut = this.valeur.debut;
       this.longueur = this.valeur.longueur;
+
+      this.x = (this.debut * (this.max_x - min_x)) + min_x;
+      console.log(this.x);
+      this.y = (this.longueur * (max_y - min_y)) + min_y;
     },
     update: function () {
-      console.log(this.debut, this.longueur);
       this.$emit('update:valeur', { actif: this.module_actif, debut: this.debut, longueur: this.longueur });
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
       // Calculer hauteur en premier
-      this.longueur = this.borner_0_1(coords.y);
+      let y = coords.y - (Filtre.hauteur_controlleur / 2);
+      this.y = this.borner(y, min_y, max_y);
+      this.longueur = (this.y - min_y) / (max_y - min_y);
 
-      let x = this.borner_0_1(coords.x) - (this.width / 2) - (Filtre.border_width);
-      this.debut = this.borner(x, 0, Filtre.largeur_module - this.width - Filtre.border_width / 2); // TODO Valeur du x bonne?
+      let x = coords.x - (this.width / 2);
+      this.x = this.borner(x, min_x, this.max_x);
+      this.debut = (this.x - min_x) / (this.max_x - min_x);
 
+      console.log(x, min_x, this.max_x);
       this.update();
     },
   },
   computed: {
-    width: function () { return Math.max(this.longueur, Filtre.largeur_controlleur_minimale); },
-    hauteur: function ()  { return this.borner((this.longueur - Filtre.hauteur_controlleur / 2) * (Filtre.hauteur_module - Filtre.hauteur_controlleur), Filtre.border_width / 2, Filtre.hauteur_module - Filtre.hauteur_controlleur - Filtre.border_width / 2); },
-    x: function () { return (this.debut + Filtre.border_width / 2) * (Filtre.largeur_module - Filtre.border_width) }
+    max_x: function () { return Filtre.largeur_module - (this.width + (Filtre.border_width / 2)); },
+    width: function () { return Math.max(this.longueur, Filtre.largeur_controlleur_minimale); }
   },
   template: `
     <generique :module="$t('modules.filtre')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Filtre.largeur_module} ${Filtre.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="${Filtre.border_width / 2}" width="${Filtre.largeur_module - Filtre.border_width}" y="${Filtre.border_width / 2}" height="${Filtre.hauteur_module - Filtre.border_width}"/>
         <rect class="centre" x="0.49" width="0.02" y="${Filtre.hauteur_module - Filtre.border_width - Filtre.hauteur_centre}" height="${Filtre.hauteur_centre}"/>
-        <rect class="controlleur" :x="x" :y="hauteur" :width="width" height="${Filtre.hauteur_controlleur}" ref="controlleur"/>
+        <rect class="controlleur" :x="x" :y="y" :width="width" height="${Filtre.hauteur_controlleur}" ref="controlleur"/>
       </svg>
 
       <template v-slot:footer>

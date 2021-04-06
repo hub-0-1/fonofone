@@ -22,7 +22,6 @@ export default {
 
       this.syncope = this.valeur.syncope;
       this.x_syncope = (this.syncope * (max_x - min_x)) + min_x;
-      console.log(this.x_aleatoire, this.x_syncope);
 
       if(this._isMounted) { this.update_position_point_arc(); }
     },
