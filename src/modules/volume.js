@@ -2,46 +2,53 @@ import Utils from "./_utils.js";
 import Globales from "../globales.js";
 
 import Magnet from "../images/icon-magnet.svg";
-import Volume from "../images/icon-volume.png";
+import VolumeGauche from "../images/icon-volume.png";
 import VolumeDroite from "../images/icon-volume_droite.png";
+
+const Volume = Globales.modules.volume;
+const min_x = Volume.border_width / 2;
+const max_x = Volume.largeur_module - Volume.largeur_controlleur - Volume.border_width / 2;
+const min_y = Volume.border_width / 2;
+const max_y = Volume.hauteur_module - Volume.hauteur_controlleur - Volume.border_width / 2;
 
 export default {
   mixins: [Utils],
   data: function () {
-    return { volume: null, pan: null, aimant: false };
+    return { volume: null, pan: null, aimant: false, x: 0, y: 0 };
   },
   methods: {
     charger_props: function () {
-      this.volume = this.valeur.volume;
       this.pan = this.valeur.pan;
+      this.volume = this.valeur.volume;
+
+      this.x = (this.pan * (max_x - min_x)) + min_x;
+      this.y = (this.volume * (max_y - min_y)) + min_y;
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
-      this.volume = this.borner(0.5 - coords.y, 0, 0.5) * 2;
-      this.pan = this.borner_0_1(coords.x);
-      if(this.aimant) this.pan = this.arrondir(this.pan, Globales.modules.volume.nb_division + 1);
+
+      let y = coords.y - (Volume.largeur_controlleur / 2);
+      this.y = this.borner(y, min_y, max_y);
+      this.volume = (this.y - min_y) / (max_y - min_y);
+
+      let x = (this.aimant ? this.arrondir(coords.x, Volume.nb_divisions + 2) : coords.x) - (Volume.largeur_controlleur / 2);
+      this.x = this.borner(x, min_x, max_x);
+      this.pan = (this.x - min_x) / (max_x - min_x);
+
       this.update();
     },
     update: function () {
       this.$emit('update:valeur', { volume: this.volume, pan: this.pan });
     }
   },
-  computed: {
-    x: function () {
-      return this.pan * (1 - Globales.modules.volume.largeur_controlleur);
-    },
-    y: function () {
-      return (0.5 - (this.volume * (0.5 - Globales.modules.volume.hauteur_controlleur) + Globales.modules.volume.hauteur_controlleur));
-    }
-  },
   template: `
     <generique :module="$t('modules.volume')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
-      <svg viewBox="0 0 1 0.5" preserveAspectRatio="none" ref="canvas">
-        <rect class="bg" x="0" width="1" y="0" height="0.5"/>
-        <rect v-for="i in ${Globales.modules.volume.nb_division + 1}" class="ligne" :x="((i - 1) / ${Globales.modules.volume.nb_division}) * ${(1 - Globales.modules.volume.largeur_controlleur)} + ${(Globales.modules.volume.largeur_controlleur / 2)} - ${(Globales.modules.volume.width_division / 2)}" y="0" height="0.5" width="${Globales.modules.volume.width_division}" />
-        <image href="${Volume}" x="${0.1 - Globales.modules.volume.cote_image / 2}" width="${Globales.modules.volume.cote_image / 2}" y="${0.25 - (Globales.modules.volume.cote_image / 2)}" height="${Globales.modules.volume.cote_image}"/>
-        <image href="${VolumeDroite}" x="0.9" width="${Globales.modules.volume.cote_image / 2}" y="${0.25 - (Globales.modules.volume.cote_image / 2)}" height="${Globales.modules.volume.cote_image}"/>
-        <rect class="controlleur" :x="x" width="${Globales.modules.volume.largeur_controlleur}" :y="y" height="${Globales.modules.volume.hauteur_controlleur}" rx="0.02" ref="controlleur"/>
+      <svg viewBox="0 0 ${Volume.largeur_module} ${Volume.hauteur_module}" preserveAspectRatio="none" ref="canvas">
+        <rect class="bg" x="0" width="${Volume.largeur_module}" y="0" height="${Volume.hauteur_module}"/>
+        <rect v-for="i in ${Volume.nb_divisions}" class="ligne" :x="((i / ${Volume.nb_divisions + 1}) * ${Volume.largeur_module}) - ${Volume.width_division / 2}" y="0" height="${Volume.hauteur_module}" width="${Volume.width_division}" />
+        <image href="${VolumeGauche}" x="${(Volume.largeur_module * 0.1) - (Volume.cote_image / 2)}" width="${Volume.cote_image}" y="${(Volume.hauteur_module / 2) - (Volume.cote_image / 2)}" height="${Volume.cote_image}"/>
+        <image href="${VolumeDroite}" x="${(Volume.largeur_module * 0.9) - (Volume.cote_image / 2)}" width="${Volume.cote_image}" y="${(Volume.hauteur_module / 2) - (Volume.cote_image / 2)}" height="${Volume.cote_image}"/>
+        <rect class="controlleur" :x="x" width="${Volume.largeur_controlleur}" :y="y" height="${Volume.hauteur_controlleur}" rx="0.02" ref="controlleur"/>
       </svg>
 
       <template v-slot:footer>
