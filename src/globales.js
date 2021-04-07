@@ -9,6 +9,14 @@ export default {
   min_width_grille: 600,
   mimetype_export: "audio/wav",
   modules: {
+    selecteur: {
+      largeur_module: 1,
+      hauteur_module: 1,
+      hauteur_controlleur: 0.1,
+      largeur_controlleur: 0.1,
+      border_width: 0.02,
+      duration_min: 10
+    },
     volume: {
       largeur_module: 1,
       hauteur_module: 0.5,

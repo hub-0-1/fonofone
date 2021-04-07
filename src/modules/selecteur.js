@@ -1,24 +1,35 @@
 import Utils from "./_utils.js";
+import Globales from "../globales.js";
 
 import Power from "../images/icon-power.svg";
 
-const coordonnees_triangle = { hauteur: 1, largeur: 1 };
-const ratio_controlleur = 10;
+const Selecteur = Globales.modules.selecteur;
+const min_x_module = Selecteur.border_width;
+const max_x_module = Selecteur.largeur_module - Selecteur.border_width;
+const min_y_module = Selecteur.border_width;
+const max_y_module = Selecteur.hauteur_module - Selecteur.border_width / 2;
+
+const min_x_controlleur = Selecteur.border_width / 2;
+const max_x_controlleur = Selecteur.largeur_module - Selecteur.largeur_controlleur - Selecteur.border_width / 2;
+const min_y_controlleur = Selecteur.border_width / 2;
+const max_y_controlleur = Selecteur.hauteur_module - Selecteur.hauteur_controlleur - Selecteur.border_width / 2;
+
+// TODO Le controlleur et le module n'ont pas les memes angles ce qui donne une petite deformation
 
 export default {
   mixins: [Utils],
   data: function () {
     return { 
-      x: 0,
-      y: 0,
       cote_gauche: {
-        pente: (0 - coordonnees_triangle.hauteur) / ((coordonnees_triangle.largeur / 2) - 0),
+        pente: (0 - Selecteur.hauteur_controlleur) / ((Selecteur.largeur_controlleur / 2) - 0),
         y0: null 
       },
       cote_droit: {
-        pente: (coordonnees_triangle.hauteur - 0) / (coordonnees_triangle.largeur - (coordonnees_triangle.largeur / 2)),
+        pente: (Selecteur.hauteur_controlleur - 0) / (Selecteur.largeur_controlleur - (Selecteur.largeur_controlleur / 2)),
         y0: null
       },
+      x: 0,
+      y: 0,
       debut: null,
       longueur: null
     }
@@ -44,37 +55,30 @@ export default {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
-      this.y = this.borner_0_1(coords.y) * (1 - coordonnees_triangle.hauteur / ratio_controlleur);
-      this.x = this.borner_0_1(coords.x);
-      if(coords.x < 0.5) {
-        this.x = Math.max(this.x, this.x_cote_gauche(this.y));
-      }
-      else if(coords.x > 0.5) {
-        this.x = Math.min(this.x, this.x_cote_droit(this.y));
-      }
+      let y = coords.y - (Selecteur.hauteur_controlleur / 2);
+      this.y = this.borner(y, min_y_controlleur, max_y_controlleur);
+      this.longueur = 1 - ((this.y - min_y_controlleur) / (max_y_controlleur - min_y_controlleur));
+
+      let x_gauche = this.x_cote_gauche(this.y);
+      let x_droit  = this.x_cote_droit(this.y);
+      let x = coords.x - (Selecteur.largeur_controlleur / 2);
+      this.x = this.borner(x, x_gauche, x_droit);
+      this.debut = ((1 - this.longueur) * ((this.x - x_gauche) / (x_droit - x_gauche)) || 0);
 
       this.update_position_controlleur();
-      this.svg_a_mixer();
       this.update();
     },
     x_cote_gauche: function (y) {
-      return (y - this.cote_gauche.y0) / this.cote_gauche.pente;
+      return ((y - this.cote_gauche.y0) / this.cote_gauche.pente) - Selecteur.largeur_controlleur / 2 + Selecteur.border_width / 2;
     },
     x_cote_droit: function (y) {
-      return (y - this.cote_droit.y0) / this.cote_droit.pente;
+      return ((y - this.cote_droit.y0) / this.cote_droit.pente) - Selecteur.largeur_controlleur / 2 - Selecteur.border_width / 2;
     },
     update_position_controlleur: function () {
-      this.$refs.controlleur.style.transform = `translate(${(this.x - coordonnees_triangle.largeur / 2 / ratio_controlleur) * 100}%, ${(Math.min(this.y, 1 - (coordonnees_triangle.hauteur / ratio_controlleur))) * 100}%)`;
-    },
-    svg_a_mixer: function () {
-      let x_gauche = this.x_cote_gauche(this.y);
-      let x_droit  = this.x_cote_droit(this.y);
-
-      this.longueur = 1 - (this.y / (1 - coordonnees_triangle.hauteur / ratio_controlleur));
-      this.debut = ((1 - this.longueur) * ((this.x - x_gauche) / (x_droit - x_gauche)) || 0);
+      this.$refs.controlleur.style.transform = `translate(${this.x * 100}%, ${this.y * 100}%)`;
     },
     mixer_a_svg: function () {
-      this.y = (1 - this.longueur) * (1 - coordonnees_triangle.hauteur / ratio_controlleur);
+      this.y = (1 - this.longueur) * (1 - Selecteur.hauteur_controlleur);
 
       let x_gauche = this.x_cote_gauche(this.y);
       let x_droit  = this.x_cote_droit(this.y);
@@ -82,16 +86,17 @@ export default {
     }
   },
   mounted: function () {
-    this.cote_gauche.y0 = 0 - (this.cote_gauche.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
-    this.cote_droit.y0 = 0 - (this.cote_droit.pente * (coordonnees_triangle.largeur / 2)); // Pointe en haut
+    this.cote_gauche.y0 = 0 - (this.cote_gauche.pente * (Selecteur.largeur_module / 2)); // Pointe en haut
+    this.cote_droit.y0 = 0 - (this.cote_droit.pente * (Selecteur.largeur_module / 2)); // Pointe en haut
     this.mixer_a_svg();
     this.update_position_controlleur();
   },
   template: `
     <generique :module="$t('modules.selecteur')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-        <polygon class="triangle" points="0,${coordonnees_triangle.hauteur} ${coordonnees_triangle.largeur / 2},0 ${coordonnees_triangle.largeur},${coordonnees_triangle.hauteur}"/>
-        <polygon class="controlleur" points="0,${coordonnees_triangle.hauteur / ratio_controlleur} ${coordonnees_triangle.largeur / ratio_controlleur / 2},0 ${coordonnees_triangle.largeur / ratio_controlleur},${coordonnees_triangle.hauteur / ratio_controlleur}" ref="controlleur"/>
+        <polygon class="triangle" points="${min_x_module},${max_y_module} ${Selecteur.largeur_module / 2},${min_y_module} ${max_x_module},${max_y_module}"/>
+
+        <polygon class="controlleur" points="${min_x_controlleur},${Selecteur.hauteur_controlleur} ${Selecteur.largeur_controlleur / 2},${min_y_controlleur} ${Selecteur.largeur_controlleur},${Selecteur.hauteur_controlleur}" ref="controlleur"/>
       </svg>
 
       <template v-slot:footer>

@@ -247,10 +247,11 @@ export default {
         });
         this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
 
+        // TODO Ajouter temps min
         this.wavesurfer.on('region-updated', (region) => {
           let start = region.start / this.mixer.audio_buffer.duration;
           let end = region.end / this.mixer.audio_buffer.duration;
-          let longueur = end - start;
+          let longueur = Math.max(end - start, Globales.modules.selecteur.duration_min);
 
           this.$refs.selecteur[0].set_plage(start, longueur);
           this.$nextTick(() => { this.paint_regions(); });

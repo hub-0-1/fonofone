@@ -208,7 +208,7 @@ class Mixer {
     }
 
     this.parametres.debut = (valeur.debut * this.audio_buffer.duration || 0);
-    this.parametres.longueur = (valeur.longueur * this.audio_buffer.duration || 0);
+    this.parametres.longueur = Math.min(valeur.longueur * this.audio_buffer.duration || 0, Globales.modules.selecteur.duration_min);
   }
 
   set_metronome (valeur) {

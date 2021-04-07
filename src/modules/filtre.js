@@ -20,7 +20,6 @@ export default {
       this.longueur = this.valeur.longueur;
 
       this.x = (this.debut * (this.max_x - min_x)) + min_x;
-      console.log(this.x);
       this.y = (this.longueur * (max_y - min_y)) + min_y;
     },
     update: function () {
