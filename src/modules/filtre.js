@@ -38,13 +38,12 @@ export default {
       this.x = this.borner(x, min_x, this.max_x);
       this.debut = (this.x - min_x) / (this.max_x - min_x);
 
-      console.log(x, min_x, this.max_x);
       this.update();
     },
   },
   computed: {
-    max_x: function () { return Filtre.largeur_module - (this.width + (Filtre.border_width / 2)); },
-    width: function () { return Math.max(this.longueur, Filtre.largeur_controlleur_minimale); }
+    max_x: function () { return Filtre.largeur_module - (this.width + Filtre.border_width / 2); },
+    width: function () { return Math.max(this.longueur, Filtre.largeur_controlleur_minimale) - Filtre.border_width; }
   },
   template: `
     <generique :module="$t('modules.filtre')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
