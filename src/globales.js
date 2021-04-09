@@ -70,9 +70,9 @@ export default {
     },
     vitesse: {
       largeur_module: 1,
-      hauteur_module: 0.5,
+      hauteur_module: 0.25,
       largeur_controlleur: 0.1,
-      hauteur_controlleur: 1,
+      hauteur_controlleur: 0.25,
       nb_divisions: 7,
       width_division: 0.005,
       width_demie: 0.02,

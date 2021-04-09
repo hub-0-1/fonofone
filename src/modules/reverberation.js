@@ -26,7 +26,6 @@ export default {
       let x = coords.x - (Reverberation.largeur_controlleur / 2);
       this.x = this.borner(x, min_x, max_x);
       this.wet = (this.x - min_x) / (max_x - min_x);
-      console.log(this.x, this.wet);
       this.update();
     },
     update_son: function (son) {

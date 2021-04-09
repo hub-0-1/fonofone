@@ -51,7 +51,7 @@ export default {
     <generique :module="$t('modules.vitesse')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Vitesse.largeur_module} ${Vitesse.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="bg" x="${Vitesse.border_width / 2}" width="${Vitesse.largeur_module - Vitesse.border_width}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}"/>
-        <rect v-for="i in (${Vitesse.nb_divisions} * mode)" class="coche c8" :x="((i / (${Vitesse.nb_divisions} * mode + 1)) * ${Vitesse.largeur_module}) - ${Vitesse.width_division / 2}" y="0.2" height="0.1" :width="${Vitesse.width_division}" />
+        <rect v-for="i in (${Vitesse.nb_divisions} * mode)" class="coche c8" :x="((i / (${Vitesse.nb_divisions} * mode + 1)) * ${Vitesse.largeur_module}) - ${Vitesse.width_division / 2}" y="${Vitesse.hauteur_module / 3}" height="${Vitesse.hauteur_module / 3}" :width="${Vitesse.width_division}" />
         <rect class="controlleur" :x="x" width="${Vitesse.largeur_controlleur}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}" rx="0.02" ref="controlleur"/>
       </svg>
 
