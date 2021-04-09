@@ -25,7 +25,7 @@ export default {
     },
     volume: {
       largeur_module: 1,
-      hauteur_module: 0.5,
+      hauteur_module: 0.6,
       hauteur_controlleur: 0.1,
       largeur_controlleur: 0.1,
       x_relatif_img_gauche: 0.1,
