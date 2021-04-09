@@ -251,9 +251,8 @@ export default {
         this.wavesurfer.on('region-updated', (region) => {
           let start = region.start / this.mixer.audio_buffer.duration;
           let end = region.end / this.mixer.audio_buffer.duration;
-          let longueur = Math.max(end - start, Globales.modules.selecteur.duration_min);
 
-          this.$refs.selecteur[0].set_plage(start, longueur);
+          this.$refs.selecteur[0].set_plage(start, end - start);
           this.$nextTick(() => { this.paint_regions(); });
         });
 
@@ -268,6 +267,7 @@ export default {
     },
     paint_regions: function () {
       if(!this.wavesurfer_region) return;
+      console.log(this.mixer.parametres);
       this.wavesurfer_region.start = this.mixer.parametres.debut;
       this.wavesurfer_region.end = this.mixer.parametres.debut + this.mixer.parametres.longueur;
       this.wavesurfer_region.updateRender();
