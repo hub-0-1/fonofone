@@ -267,7 +267,6 @@ export default {
     },
     paint_regions: function () {
       if(!this.wavesurfer_region) return;
-      console.log(this.mixer.parametres);
       this.wavesurfer_region.start = this.mixer.parametres.debut;
       this.wavesurfer_region.end = this.mixer.parametres.debut + this.mixer.parametres.longueur;
       this.wavesurfer_region.updateRender();
@@ -354,6 +353,7 @@ export default {
 
     this.importer(this.archive).then((configuration) => {
       this.appliquer_configuration(configuration);
+      this.mixer.etat.chargement = false;
 
       // TODO Ajouter les breaks points pour l'affichage en mode colonne
       // compter les enfants, selon la largeur, diviser en colonnes
