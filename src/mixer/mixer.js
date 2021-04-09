@@ -328,17 +328,14 @@ function crop_audio_buffer(ctx_audio, buffer, begin, end) {
   let frameCount = endOffset - startOffset;
 
   let newArrayBuffer = ctx_audio.createBuffer(channels, endOffset - startOffset, rate);
-  var anotherArray = new Float32Array(frameCount);
-  var offset = 0;
 
-  // TODO marche pas
-  for (var channel = 0; channel < channels; channel++) {
-    for(let i = 0; i < frameCount; i++) {
-      newArrayBuffer.getChannelData(0)[i] = buffer.getChannelData(0)[i];
-      newArrayBuffer.getChannelData(1)[i] = buffer.getChannelData(1)[i];
-    }
-    //buffer.copyFromChannel(anotherArray, channel, startOffset);
-    //newArrayBuffer.copyToChannel(anotherArray, channel, offset);
+  let channel0 = buffer.getChannelData(0);
+  let channel1 = buffer.getChannelData(1);
+  let offset = Math.round(startOffset);
+
+  for(let i = 0; i < frameCount; i++) {
+    newArrayBuffer.getChannelData(0)[i] = channel0[i + offset];
+    newArrayBuffer.getChannelData(1)[i] = channel1[i + offset];
   }
 
   return newArrayBuffer;
