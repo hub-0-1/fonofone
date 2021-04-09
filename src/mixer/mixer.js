@@ -89,20 +89,11 @@ class Mixer {
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
         if(this.audio_buffer.numberOfChannels < 2) {
-          this.audio_buffer = this.mono2stereo(this.audio_buffer);
+          this.audio_buffer = mono2stereo(this.audio_buffer);
         }
         resolve(true);
       });
     });
-  }
-
-  mono2stereo (mono) {
-    let stereo = this.ctx_audio.createBuffer(2, mono.length, mono.sampleRate);
-    for(let i = 0; i < mono.length; i++) {
-      stereo.getChannelData(0)[i] = mono.getChannelData(0)[i];
-      stereo.getChannelData(1)[i] = mono.getChannelData(0)[i];
-    }
-    return stereo;
   }
 
   toggle_pause () {
@@ -327,7 +318,6 @@ class Mixer {
 export default Mixer;
 
 // https://miguelmota.com/bytes/slice-audiobuffer/
-// TODO pour safari : https://developer.mozilla.org/fr/docs/Web/API/AudioBuffer/getChannelData
 function crop_audio_buffer(ctx_audio, buffer, begin, end) {
 
   let channels = buffer.numberOfChannels;
@@ -341,12 +331,26 @@ function crop_audio_buffer(ctx_audio, buffer, begin, end) {
   var anotherArray = new Float32Array(frameCount);
   var offset = 0;
 
+  // TODO marche pas
   for (var channel = 0; channel < channels; channel++) {
-    buffer.copyFromChannel(anotherArray, channel, startOffset);
-    newArrayBuffer.copyToChannel(anotherArray, channel, offset);
+    for(let i = 0; i < frameCount; i++) {
+      newArrayBuffer.getChannelData(0)[i] = buffer.getChannelData(0)[i];
+      newArrayBuffer.getChannelData(1)[i] = buffer.getChannelData(1)[i];
+    }
+    //buffer.copyFromChannel(anotherArray, channel, startOffset);
+    //newArrayBuffer.copyToChannel(anotherArray, channel, offset);
   }
 
   return newArrayBuffer;
+}
+
+function mono2stereo (mono) {
+  let stereo = this.ctx_audio.createBuffer(2, mono.length, mono.sampleRate);
+  for(let i = 0; i < mono.length; i++) {
+    stereo.getChannelData(0)[i] = mono.getChannelData(0)[i];
+    stereo.getChannelData(1)[i] = mono.getChannelData(0)[i];
+  }
+  return stereo;
 }
 
 
