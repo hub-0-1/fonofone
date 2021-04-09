@@ -88,9 +88,21 @@ class Mixer {
         return this.buffer2audio_buffer(array_buffer);
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
+        if(this.audio_buffer.numberOfChannels < 2) {
+          this.audio_buffer = this.mono2stereo(this.audio_buffer);
+        }
         resolve(true);
       });
     });
+  }
+
+  mono2stereo (mono) {
+    let stereo = this.ctx_audio.createBuffer(2, mono.length, mono.sampleRate);
+    for(let i = 0; i < mono.length; i++) {
+      stereo.getChannelData(0)[i] = mono.getChannelData(0)[i];
+      stereo.getChannelData(1)[i] = mono.getChannelData(0)[i];
+    }
+    return stereo;
   }
 
   toggle_pause () {
@@ -276,6 +288,7 @@ class Mixer {
 
   // TODO plante dans Safari
   crop () {
+    return this.audio_buffer = utils.slice(this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur);
     return this.audio_buffer = crop_audio_buffer(this.ctx_audio, this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur);
   }
 
