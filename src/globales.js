@@ -80,7 +80,7 @@ export default {
     },
     filtre: {
       largeur_module: 1,
-      hauteur_module: 1,
+      hauteur_module: 0.6,
       hauteur_controlleur: 0.1,
       largeur_controlleur_minimale: 0.05,
       border_width: 0.02,

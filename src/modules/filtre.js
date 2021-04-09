@@ -35,7 +35,7 @@ export default {
 
       let x = coords.x - (this.width / 2);
       this.x = this.borner(x, min_x, this.max_x);
-      this.debut = (this.x - min_x) / (this.max_x - min_x);
+      this.debut = (this.x - min_x) / (Filtre.largeur_module - Filtre.largeur_controlleur_minimale);
 
       this.update();
     },
