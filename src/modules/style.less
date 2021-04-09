@@ -230,12 +230,12 @@
 
         // Aspect ratio du module. Par defaut 1:1
         main {
-          padding-top: 50%;
+          padding-top: 55%;
         }
 
         text {
           font-family: "Helvetica";
-          font-size: 0.2%;
+          font-size: 0.3%;
           font-weight: bold;
           letter-spacing: 0.05em;
           fill: @gris;
@@ -249,6 +249,14 @@
           fill: @mauve2;
           stroke: @blanc;
           stroke-width: @border_width;
+        }
+
+        .image-reverb {
+          opacity: 0.7;
+
+          &.actif {
+            opacity: 1;
+          }
         }
       }
 
