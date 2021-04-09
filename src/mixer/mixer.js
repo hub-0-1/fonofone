@@ -286,9 +286,7 @@ class Mixer {
     this.update_tracks();
   }
 
-  // TODO plante dans Safari
   crop () {
-    return this.audio_buffer = utils.slice(this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur);
     return this.audio_buffer = crop_audio_buffer(this.ctx_audio, this.audio_buffer, this.parametres.debut, this.parametres.debut + this.parametres.longueur);
   }
 
