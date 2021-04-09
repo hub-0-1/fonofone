@@ -26,13 +26,13 @@ export default {
     volume: {
       largeur_module: 1,
       hauteur_module: 0.6,
-      hauteur_controlleur: 0.1,
+      hauteur_controlleur: 0.15,
       largeur_controlleur: 0.1,
       x_relatif_img_gauche: 0.1,
       x_relatif_img_droite: 0.9,
       border_width: 0.02,
       nb_divisions: 7,
-      width_division: 0.005,
+      width_division: 0.001,
       cote_image: 0.1
     },
     metronome: {
