@@ -4,6 +4,11 @@
  * doivent aussi etre definies dans src/modules/styles.less
  */
 
+import Impulse1 from "./donnees/impulse/masonic_lodge_1.wav";
+import Impulse2 from "./donnees/impulse/parking_garage_2.wav";
+import Impulse3 from "./donnees/impulse/scala_milan_opera_hall_3.wav";
+import Impulse4 from "./donnees/impulse/in_the_silo_revised_4.wav";
+
 export default {
   configuration_primitive: "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn",
   min_width_grille: 600,
@@ -12,8 +17,9 @@ export default {
     selecteur: {
       largeur_module: 1,
       hauteur_module: 1,
-      hauteur_controlleur: 0.1,
       largeur_controlleur: 0.1,
+      hauteur_controlleur: 0.1,
+      ratio_controlleur: 0.1,
       border_width: 0.02,
       duration_min: 10
     },
@@ -56,10 +62,10 @@ export default {
       dimension_relative_img: 0.15,
       border_width: 0.02,
       sons: [
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav" },
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav2" },
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav3" },
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav4" }
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse1 },
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse2 },
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse3 },
+        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse4 }
       ]
     },
     vitesse: {
