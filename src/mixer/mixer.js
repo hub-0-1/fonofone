@@ -139,7 +139,7 @@ class Mixer {
       this.tracks.splice(this.tracks.indexOf(track), 1); 
 
       // Loop sans metronome
-      if(this.tracks.length == 0 && this.etat.loop && !this.etat.metronome) {
+      if(this.tracks.length == 0 && this.etat.jouer && this.etat.loop && !this.etat.metronome) {
         this.jouer();
       }
     }

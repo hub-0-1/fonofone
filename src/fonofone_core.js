@@ -192,7 +192,6 @@ export default {
       this.mixer.toggle_pause();
     },
     arreter: function () {
-      this.set_loop(false);
       this.mixer.toggle_pause();
     },
     toggle_enregistrement: function () {
