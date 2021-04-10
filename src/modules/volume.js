@@ -22,14 +22,14 @@ export default {
       this.volume = this.valeur.volume;
 
       this.x = (this.pan * (max_x - min_x)) + min_x;
-      this.y = (this.volume * (max_y - min_y)) + min_y;
+      this.y = ((1 - this.volume) * (max_y - min_y)) + min_y;
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
       let y = coords.y - (Volume.hauteur_controlleur / 2);
       this.y = this.borner(y, min_y, max_y);
-      this.volume = (this.y - min_y) / (max_y - min_y);
+      this.volume = 1 - ((this.y - min_y) / (max_y - min_y));
 
       let x = (this.aimant ? this.arrondir(coords.x, Volume.nb_divisions + 2) : coords.x) - (Volume.largeur_controlleur / 2);
       this.x = this.borner(x, min_x, max_x);
