@@ -36,7 +36,9 @@ import Reload from './images/reload.png';
 import Folder from './images/icon-folder.svg';
 import Fleche from './images/arrow.svg';
 import Jouer from './images/jouer.svg';
-import Loop from './images/loop.svg';
+import JouerActif from './images/jouer-actif.svg';
+import Loop from './images/btn-loop.svg';
+import LoopActif from './images/btn-loop-actif.svg';
 import Sens from './images/fleche-sens.svg';
 import Crop from './images/crop.svg';
 import Solo from './images/solo.svg';
@@ -376,9 +378,9 @@ export default {
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu-controlleurs">
               <div class="gauche">
-                <img src="${Jouer}" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
+                <img :src="playing ? '${JouerActif}' : '${Jouer}'" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
                 <img v-if="fonoimage.integration" src="${Solo}" class="icone solo" :class="{actif: fonoimage.solo}" @click="toggle_solo"/>
-                <img src="${Loop}" class="icone loop" :class="{actif: mixer.etat.loop}" @click="toggle_loop"/>
+                <img :src="mixer.etat.loop ? '${LoopActif}' : '${Loop}'" class="icone loop" @click="toggle_loop"/>
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
                 <img src="${Record}" class="icone session" :class="{actif: mixer.etat.en_session}" @click="toggle_session"/>
                 <span v-show="mixer.etat.en_session && !mixer.etat.en_enregistrement">{{ $t('session.activer') }}</span>

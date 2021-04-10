@@ -2,7 +2,9 @@ import Utils from "./_utils.js";
 import Globales from "../globales.js";
 
 import Magnet from "../images/icon-magnet.svg";
+import MagnetActif from "../images/icon-magnet-actif.svg";
 import Power from "../images/icon-power.svg";
+import PowerActif from "../images/icon-power-actif.svg";
 
 const Metronome = Globales.modules.metronome;
 const min_x = Metronome.border_width / 2;
@@ -124,8 +126,8 @@ export default {
       <input class="affichage_bpm" type="text" ref="text" :value="text_bpm" @input="update_bpm_manuel" :style="{fontSize: font_size_bpm}"/>
 
       <template v-slot:footer>
-        <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
-        <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
+        <img class="power" :src="module_actif ? '${PowerActif}' : '${Power}'" alt="${Power}" @click="toggle_actif">
+        <img class="magnet" :src="aimant ? '${MagnetActif}' : '${Magnet}'" alt="${Magnet}" @click="aimant = !aimant">
       </template>
     </generique>
   `

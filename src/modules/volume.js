@@ -2,6 +2,7 @@ import Utils from "./_utils.js";
 import Globales from "../globales.js";
 
 import Magnet from "../images/icon-magnet.svg";
+import MagnetActif from "../images/icon-magnet-actif.svg";
 import VolumeGauche from "../images/icon-volume.png";
 import VolumeDroite from "../images/icon-volume_droite.png";
 
@@ -52,7 +53,7 @@ export default {
       </svg>
 
       <template v-slot:footer>
-        <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
+        <img class="magnet" :src="aimant ? '${MagnetActif}' : '${Magnet}'" alt="${Magnet}" @click="aimant = !aimant">
       </template>
     </generique>
   `

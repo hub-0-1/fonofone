@@ -2,6 +2,7 @@ import Utils from "./_utils.js";
 import Globales from "../globales.js";
 
 import Power from "../images/icon-power.svg";
+import PowerActif from "../images/icon-power-actif.svg";
 
 const Selecteur = Globales.modules.selecteur;
 const min_x_module = Selecteur.border_width;
@@ -100,7 +101,7 @@ export default {
       </svg>
 
       <template v-slot:footer>
-        <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
+        <img class="power" :src="module_actif ? '${PowerActif}' : '${Power}'" alt="${Power}" @click="toggle_actif">
       </template>
     </generique>
   `

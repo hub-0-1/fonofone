@@ -2,7 +2,9 @@ import Utils from "./_utils.js";
 import Globales from "../globales.js";
 
 import Magnet from "../images/icon-magnet.svg";
+import MagnetActif from "../images/icon-magnet-actif.svg";
 import Power from "../images/icon-power.svg";
+import PowerActif from "../images/icon-power-actif.svg";
 
 const Vitesse = Globales.modules.vitesse;
 const min_x = Vitesse.border_width / 2;
@@ -56,10 +58,10 @@ export default {
       </svg>
 
       <template v-slot:footer>
-        <img class="power" :class="{actif: module_actif}" src="${Power}" alt="${Power}" @click="toggle_actif">
+        <img class="power" :src="module_actif ? '${PowerActif}' : '${Power}'" alt="${Power}" @click="toggle_actif">
         <div class="menu-droite">
           <span class="mode" @click="change_mode">{{ affichage_mode }}</span>
-          <img class="magnet" :class="{actif: aimant}" src="${Magnet}" alt="${Magnet}" @click="aimant = !aimant">
+          <img class="magnet" :src="aimant ? '${MagnetActif}' : '${Magnet}'" alt="${Magnet}" @click="aimant = !aimant">
         </div>
       </template>
     </generique>
