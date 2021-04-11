@@ -166,6 +166,13 @@
           fill-opacity: 0.5;
         }
 
+        .bg-arc {
+          fill: none;
+          stroke: red;
+          stroke-width: 0.1;
+          stroke-opacity: 0;
+        }
+
         .arc {
           stroke: @orange;
           fill: none;
@@ -212,6 +219,10 @@
         .ligne-aleatoire, .ligne-syncope {
           fill: @orange;
         }
+
+        .hidden {
+          fill-opacity: 0;
+        }
       }
 
       &.reverberation {
@@ -227,6 +238,10 @@
           font-weight: bold;
           letter-spacing: 0.05em;
           fill: @gris;
+        }
+
+        .hidden {
+          fill-opacity: 0;
         }
 
         .centre {

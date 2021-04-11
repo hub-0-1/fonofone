@@ -32,7 +32,7 @@ export default {
       let coords = this.get_mouse_position(e);
 
       // Aleatoire
-      if(this.controlleur_actif == this.$refs.controlleur_aleatoire) {
+      if(this.controlleur_actif == this.$refs.controlleur_aleatoire || this.controlleur_actif == this.$refs.controlleur_bg_aleatoire) {
         let x_aleatoire = coords.x - (Metronome.largeur_controlleur / 2);
         this.x_aleatoire = this.borner(x_aleatoire, min_x, max_x);
         this.aleatoire = (this.x_aleatoire - min_x) / (max_x - min_x);
@@ -48,6 +48,7 @@ export default {
 
       // BPN
       else {
+        console.log(coords);
 
         // Recentrer les coordonnees de drag
         let x = coords.x - Metronome.centre_cercle.x;
@@ -115,14 +116,16 @@ export default {
         <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.2"/>
         <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.15"/>
         <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.1"/>
-
         <path d="${describeArc(0.5, 0.4, 0.3, (Metronome.taille_arc / -2), (Metronome.taille_arc / 2))}" class="arc" ref="arc"/>
+        <path d="${describeArc(0.5, 0.4, 0.3, (Metronome.taille_arc / -2), (Metronome.taille_arc / 2))}" class="bg-arc controlleur" ref="controlleur_bg_arc"/>
         <circle class="curseur-bpm controlleur" r="${Metronome.taille_cercle_controlleur}" ref="controlleur_bpm"/>
-        <rect class="bg-syncope controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_syncope - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_syncope"/>
+
         <rect class="ligne-syncope" x="0" width="${Metronome.largeur_module}" y="${Metronome.y_relatif_centre_syncope}" height="${Metronome.taille_centre_controlleur}" rx="0.02"/>
+        <rect class="hidden bg-syncope controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_syncope - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_syncope"/>
         <rect class="curseur-syncope controlleur" :x="x_syncope" width="${Metronome.largeur_controlleur}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_syncope - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" rx="0.02" ref="controlleur_syncope"/>
 
         <rect class="ligne-aleatoire" x="0" width="${Metronome.largeur_module}" y="${Metronome.y_relatif_centre_aleatoire}" height="${Metronome.taille_centre_controlleur}" rx="0.02"/>
+        <rect class="hidden bg-aleatoire controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_aleatoire"/>
         <rect class="curseur-aleatoire controlleur" :x="x_aleatoire" width="${Metronome.largeur_controlleur}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" rx="0.02" ref="controlleur_aleatoire"/>
       </svg>
       <input class="affichage_bpm" type="text" ref="text" :value="text_bpm" @input="update_bpm_manuel" :style="{fontSize: font_size_bpm}"/>
