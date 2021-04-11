@@ -76,7 +76,7 @@ export default {
       return ((y - this.cote_droit.y0) / this.cote_droit.pente) - Selecteur.largeur_controlleur / 2 - Selecteur.border_width / 2;
     },
     update_position_controlleur: function () {
-      this.$refs.controlleur.style.transform = `translate(${this.x * 100}%, ${this.y * 100}%)`;
+      this.$refs.controlleur_curseur.style.transform = `translate(${this.x * 100}%, ${this.y * 100}%)`;
     },
     mixer_a_svg: function () {
       this.y = (1 - this.longueur) * (1 - Selecteur.hauteur_controlleur);
@@ -95,9 +95,9 @@ export default {
   template: `
     <generique :module="$t('modules.selecteur')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
-        <polygon class="triangle" points="${min_x_module},${max_y_module} ${Selecteur.largeur_module / 2},${min_y_module} ${max_x_module},${max_y_module}"/>
+        <polygon class="bg controlleur" points="${min_x_module},${max_y_module} ${Selecteur.largeur_module / 2},${min_y_module} ${max_x_module},${max_y_module}" ref="controlleur"/>
 
-        <polygon class="controlleur" points="${min_x_controlleur},${Selecteur.hauteur_controlleur} ${Selecteur.largeur_controlleur / 2},${min_y_controlleur} ${Selecteur.largeur_controlleur},${Selecteur.hauteur_controlleur}" ref="controlleur"/>
+        <polygon class="curseur controlleur" points="${min_x_controlleur},${Selecteur.hauteur_controlleur} ${Selecteur.largeur_controlleur / 2},${min_y_controlleur} ${Selecteur.largeur_controlleur},${Selecteur.hauteur_controlleur}" ref="controlleur_curseur"/>
       </svg>
 
       <template v-slot:footer>

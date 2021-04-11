@@ -48,9 +48,9 @@ export default {
   template: `
     <generique :module="$t('modules.filtre')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Filtre.largeur_module} ${Filtre.hauteur_module}" preserveAspectRatio="none" ref="canvas">
-        <rect class="bg" x="${Filtre.border_width / 2}" width="${Filtre.largeur_module - Filtre.border_width}" y="${Filtre.border_width / 2}" height="${Filtre.hauteur_module - Filtre.border_width}"/>
+        <rect class="bg controlleur" x="${Filtre.border_width / 2}" width="${Filtre.largeur_module - Filtre.border_width}" y="${Filtre.border_width / 2}" height="${Filtre.hauteur_module - Filtre.border_width}" ref="controlleur"/>
         <rect class="centre" x="0.49" width="0.02" y="${Filtre.hauteur_module - Filtre.border_width - Filtre.hauteur_centre}" height="${Filtre.hauteur_centre}"/>
-        <rect class="controlleur" :x="x" :y="y" :width="width" height="${Filtre.hauteur_controlleur}" ref="controlleur"/>
+        <rect class="curseur controlleur" :x="x" :y="y" :width="width" height="${Filtre.hauteur_controlleur}" ref="controlleur_curseur"/>
       </svg>
 
       <template v-slot:footer>

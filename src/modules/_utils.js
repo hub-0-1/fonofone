@@ -32,13 +32,14 @@ export default {
       this.el_externe.addEventListener('mousemove', this.drag);
       this.el_externe.addEventListener('touchmove', this.drag, { passive: true });
       this.is_dragging = true;
+      this.drag(e);
     },
     // https://stackoverflow.com/questions/10298658/mouse-position-inside-autoscaled-svg et soustraire le translate de clientX et clientY
     // Reference pour le drag n drop : https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/
     get_mouse_position: function (evt) {
       var pt = this.$refs.canvas.createSVGPoint();
 
-      if(evt.type == "mousemove") {
+      if(evt.type == "mousemove" || evt.type == "mousedown") {
         pt.x = evt.clientX;
         pt.y = evt.clientY;
       }
