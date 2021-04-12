@@ -355,10 +355,6 @@ export default {
     this.importer(this.archive).then((configuration) => {
       this.appliquer_configuration(configuration);
       this.mixer.etat.chargement = false;
-
-      // TODO Ajouter les breaks points pour l'affichage en mode colonne
-      // compter les enfants, selon la largeur, diviser en colonnes
-      let children = this.$refs.mixer.children;
     });
   },
   template: `

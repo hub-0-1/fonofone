@@ -33,8 +33,6 @@
       border-radius: 10px;
       padding: @padding_module;
       transition: height @temps_transition;
-      display: flex;
-      flex-direction: column;
 
       &.resizing {
         transition: none;
@@ -332,19 +330,36 @@
 
     // En mode colonne, laisser tomber le positionnement absolu
     &.colonne > .module {
+      display: inline-block; // Pour eviter les colonnes brisent les modules
       position: relative;
-      margin: 20px auto;
-      transform: none !important;
       width: 100% !important;
       height: initial !important;
-
-      &:first-of-type {
-        margin-top: 0;
-      }
+      margin-bottom: 20px;
+      transform: none !important;
 
       &:last-of-type {
         margin-bottom: 0;
       }
+    }
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .fonofone {
+    .mixer {
+      --webkit-column-count: 2;
+      --moz-column-count: 2;
+      column-count: 2;
+    }
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .fonofone {
+    .mixer {
+      --webkit-column-count: 3;
+      --moz-column-count: 3;
+      column-count: 3;
     }
   }
 }
