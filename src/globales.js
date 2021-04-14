@@ -12,6 +12,7 @@ import Impulse4 from "./donnees/impulse/in_the_silo_revised_4.wav";
 export default {
   configuration_primitive: "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn",
   min_width_grille: 600,
+  max_width_colonne: 300,
   mimetype_export: "audio/wav",
   modules: {
     selecteur: {

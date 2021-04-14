@@ -231,6 +231,12 @@ export default {
     // UI
     paint: function () {
 
+      // Largeur modules
+      let mixer = this.$refs.mixer;
+      let nb_colonnes = Math.ceil(mixer.offsetWidth / Globales.max_width_colonne);
+      mixer.style.columnCount = nb_colonnes;
+
+      // Wavesurfer
       if(this.wavesurfer) {
         this.wavesurfer.destroy();
         this.wavesurfer = null;
