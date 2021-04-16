@@ -236,6 +236,8 @@ export default {
       let nb_colonnes = Math.ceil(mixer.offsetWidth / Globales.max_width_colonne);
       mixer.style.columnCount = nb_colonnes;
 
+      this.$refs.metronome[0].update_font_size_bpm();
+
       // Wavesurfer
       if(this.wavesurfer) {
         this.wavesurfer.destroy();
