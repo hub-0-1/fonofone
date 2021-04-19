@@ -195,11 +195,15 @@ class Mixer {
       valeur.mode = 1;
     }
 
+    if(valeur.mode == 3) valeur.mode = 4;
+
     if (valeur.vitesse <.5) {
-      this.parametres.vitesse = Math.pow(valeur.vitesse + 0.5, valeur.mode); // facture de vitesse, .5 = demi-vitesse, 2 = double vitesse
+      this.parametres.vitesse = Math.pow(valeur.vitesse + 0.5, valeur.mode / 2);
     } else {
-      this.parametres.vitesse = Math.pow(valeur.vitesse * 2, valeur.mode);
+      this.parametres.vitesse = Math.pow(valeur.vitesse * 2, valeur.mode / 2);
     }
+
+    console.log(this.parametres.vitesse);
     this.update_tracks();
   }
 
