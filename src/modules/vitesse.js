@@ -10,14 +10,10 @@ const Vitesse = Globales.modules.vitesse;
 const min_x = Vitesse.border_width / 2;
 const max_x = Vitesse.largeur_module - Vitesse.largeur_controlleur - Vitesse.border_width / 2;
 
-const width_c2 = 0.02;
-const width_c4 = 0.01;
-const width_c8 = 0.01;
-
 export default {
   mixins: [Utils],
   data: function () {
-    return { vitesse: null, mode: null, aimant: false, x: 0 };
+    return { vitesse: null, mode: 1, aimant: false, x: 0 };
   },
   methods: {
     charger_props: function () {
@@ -29,7 +25,7 @@ export default {
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
-      let x = (this.aimant ? this.arrondir(coords.x, (Vitesse.nb_divisions * this.mode) + 2) : coords.x) - (Vitesse.largeur_controlleur / 2);
+      let x = (this.aimant ? this.arrondir(coords.x, this.nb_divisions + 2) : coords.x) - (Vitesse.largeur_controlleur / 2);
       this.x = this.borner(x, min_x, max_x);
       this.vitesse = (this.x - min_x) / (max_x - min_x);
       this.update();
@@ -40,6 +36,15 @@ export default {
     change_mode: function () {
       this.mode = (this.mode % 3) + 1;
       this.update();
+    },
+    hauteur_coche: function (i) {
+      if(i % 12 == 0) return 1;
+      else if([4, 7, 10].includes(i % 12)) return 0.75;
+      else if([2, 5, 9, 11].includes(i % 12)) return 0.30;
+      else return 0.15;
+    },
+    i_affichage: function (i) {
+      return i + ((this.nb_divisions - 1) / 2) - 1;
     }
   },
   computed: {
@@ -47,13 +52,21 @@ export default {
       let mode = "";
       for(let i = 0; i < this.mode; ++i) mode += "I";
       return mode;
+    },
+    nb_divisions: function () {
+      return Vitesse.modes[this.mode - 1].nb_divisions;
     }
   },
   template: `
     <generique :module="$t('modules.vitesse')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Vitesse.largeur_module} ${Vitesse.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="bg controlleur" x="${Vitesse.border_width / 2}" width="${Vitesse.largeur_module - Vitesse.border_width}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}" ref="controlleur"/>
-        <rect v-for="i in (${Vitesse.nb_divisions} * mode)" class="coche c8" :x="((i / (${Vitesse.nb_divisions} * mode + 1)) * ${Vitesse.largeur_module}) - ${Vitesse.width_division / 2}" y="${Vitesse.hauteur_module / 3}" height="${Vitesse.hauteur_module / 3}" :width="${Vitesse.width_division}" />
+        <rect v-for="i in nb_divisions" class="coche" :class="{blanc: [2,4,5,7,9,11].includes(i_affichage(i) % 12)}" 
+          :x="((i / (nb_divisions + 1)) * ${Vitesse.largeur_module}) - ${Vitesse.width_division / 2}" 
+          width="${Vitesse.width_division}"
+          :y="${Vitesse.hauteur_module} * (1 - hauteur_coche(i_affichage(i))) / 2" 
+          :height="${Vitesse.hauteur_module} * hauteur_coche(i_affichage(i))" 
+        />
         <rect class="curseur controlleur" :x="x" width="${Vitesse.largeur_controlleur}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}" rx="0.02" ref="controlleur_curseur"/>
       </svg>
 
