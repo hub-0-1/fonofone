@@ -39,9 +39,12 @@ export default {
     },
     hauteur_coche: function (i) {
       if(i % 12 == 0) return 1;
-      else if([4, 7, 10].includes(i % 12)) return 0.75;
+      else if([4, 7, 10].includes(i % 12)) return 0.6;
       else if([2, 5, 9, 11].includes(i % 12)) return 0.30;
       else return 0.15;
+    },
+    largeur_coche: function (i) {
+      return i == ((this.nb_divisions - 1) / 2) + 1 ? Vitesse.width_division * 3 : Vitesse.width_division;
     },
     i_affichage: function (i) {
       return i + ((this.nb_divisions - 1) / 2) - 1;
@@ -62,8 +65,8 @@ export default {
       <svg viewBox="0 0 ${Vitesse.largeur_module} ${Vitesse.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="bg controlleur" x="${Vitesse.border_width / 2}" width="${Vitesse.largeur_module - Vitesse.border_width}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}" ref="controlleur"/>
         <rect v-for="i in nb_divisions" class="coche" :class="{blanc: [2,4,5,7,9,11].includes(i_affichage(i) % 12)}" 
-          :x="((i / (nb_divisions + 1)) * ${Vitesse.largeur_module}) - ${Vitesse.width_division / 2}" 
-          width="${Vitesse.width_division}"
+          :x="((i / (nb_divisions + 1)) * ${Vitesse.largeur_module}) - largeur_coche(i) / 2" 
+          :width="largeur_coche(i)"
           :y="${Vitesse.hauteur_module} * (1 - hauteur_coche(i_affichage(i))) / 2" 
           :height="${Vitesse.hauteur_module} * hauteur_coche(i_affichage(i))" 
         />
