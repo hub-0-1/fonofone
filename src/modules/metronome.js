@@ -5,6 +5,8 @@ import Magnet from "../images/icon-magnet.svg";
 import MagnetActif from "../images/icon-magnet-actif.svg";
 import Power from "../images/icon-power.svg";
 import PowerActif from "../images/icon-power-actif.svg";
+import IconeMetronome from "../images/metronome.svg";
+import IconeMetronomeFou from "../images/metronome-fou.svg";
 
 const Metronome = Globales.modules.metronome;
 const min_x = Metronome.border_width / 2;
@@ -124,6 +126,8 @@ export default {
         <rect class="hidden bg-syncope controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_syncope - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_syncope"/>
         <rect class="curseur-syncope controlleur" :x="x_syncope" width="${Metronome.largeur_controlleur}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_syncope - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" rx="0.02" ref="controlleur_syncope"/>
 
+        <image href="${IconeMetronome}" x="0" width="${Metronome.largeur_module / 10}" y="0.5" height="${Metronome.largeur_module / 10}" />
+        <image href="${IconeMetronomeFou}" x="0.9" width="${Metronome.largeur_module / 10}" y="0.5" height="${Metronome.largeur_module / 10}" />
         <rect class="ligne-aleatoire" x="0" width="${Metronome.largeur_module}" y="${Metronome.y_relatif_centre_aleatoire}" height="${Metronome.taille_centre_controlleur}" rx="0.02"/>
         <rect class="hidden bg-aleatoire controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_aleatoire"/>
         <rect class="curseur-aleatoire controlleur" :x="x_aleatoire" width="${Metronome.largeur_controlleur}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" rx="0.02" ref="controlleur_aleatoire"/>

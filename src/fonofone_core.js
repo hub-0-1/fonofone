@@ -43,7 +43,7 @@ import Sens from './images/fleche-sens.svg';
 import Crop from './images/crop.svg';
 import Solo from './images/solo.svg';
 import Export from './images/export.svg';
-import Import from './images/import.svg';
+import Import from './images/folder-open.svg';
 import Micro from './images/micro.svg';
 import ModeMix from './images/mode_mix.svg';
 import ModePic from './images/mode_pic.svg';
@@ -368,7 +368,7 @@ export default {
   template: `
       <div :id="id" class="fonofone" ref="fonofone">
         <menu>
-          <img src="${Reload}" @click="reset">
+          <img src="${Reload}" class="invert" @click="reset">
           <img src="${Import}" @click="mode_importation = !mode_importation">
           <img src="${Export}" @click="exporter">
         </menu>

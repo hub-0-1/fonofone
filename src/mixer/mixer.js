@@ -203,7 +203,6 @@ class Mixer {
       this.parametres.vitesse = Math.pow(valeur.vitesse * 2, valeur.mode / 2);
     }
 
-    console.log(this.parametres.vitesse);
     this.update_tracks();
   }
 
