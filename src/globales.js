@@ -58,6 +58,8 @@ export default {
       largeur_controlleur: 0.1,
       hauteur_controlleur: 0.1,
       hauteur_centre_controlleur: 0.01,
+      largeur_image: 0.4,
+      hauteur_image: 0.2,
       y_relatif_centre_controlleur: 0.35,
       y_relatif_centre_images: 0.80,
       dimension_relative_img: 0.175,

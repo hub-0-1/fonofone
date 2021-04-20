@@ -3,6 +3,11 @@ import Globales from "../globales.js";
 
 import Power from "../images/icon-power.svg";
 import PowerActif from "../images/icon-power-actif.svg";
+import ReverbGrand from "../images/reverb-grand.svg";
+import ReverbPetit from "../images/reverb-petit.svg";
+
+import ImpulsePetit from "../donnees/impulse/masonic_lodge_1.wav";
+import ImpulseGrand from "../donnees/impulse/parking_garage_2.wav";
 
 const Reverberation = Globales.modules.reverberation;
 const min_x = Reverberation.border_width / 2;
@@ -45,7 +50,11 @@ export default {
         <rect class="centre" x="0" width="${Reverberation.largeur_module}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_controlleur - Reverberation.hauteur_centre_controlleur / 2}" height="${Reverberation.hauteur_centre_controlleur}"/>
         <rect class="hidden controlleur" x="0" width="${Reverberation.largeur_module}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_controlleur - Reverberation.hauteur_controlleur / 2}" height="${Reverberation.hauteur_controlleur}" ref="controlleur"/>
         <rect class="curseur controlleur" :x="x" width="${Reverberation.largeur_controlleur}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_controlleur - Reverberation.hauteur_controlleur / 2}" height="${Reverberation.hauteur_controlleur}" rx="0.02" ref="controlleur_curseur"/>
-        <image v-for="son in sons" class="image-reverb" :class="{actif: son.son == url}" :href="son.image" height="${Reverberation.dimension_relative_img}" width="${Reverberation.dimension_relative_img}" :x="sons.indexOf(son) * ${espacement_images}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_images - (Reverberation.dimension_relative_img / 2)}" @click="update_son(son)"/>
+
+        <rect class="bordure-images" x="${Reverberation.largeur_module / 2 - Reverberation.largeur_image}" width="${Reverberation.largeur_image * 2}" y="0.3" height="${Reverberation.hauteur_image}" rx="0.02" />
+        <image href="${ReverbPetit}" class="image" :class="{actif: url == '${ImpulsePetit}'}" x="${Reverberation.largeur_module / 2 - Reverberation.largeur_image}" width="${Reverberation.largeur_image}" y="0.3" height="${Reverberation.hauteur_image}" @click="update_son('${ImpulsePetit}')"/>
+        <image href="${ReverbGrand}" class="image" :class="{actif: url == '${ImpulseGrand}'}"  x="${Reverberation.largeur_module / 2}" width="${Reverberation.largeur_image}" y="0.3" height="${Reverberation.hauteur_image}" @click="update_son('${ImpulseGrand}')" />
+        <rect class="milieu-images" x="${Reverberation.largeur_module / 2 - Reverberation.border_width / 4}" width="${Reverberation.border_width / 2}" y="0.3" height="${Reverberation.hauteur_image}" />
       </svg>
 
       <template v-slot:footer>
