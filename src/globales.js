@@ -72,11 +72,11 @@ export default {
     vitesse: {
       largeur_module: 1,
       hauteur_module: 0.25,
-      largeur_controlleur: 0.1,
+      largeur_controlleur: 0.05,
       hauteur_controlleur: 0.25,
       nb_divisions: 49,
       width_division: 0.005,
-      border_width: 0.02,
+      border_width: 0.01,
       modes: [
         { nb_divisions: 13 },
         { nb_divisions: 25 },
