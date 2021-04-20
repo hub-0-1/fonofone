@@ -257,12 +257,22 @@
           stroke-width: @border_width;
         }
 
-        .image {
-          opacity: 0.35;
+        .image-bg {
           fill: @mauve2;
+          fill-opacity: 0.35;
 
           &.actif {
-            opacity: 1;
+            fill-opacity: 1;
+          }
+        }
+
+        .image {
+          stroke: @blanc;
+          stroke-width: @border_width;
+          fill-opacity: 0.35;
+
+          &.actif {
+            fill-opacity: 1;
           }
         }
       }
