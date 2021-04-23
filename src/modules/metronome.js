@@ -5,8 +5,12 @@ import Magnet from "../images/icon-magnet.svg";
 import MagnetActif from "../images/icon-magnet-actif.svg";
 import Power from "../images/icon-power.svg";
 import PowerActif from "../images/icon-power-actif.svg";
-import IconeMetronome from "../images/metronome.svg";
-import IconeMetronomeFou from "../images/metronome-fou.svg";
+import IconeMetronome from "../images/metronome.png";
+import IconeMetronomeFou from "../images/metronome-fou.png";
+import S1_1 from "../images/1_1.png";
+import S2_1 from "../images/2_1.png";
+import S3_1 from "../images/3_1.png";
+import S5_1 from "../images/5_1.png";
 
 const Metronome = Globales.modules.metronome;
 const min_x = Metronome.border_width / 2;
@@ -50,8 +54,6 @@ export default {
 
       // BPN
       else {
-        console.log(coords);
-
         // Recentrer les coordonnees de drag
         let x = coords.x - Metronome.centre_cercle.x;
         let y = coords.y - Metronome.centre_cercle.y;
@@ -79,6 +81,10 @@ export default {
     },
     update: function () {
       this.$emit('update:valeur', { actif: this.module_actif, syncope: this.syncope, aleatoire: this.aleatoire, bpm: this.bpm });
+    },
+    update_syncope: function (val) {
+      this.syncope = val;
+      this.update();
     },
     update_bpm_manuel: function (e) {
       if(isInt(e.target.value)) {
@@ -115,19 +121,28 @@ export default {
   template: `
     <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Metronome.largeur_module} ${Metronome.hauteur_module}" preserveAspectRatio="none" ref="canvas">
-        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.2"/>
-        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.15"/>
-        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.1"/>
-        <path d="${describeArc(0.5, 0.4, 0.3, (Metronome.taille_arc / -2), (Metronome.taille_arc / 2))}" class="arc" ref="arc"/>
-        <path d="${describeArc(0.5, 0.4, 0.3, (Metronome.taille_arc / -2), (Metronome.taille_arc / 2))}" class="bg-arc controlleur" ref="controlleur_bg_arc"/>
+        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.18"/>
+        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.145"/>
+        <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.09"/>
+        <path d="${describeArc(Metronome.centre_cercle.x, Metronome.centre_cercle.y, 0.27, (Metronome.taille_arc / -2), (Metronome.taille_arc / 2))}" class="arc" ref="arc"/>
+        <path d="${describeArc(Metronome.centre_cercle.x, Metronome.centre_cercle.y, 0.27, (Metronome.taille_arc / -2), (Metronome.taille_arc / 2))}" class="bg-arc controlleur" ref="controlleur_bg_arc"/>
         <circle class="curseur-bpm controlleur" r="${Metronome.taille_cercle_controlleur}" ref="controlleur_bpm"/>
 
-        <rect class="ligne-syncope" x="0" width="${Metronome.largeur_module}" y="${Metronome.y_relatif_centre_syncope}" height="${Metronome.taille_centre_controlleur}" rx="0.02"/>
-        <rect class="hidden bg-syncope controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_syncope - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_syncope"/>
-        <rect class="curseur-syncope controlleur" :x="x_syncope" width="${Metronome.largeur_controlleur}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_syncope - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" rx="0.02" ref="controlleur_syncope"/>
+        <rect class="image-bg" :class="{actif: syncope == 1/2}" x="0" width="0.25" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
+        <rect class="image-bg" :class="{actif: syncope == 1/3}" x="0.25" width="0.25" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
+        <rect class="image-bg" :class="{actif: syncope == 1/4}" x="0.5" width="0.25" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
+        <rect class="image-bg" :class="{actif: syncope == 1/6}" x="0.75" width="0.25" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
+        <rect class="bordure-images" x="${Metronome.border_width / 2}" width="${Metronome.largeur_module - Metronome.border_width}" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" rx="0.02" />
+        <image preserveAspectRatio="none" href="${S1_1}" @click="update_syncope(1/2)" x="0.035" width="0.18" y="${Metronome.y_relatif_centre_syncope - (Metronome.hauteur_syncope / 2 - Metronome.border_width / 2)}" height="${Metronome.hauteur_syncope * 0.7}" />
+        <image preserveAspectRatio="none" href="${S2_1}" @click="update_syncope(1/3)" x="${0.035 + 0.25}" width="0.18" y="${Metronome.y_relatif_centre_syncope - (Metronome.hauteur_syncope / 2 - Metronome.border_width / 2)}" height="${Metronome.hauteur_syncope * 0.7}" />
+        <image preserveAspectRatio="none" href="${S3_1}" @click="update_syncope(1/4)" x="${0.035 + 0.5}" width="0.18" y="${Metronome.y_relatif_centre_syncope - (Metronome.hauteur_syncope / 2 - Metronome.border_width / 2)}" height="${Metronome.hauteur_syncope * 0.7}" />
+        <image preserveAspectRatio="none" href="${S5_1}" @click="update_syncope(1/6)" x="${0.035 + 0.75}" width="0.18" y="${Metronome.y_relatif_centre_syncope - (Metronome.hauteur_syncope / 2 - Metronome.border_width / 2)}" height="${Metronome.hauteur_syncope * 0.7}" />
+        <rect class="milieu-images" x="${1 * Metronome.largeur_module / 4 - Metronome.border_width / 2}" width="${Metronome.border_width}" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
+        <rect class="milieu-images" x="${2 * Metronome.largeur_module / 4 - Metronome.border_width / 2}" width="${Metronome.border_width}" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
+        <rect class="milieu-images" x="${3 * Metronome.largeur_module / 4 - Metronome.border_width / 2}" width="${Metronome.border_width}" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
 
-        <image href="${IconeMetronome}" x="0" width="${Metronome.largeur_module / 10}" y="0.5" height="${Metronome.largeur_module / 10}" />
-        <image href="${IconeMetronomeFou}" x="0.9" width="${Metronome.largeur_module / 10}" y="0.5" height="${Metronome.largeur_module / 10}" />
+        <image href="${IconeMetronome}" x="0" width="${Metronome.largeur_module / 10}" y="${Metronome.y_relatif_image_aleatoire}" height="${Metronome.largeur_module / 10}" />
+        <image href="${IconeMetronomeFou}" x="0.9" width="${Metronome.largeur_module / 10}" y="${Metronome.y_relatif_image_aleatoire}" height="${Metronome.largeur_module / 10}" />
         <rect class="ligne-aleatoire" x="0" width="${Metronome.largeur_module}" y="${Metronome.y_relatif_centre_aleatoire}" height="${Metronome.taille_centre_controlleur}" rx="0.02"/>
         <rect class="hidden bg-aleatoire controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_aleatoire"/>
         <rect class="curseur-aleatoire controlleur" :x="x_aleatoire" width="${Metronome.largeur_controlleur}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" rx="0.02" ref="controlleur_aleatoire"/>

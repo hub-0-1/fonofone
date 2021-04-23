@@ -156,12 +156,10 @@ class Mixer {
     // Partie syncope
     if(this.parametres.syncope) {
 
-      var coeff = 2 * (this.parametres.syncope / 2.0);
-
       if(this.parametres.prochaine_syncope_courte){
-        interval = interval * (1 - coeff) +  interval * ((2/3) * coeff);
+        interval = interval * (1 - this.parametres.syncope + 0.5);
       } else {
-        interval = interval * (1 - coeff) +  interval * ((4/3) * coeff);
+        interval = interval * (this.parametres.syncope + 0.5);
       }
       this.parametres.prochaine_syncope_courte = !this.parametres.prochaine_syncope_courte;
     }

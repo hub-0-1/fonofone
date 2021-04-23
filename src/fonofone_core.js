@@ -102,7 +102,11 @@ export default {
           let archive = {
             parametres: this.configuration.parametres,
             modules: this.configuration.modules,
-            fichier: base64
+            fichier: base64,
+            sources: {
+              source1: {actif: true, parent: "local", fichier: base64},
+              source2: {actif: true, parent: "Sons humains", fichier: null}
+            }
           };
           resolve(JSON.stringify(archive));
         });
