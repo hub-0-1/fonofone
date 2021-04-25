@@ -166,6 +166,9 @@ export default {
         });
       }
     },
+    charger_dossier: function (dossier) {
+      console.log(dossier);
+    },
 
     // CONTROLLEURS
     force_play: function () {
@@ -316,7 +319,9 @@ export default {
     }
   },
   computed: {
-    waveform_id: function () { return `waveform-${this.id}`; }
+    waveform_id: function () { return `waveform-${this.id}`; },
+    liste_dossiers_sons: function () { return this.configuration.sources },
+    liste_sons: function () { return {} }
   },
   created: function () {
     this.mixer = new Mixer(this);
@@ -416,9 +421,14 @@ export default {
                 Liste des sons
               </h3>
               <main>
-                <ul>
-                  <li v-for="son in globales.sons" @click="charger_son(son)">
-                    <input @click.stop v-model="son.nom" type="text"/>
+                <ul class="dossiers">
+                  <li v-for="dossier in liste_dossiers_sons" @click="charger_dossier(dossier)">
+                    <span>{{ dossier }}</span>
+                  </li>
+                </ul>
+                <ul class="sons">
+                  <li v-for="son in liste_sons" @click="charger_son(son)">
+                    <input @click.stop v-model="son.nom" type="text" :disabled="false"/>
                   </li>
                 </ul>
                 <h3 class="titre">Importer un son</h3>
