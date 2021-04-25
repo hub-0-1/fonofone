@@ -157,10 +157,11 @@ class Mixer {
     if(this.parametres.syncope) {
 
       if(this.parametres.prochaine_syncope_courte){
-        interval = interval * (1 - this.parametres.syncope + 0.5);
+        interval = interval * (1 - this.parametres.syncope);
       } else {
-        interval = interval * (this.parametres.syncope + 0.5);
+        interval = interval * this.parametres.syncope;
       }
+      interval *= 2; // Pour balancer la reduction en %
       this.parametres.prochaine_syncope_courte = !this.parametres.prochaine_syncope_courte;
     }
 
