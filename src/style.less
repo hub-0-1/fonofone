@@ -66,6 +66,21 @@
         border-radius: @border_radius;
         overflow: auto;
 
+        .wrapper-filepond {
+          flex: 1;
+
+          .filepond--root {
+            height: 100%;
+            position: relative;
+            margin: 0;
+
+            .filepond--drop-label {
+              top: 50%;
+              translate: 0 -50%;
+            }
+          }
+        }
+
         h3 { 
           margin: 0;
           background-color: @charcoal;

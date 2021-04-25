@@ -338,7 +338,7 @@ export default {
       }
     });
 
-    this.init_filepond(this.$refs.filepond_son, (fichier) => { 
+    this.init_filepond(this.$refs.filepond_archive, (fichier) => { 
 
       this.mode_importation = false;
 
@@ -351,6 +351,7 @@ export default {
         this.mode_importation = false;
       }
     });
+
     // Mode affichage
     /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
         this.mode_affichage = "grille";
@@ -370,7 +371,7 @@ export default {
           <img src="${Import}" @click="mode_importation = !mode_importation">
           <img src="${Export}" @click="exporter">
         </menu>
-        <section v-show="!mode_selection_son" class="app-fonofone">
+        <section v-show="!mode_selection_son && !mode_importation" class="app-fonofone">
           <header>
             <div class="nom-archive">
               <img src="${Folder}" @click="mode_selection_son = !mode_selection_son"/>
@@ -403,7 +404,7 @@ export default {
           <div class="background-importation">
             <div class="fenetre-importation">
               <h3 class="titre">Importer une archive Fonofone</h3>
-              <div ref="filepond_archive"></div>
+              <div class="wrapper-filepond" ref="filepond_archive"></div>
             </div>
           </div>
         </div>
