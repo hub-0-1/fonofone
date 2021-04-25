@@ -422,7 +422,7 @@ export default {
                   </li>
                 </ul>
                 <h3 class="titre">Importer un son</h3>
-                <div ref="filepond_son"></div>
+                <div class="wrapper-filepond" ref="filepond_son"></div>
               </main>
               <h3 class="titre" @click="toggle_enregistrement" :class="{actif: enregistrement.encours}"><img src="${Micro}">Enregistrer un son</h3>
             </div>
