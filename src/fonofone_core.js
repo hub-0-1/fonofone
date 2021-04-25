@@ -430,7 +430,7 @@ export default {
                 </ul>
                 <ul class="sons">
                   <li v-for="son in liste_sons" @click="charger_son(son)">
-                    <input @click.stop v-model="son.nom" type="text" :disabled="false"/>
+                    <input @click.stop :value="son.id" type="text" :disabled="!son.local"/>
                   </li>
                 </ul>
                 <h3 class="titre">Importer un son</h3>
