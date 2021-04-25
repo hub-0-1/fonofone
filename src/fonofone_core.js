@@ -75,7 +75,7 @@ export default {
       },
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
-      tracks_actives: false,
+      mode_selection_son: false,
       enregistrement: {
         encours: false,
         enregistreur: null
@@ -149,7 +149,7 @@ export default {
     charger_son: function (son) {
       if(son.blob) {
         this.mixer.charger_blob(son.blob).then(() => {
-          this.mode_importation = false;
+          this.mode_selection_son = false;
           this.reset_selecteur();
         });
       }
@@ -159,7 +159,7 @@ export default {
         }).then((blob) => {
           return this.mixer.charger_blob(blob);
         }).then(() => {
-          this.mode_importation = false;
+          this.mode_selection_son = false;
           this.reset_selecteur();
         }).catch((e) => {
           throw e;
@@ -190,7 +190,7 @@ export default {
       this.mixer.set_sens(this.configuration.parametres.sens);
     },
     toggle_pause: function () {
-      this.playing ? this.arreter() : this.jouer();
+      this.mixer.etat.jouer ? this.arreter() : this.jouer();
     },
     jouer: function () {
       this.mixer.toggle_pause();
@@ -240,8 +240,6 @@ export default {
       let nb_colonnes = Math.ceil(mixer.offsetWidth / Globales.max_width_colonne);
       mixer.style.columnCount = nb_colonnes;
 
-      this.$refs.metronome[0].update_font_size_bpm();
-
       // Wavesurfer
       if(this.wavesurfer) {
         this.wavesurfer.destroy();
@@ -276,6 +274,8 @@ export default {
           color: '#323232' 
         });
         this.paint_regions();
+
+        this.$refs.metronome[0].update_font_size_bpm();
       });
     },
     paint_regions: function () {
@@ -308,14 +308,6 @@ export default {
     }
   },
   watch: {
-    mixer: {
-      handler: function (mixer) { 
-        this.tracks_actives = (mixer.tracks.length > 0 
-          || (mixer.parametres.metronome_actif && mixer.parametres.loop)
-        );
-      },
-      deep: true
-    },
     'configuration.modules.selecteur': {
       handler: function (config) {
         this.paint_regions();
@@ -324,8 +316,7 @@ export default {
     }
   },
   computed: {
-    waveform_id: function () { return `waveform-${this.id}`; },
-    playing: function () { return this.tracks_actives }
+    waveform_id: function () { return `waveform-${this.id}`; }
   },
   created: function () {
     this.mixer = new Mixer(this);
@@ -333,7 +324,7 @@ export default {
   mounted: function () {
 
     // Initialisation de Filepond par les mixins
-    this.init_filepond(this.$refs.filepond, (fichier) => { 
+    this.init_filepond(this.$refs.filepond_son, (fichier) => { 
 
       // Importation de nouveau fichier audio
       if(fichier.fileType.match(/audio|webm/)) {
@@ -341,22 +332,25 @@ export default {
           this.globales.sons.push({ nom: fichier.filenameWithoutExtension, blob: blob });
         }); 
       }
-
-      // Importation de fichier fonofone
-      else if (fichier.fileExtension == "fnfn") {
-        this.mode_importation = false;
-        this.importer(fichier.file).then((configuration) => {
-          this.appliquer_configuration(configuration);
-        });
-      }
-
-      // Fichier non valide
       else {
-        this.mode_importation = false;
+        this.mode_selection_son = false;
         throw "type de fichier non valide";
       }
     });
 
+    this.init_filepond(this.$refs.filepond_son, (fichier) => { 
+
+      this.mode_importation = false;
+
+      if (fichier.fileExtension == "fnfn") {
+        this.importer(fichier.file).then((configuration) => {
+          this.appliquer_configuration(configuration);
+        });
+      } else {
+        throw "type de fichier non valide";
+        this.mode_importation = false;
+      }
+    });
     // Mode affichage
     /*if(this.$refs.fonofone.offsetWidth > this.globales.min_width_grille) {
         this.mode_affichage = "grille";
@@ -376,16 +370,16 @@ export default {
           <img src="${Import}" @click="mode_importation = !mode_importation">
           <img src="${Export}" @click="exporter">
         </menu>
-        <section v-show="!mode_importation" class="app-fonofone">
+        <section v-show="!mode_selection_son" class="app-fonofone">
           <header>
             <div class="nom-archive">
-              <img src="${Folder}" @click="mode_importation = !mode_importation"/>
-              <input v-model="configuration.parametres.nom" class="texte-nom-archive" placeholder="Archive"/>
+              <img src="${Folder}" @click="mode_selection_son = !mode_selection_son"/>
+              <input v-model="configuration.parametres.nom" class="titre texte-nom-archive" placeholder="Archive"/>
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
             <div class="menu-controlleurs">
               <div class="gauche">
-                <img :src="playing ? '${JouerActif}' : '${Jouer}'" class="icone pause" :class="{actif: playing}" @click="toggle_pause"/>
+                <img :src="mixer.etat.jouer ? '${JouerActif}' : '${Jouer}'" class="icone pause" :class="{actif: mixer.etat.jouer}" @click="toggle_pause"/>
                 <img v-if="fonoimage.integration" src="${Solo}" class="icone solo" :class="{actif: fonoimage.solo}" @click="toggle_solo"/>
                 <img :src="mixer.etat.loop ? '${LoopActif}' : '${Loop}'" class="icone loop" @click="toggle_loop"/>
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
@@ -408,17 +402,28 @@ export default {
         <div v-show="mode_importation" class="ecran-importation">
           <div class="background-importation">
             <div class="fenetre-importation">
-              <h3>Liste des sons</h3>
+              <h3 class="titre">Importer une archive Fonofone</h3>
+              <div ref="filepond_archive"></div>
+            </div>
+          </div>
+        </div>
+        <div v-show="mode_selection_son" class="ecran-selection-son">
+          <div class="background-selection-son">
+            <div class="fenetre-selection-son">
+              <h3 class="titre">
+                <img src="${Folder}" @click="mode_selection_son = !mode_selection_son"/>
+                Liste des sons
+              </h3>
               <main>
                 <ul>
                   <li v-for="son in globales.sons" @click="charger_son(son)">
                     <input @click.stop v-model="son.nom" type="text"/>
                   </li>
                 </ul>
-                <h3>Importation</h3>
-                <div ref="filepond"></div>
+                <h3 class="titre">Importer un son</h3>
+                <div ref="filepond_son"></div>
               </main>
-              <h3 @click="toggle_enregistrement" :class="{actif: enregistrement.encours}"><img src="${Micro}">Enregistrer un son</h3>
+              <h3 class="titre" @click="toggle_enregistrement" :class="{actif: enregistrement.encours}"><img src="${Micro}">Enregistrer un son</h3>
             </div>
           </div>
         </div>

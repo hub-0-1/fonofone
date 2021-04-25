@@ -52,7 +52,7 @@ export default {
 
       }
 
-      // BPN
+      // BPM
       else {
         // Recentrer les coordonnees de drag
         let x = coords.x - Metronome.centre_cercle.x;
@@ -101,6 +101,7 @@ export default {
     },
     update_font_size_bpm: function () {
       this.font_size_bpm = `${this.$refs.text.offsetHeight}px`;
+      this.bpm = this.bpm; // Hack : set bpm dirty pour forcer affichage quand on charge un son
     }
   },
   computed: {

@@ -39,19 +39,26 @@
     }
   }
 
-  .ecran-importation {
+  .titre {
+    padding: 10px;
+    color: @blanc;
+    font-weight: normal;
+    font-size: 1em;
+  }
+
+  .ecran-selection-son, .ecran-importation {
     position: relative;
     margin: 10px;
     height: calc(100% - 40px); // margin-top, margin-bottom, padding-bottom, padding-top
 
     background-color: white;
 
-    .background-importation {
+    .background-selection-son, .background-importation {
       background-color: rgba(0,0,0,0.6);
       width: 100%;
       height: 100%;
 
-      .fenetre-importation {
+      .fenetre-selection-son, .fenetre-importation {
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -60,13 +67,9 @@
         overflow: auto;
 
         h3 { 
-          padding: 10px;
           margin: 0;
           background-color: @charcoal;
-          color: @blanc;
-          font-weight: normal;
           display: flex;
-          align-items: center;
 
           img {
             margin-right: 10px;
@@ -128,19 +131,16 @@
 
       .nom-archive {
         display: flex;
+        width: min-content;
 
         img {
           height: 20px;
         }
 
         .texte-nom-archive {
+          padding: 0 10px;
           border: none;
           background: none;
-          color: @blanc;
-          font-size: 1em;
-          margin-left: 10px;
-          flex: 1;
-          width: 50%;
         }
       }
 
