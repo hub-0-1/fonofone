@@ -75,6 +75,7 @@ export default {
       },
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
+      dossier_importation: null,
       mode_selection_son: false,
       enregistrement: {
         encours: false,
@@ -167,6 +168,7 @@ export default {
       }
     },
     charger_dossier: function (dossier) {
+      this.dossier_importation = dossier;
       console.log(dossier);
     },
 
@@ -320,8 +322,8 @@ export default {
   },
   computed: {
     waveform_id: function () { return `waveform-${this.id}`; },
-    liste_dossiers_sons: function () { return this.configuration.sources },
-    liste_sons: function () { return {} }
+    liste_dossiers_sons: function () { return _.uniq(_.map(this.configuration.sources, source => source.dossier)); },
+    liste_sons: function () { return _.filter(this.configuration.sources, {dossier: this.dossier_importation}); }
   },
   created: function () {
     this.mixer = new Mixer(this);
