@@ -103,11 +103,8 @@ export default {
           let archive = {
             parametres: this.configuration.parametres,
             modules: this.configuration.modules,
+            sources: this.configuration.sources,
             fichier: base64,
-            sources: {
-              source1: {actif: true, parent: "local", fichier: base64},
-              source2: {actif: true, parent: "Sons humains", fichier: null}
-            }
           };
           resolve(JSON.stringify(archive));
         });
@@ -124,7 +121,10 @@ export default {
         }
 
         this.configuration = JSON.parse(fichier);
-        fetch(this.configuration.fichier).then((response) => {
+        let source_active = _.find(this.configuration.sources, "actif");
+
+        // TODO Traiter cas url
+        fetch(source_active.fichier).then((response) => {
           return response.blob();
         }).then((blob) => {
           return this.mixer.charger_blob(blob);
