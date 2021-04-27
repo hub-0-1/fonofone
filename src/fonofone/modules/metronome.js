@@ -1,8 +1,6 @@
 import Utils from "./_utils.js";
 import Globales from "../globales.js";
 
-import Magnet from "../../images/icon-magnet.svg";
-import MagnetActif from "../../images/icon-magnet-actif.svg";
 import Power from "../../images/icon-power.svg";
 import PowerActif from "../../images/icon-power-actif.svg";
 import IconeMetronome from "../../images/metronome.png";
@@ -13,14 +11,14 @@ import S3_1 from "../../images/3_1.png";
 import S5_1 from "../../images/5_1.png";
 
 const Metronome = Globales.modules.metronome;
-const min_x = Metronome.border_width / 2;
-const max_x = Metronome.largeur_module - Metronome.largeur_controlleur - Metronome.border_width / 2;
+const min_x = Metronome.border_width;
+const max_x = Metronome.largeur_module - Metronome.largeur_controlleur - Metronome.border_width;
 
 // TODO terminer le drag dans les zones du metronome
 export default {
   mixins: [Utils],
   data: function () {
-    return { aleatoire: null, bpm: null, syncope: null, aimant: false, font_size_bpm: "medium", x_aleatoire: 0, x_syncope: 0 };
+    return { aleatoire: null, bpm: null, syncope: null, font_size_bpm: "medium", x_aleatoire: 0 };
   },
   methods: {
     charger_props: function () {
@@ -30,7 +28,6 @@ export default {
       this.x_aleatoire = (this.aleatoire * (max_x - min_x)) + min_x;
 
       this.syncope = this.valeur.syncope;
-      this.x_syncope = (this.syncope * (max_x - min_x)) + min_x;
 
       if(this._isMounted) { this.update_position_point_arc(); }
     },
@@ -42,14 +39,6 @@ export default {
         let x_aleatoire = coords.x - (Metronome.largeur_controlleur / 2);
         this.x_aleatoire = this.borner(x_aleatoire, min_x, max_x);
         this.aleatoire = (this.x_aleatoire - min_x) / (max_x - min_x);
-      }
-
-      // Syncope
-      else if(this.controlleur_actif == this.$refs.controlleur_syncope || this.controlleur_actif == this.$refs.controlleur_bg_syncope) {
-        let x_syncope = (this.aimant ? this.arrondir(coords.x, Metronome.nb_divisions + 2) : coords.x) - (Metronome.largeur_controlleur / 2);
-        this.x_syncope = this.borner(x_syncope, min_x, max_x);
-        this.syncope = (this.x_syncope - min_x) / (max_x - min_x);
-
       }
 
       // BPM
@@ -108,9 +97,6 @@ export default {
     x_controlleur_aleatoire: function () {
       return this.aleatoire * (1 - Metronome.largeur_controlleur_aleatoire);
     },
-    x_controlleur_syncope: function () {
-      return this.syncope * (1 - Metronome.largeur_controlleur_syncope);
-    },
     text_bpm: function () {
       return Math.round(Math.pow(this.bpm, 2) * (Metronome.max_bpm - Metronome.min_bpm) + Metronome.min_bpm);
     }
@@ -143,8 +129,8 @@ export default {
         <rect class="milieu-images" x="${3 * Metronome.largeur_module / 4 - Metronome.border_width / 2}" width="${Metronome.border_width}" y="${Metronome.y_relatif_centre_syncope - Metronome.hauteur_syncope / 2}" height="${Metronome.hauteur_syncope}" />
 
         <image href="${IconeMetronome}" x="0" width="${Metronome.largeur_module / 10}" y="${Metronome.y_relatif_image_aleatoire}" height="${Metronome.largeur_module / 10}" />
-        <image href="${IconeMetronomeFou}" x="0.9" width="${Metronome.largeur_module / 10}" y="${Metronome.y_relatif_image_aleatoire}" height="${Metronome.largeur_module / 10}" />
-        <rect class="ligne-aleatoire" x="0" width="${Metronome.largeur_module}" y="${Metronome.y_relatif_centre_aleatoire}" height="${Metronome.taille_centre_controlleur}" rx="0.02"/>
+        <image href="${IconeMetronomeFou}" x="0.85" width="0.15" y="0.74" height="0.12" />
+        <rect class="ligne-aleatoire" x="0" width="${Metronome.largeur_module}" y="${Metronome.y_relatif_centre_aleatoire - Metronome.taille_centre_controlleur / 2}" height="${Metronome.taille_centre_controlleur}" rx="0.02"/>
         <rect class="hidden bg-aleatoire controlleur" x="0" width="${Metronome.largeur_module}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" ref="controlleur_bg_aleatoire"/>
         <rect class="curseur-aleatoire controlleur" :x="x_aleatoire" width="${Metronome.largeur_controlleur}" y="${Metronome.hauteur_module * Metronome.y_relatif_centre_aleatoire - Metronome.hauteur_controlleur / 2}" height="${Metronome.hauteur_controlleur}" rx="0.02" ref="controlleur_aleatoire"/>
       </svg>
@@ -152,7 +138,6 @@ export default {
 
       <template v-slot:footer>
         <img class="power" :src="module_actif ? '${PowerActif}' : '${Power}'" alt="${Power}" @click="toggle_actif">
-        <img class="magnet" :src="aimant ? '${MagnetActif}' : '${Magnet}'" alt="${Magnet}" @click="aimant = !aimant">
       </template>
     </generique>
   `
