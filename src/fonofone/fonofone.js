@@ -27,7 +27,6 @@ import Vitesse from './modules/vitesse.js';
 
 // Configuration de base pour l'application
 import Globales from './globales.js';
-import Config0 from './configurations/Fonofone.fnfn';
 
 // Icones
 import './style.less';
@@ -95,7 +94,7 @@ export default {
     exporter: function () {
 
       // Init
-      let sources_locales_selectionnees = this.$refs.sources_export.querySelectorAll("input:checked");
+      let sources_locales_selectionnees = _.map(this.$refs.sources_export.querySelectorAll("input:checked"), s => s.name);
       let exp = {
         parametres: this.configuration.parametres,
         modules: this.configuration.modules,
@@ -103,12 +102,12 @@ export default {
       };
 
       // Menage dans les sources
-      _.each(sources_locales_selectionnees, (s) => { console.log(s) });
+      exp.sources = _.filter(exp.sources, (s) => { return (!s.local || sources_locales_selectionnees.includes(s.id)) })
 
       // Sauvegarde
       saveAs(new Blob([JSON.stringify(exp)]), `${this.configuration.parametres.nom}.fnfn`);
 
-      this.toggle_ecran("exportation");
+      this.toggle_ecran("normal");
     },
     importer: function (fichier) {
       return new Promise (async (resolve) => {
@@ -232,12 +231,17 @@ export default {
       this.ecran = ecran == this.ecran ? "normal" : ecran;
     },
     reset: function () {
-      this.importer(JSON.stringify(Config0)).then(() => {
+      fetch(Globales.configuration_primitive).then((response) => {
+        return response.blob();
+      }).then((archive) => {
+        return this.importer(archive);
+      }).then(() => {
         _.each(this.configuration.modules, (v, key) => {
           let module = this.$refs[key][0];
           if(module.charger_props) module.charger_props();
-          this.toggle_ecran('normal');
         });
+        this.toggle_ecran('normal');
+        this.paint();
       });
     },
 

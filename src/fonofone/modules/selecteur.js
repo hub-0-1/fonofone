@@ -92,7 +92,6 @@ export default {
     this.cote_droit.y0 = 0 - (this.cote_droit.pente * (Selecteur.largeur_module / 2)); // Pointe en haut
     this.mixer_a_svg();
     this.update_position_controlleur();
-    console.log(this.debut, this.longueur);
   },
   template: `
     <generique :module="$t('modules.selecteur')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
