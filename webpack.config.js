@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    fonofone: './src/fonofone.js',
-    fonoimage: './src/fonoimage.js'
+    fonofone: './src/fonofone/wrapper_fonofone.js',
+    fonoimage: './src/fonoimage/fonoimage.js'
   },
   output: {
     filename: '[name].js',

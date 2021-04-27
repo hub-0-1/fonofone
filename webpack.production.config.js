@@ -1,9 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/fonofone.js',
+  entry: {
+    fonofone: './src/fonofone/wrapper_fonofone.js',
+    fonoimage: './src/fonoimage/fonoimage.js'
+  },
   output: {
-    filename: 'fonofone.min.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
