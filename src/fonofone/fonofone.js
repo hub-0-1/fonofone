@@ -34,7 +34,7 @@ import './style.less';
 import Record from '../images/record.svg';
 import Reload from '../images/reload.png';
 import Folder from '../images/icon-folder.svg';
-import Fleche from '../images/arrow.svg';
+import FlecheDroite from '../images/fleche-droite.svg';
 import Jouer from '../images/jouer.svg';
 import JouerActif from '../images/jouer-actif.svg';
 import Loop from '../images/btn-loop.svg';
@@ -67,6 +67,7 @@ export default {
   data: function () {
     return {
       configuration: {parametres:{}},
+      ecran: "normal",
       globales: Globales,
       fonoimage: {
         integration: (this.integration_fonoimage || false),
@@ -146,7 +147,7 @@ export default {
       });
     },
     charger_dossier: function (dossier) {
-      this.dossier_importation = dossier;
+      this.dossier_importation = this.dossier_importation == dossier ? null : dossier;
     },
     ajouter_son: async function (blob, id) {
       this.configuration.sources.push({
@@ -211,6 +212,9 @@ export default {
     toggle_mode_fonoimage: function () {
       this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
       this.$emit('update:mode', this.fonoimage.mode);
+    },
+    toggle_ecran: function (ecran) {
+      this.ecran = ecran == this.ecran ? "normal" : ecran;
     },
     reset: function () {
       this.importer(JSON.stringify(Config0)).then(() => {
@@ -318,7 +322,7 @@ export default {
   },
   mounted: function () {
 
-    // Initialisation de Filepond par les mixins
+    // Initialisation de l'importation
     this.init_filepond(this.$refs.filepond_son, (fichier) => { 
 
       // Importation de nouveau fichier audio
@@ -352,8 +356,8 @@ export default {
 
     window.addEventListener("resize", this.paint);
 
-    this.importer(this.archive).then((configuration) => {
-      this.appliquer_configuration(configuration);
+    this.importer(this.archive).then(() => {
+      this.appliquer_configuration(this.configuration);
       this.mixer.etat.chargement = false;
     });
   },
@@ -361,13 +365,13 @@ export default {
       <div :id="id" class="fonofone" ref="fonofone">
         <menu>
           <img src="${Reload}" class="invert" @click="reset">
-          <img src="${Import}" @click="mode_importation = !mode_importation">
+          <img src="${Import}" @click="toggle_ecran('importation')">
           <img src="${Export}" @click="exporter">
         </menu>
-        <section v-show="!mode_selection_son && !mode_importation" class="app-fonofone">
+        <section v-show="ecran == 'normal'" class="ecran app-fonofone">
           <header>
             <div class="nom-archive">
-              <img src="${Folder}" @click="mode_selection_son = !mode_selection_son"/>
+              <img src="${Folder}" @click="toggle_ecran('selection_son')"/>
               <input v-model="configuration.parametres.nom" class="titre texte-nom-archive" placeholder="Archive"/>
             </div>
             <div :id="waveform_id" class="wavesurfer"></div>
@@ -393,39 +397,36 @@ export default {
             </div>
           </main>
         </section>
-        <div v-show="mode_importation" class="ecran-importation">
-          <div class="background-importation">
-            <div class="fenetre-importation">
-              <h3 class="titre">Importer une archive Fonofone</h3>
-              <div class="wrapper-filepond" ref="filepond_archive"></div>
-            </div>
+        <section v-show="ecran == 'importation'" class="ecran">
+          <div class="fenetre-importation">
+            <h3 class="titre">Importer une archive Fonofone</h3>
+            <div class="wrapper-filepond" ref="filepond_archive"></div>
           </div>
-        </div>
-        <div v-show="mode_selection_son" class="ecran-selection-son">
-          <div class="background-selection-son">
-            <div class="fenetre-selection-son">
-              <h3 class="titre">
-                <img src="${Folder}" @click="mode_selection_son = !mode_selection_son"/>
-                Liste des sons
-              </h3>
-              <main>
-                <ul class="dossiers">
-                  <li v-for="dossier in liste_dossiers_sons" @click="charger_dossier(dossier)">
-                    <span>{{ dossier }}</span>
-                  </li>
-                </ul>
-                <ul class="sons">
-                  <li v-for="source in liste_sources" @click="charger_source(source)">
-                    <input @click.stop :value="source.id" type="text" :disabled="!source.local"/>
-                  </li>
-                </ul>
-                <h3 class="titre">Importer un son</h3>
-                <div class="wrapper-filepond" ref="filepond_son"></div>
-              </main>
-              <h3 class="titre" @click="toggle_enregistrement" :class="{actif: enregistrement.encours}"><img src="${Micro}">Enregistrer un son</h3>
-            </div>
+        </section>
+        <section v-show="ecran == 'selection_son'" class="ecran">
+          <div class="fenetre-selection-son">
+            <h3 class="titre">
+              <img src="${Folder}" @click="toggle_ecran('selection_son')"/>
+              Liste des sons
+            </h3>
+            <main>
+              <ul class="dossiers">
+                <li v-for="dossier in liste_dossiers_sons" @click="charger_dossier(dossier)">
+                  <span>{{ dossier }}</span>
+                  <img src="${FlecheDroite}" alt="fleche de selection" :class="{actif: dossier_importation == dossier}"/>
+                </li>
+              </ul>
+              <ul class="sons">
+                <li v-for="source in liste_sources" @click="charger_source(source)">
+                  <input @click.stop :value="source.id" type="text" :disabled="!source.local"/>
+                </li>
+              </ul>
+              <h3 class="titre">Importer un son</h3>
+              <div class="wrapper-filepond" ref="filepond_son"></div>
+            </main>
+            <h3 class="titre" @click="toggle_enregistrement" :class="{actif: enregistrement.encours}"><img src="${Micro}">Enregistrer un son</h3>
           </div>
-        </div>
+        </section>
       </div>`
 }
 
