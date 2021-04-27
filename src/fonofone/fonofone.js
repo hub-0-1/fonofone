@@ -93,22 +93,6 @@ export default {
     // IMPORT / EXPORT
     exporter: function () {
       return saveAs(new Blob([JSON.stringify(this.configuration)]), `${this.configuration.parametres.nom}.fnfn`);
-      this.serialiser().then((archive) => { 
-        saveAs(new Blob([JSON.stringify(this.configuration)]), `${this.configuration.parametres.nom}.fnfn`);
-      });
-    },
-    serialiser: function () {
-      return new Promise((resolve) => {
-        let audio_blob = new Blob([toWav(this.mixer.audio_buffer)]);
-        blob2base64(audio_blob).then((base64) => {
-          let archive = {
-            parametres: this.configuration.parametres,
-            modules: this.configuration.modules,
-            sources: this.configuration.sources
-          };
-          resolve(JSON.stringify(archive));
-        });
-      });
     },
     importer: function (fichier) {
       return new Promise (async (resolve) => {
@@ -120,11 +104,8 @@ export default {
           });
         }
 
-        console.log(fichier);
         this.configuration = JSON.parse(fichier);
-        let source_active = _.find(this.configuration.sources, "actif");
-
-        this.charger_source(source_active).then(() => {
+        this.charger_source(this.source_active()).then(() => {
           this.paint();
           resolve(this.configuration);
         });
@@ -167,9 +148,9 @@ export default {
     charger_dossier: function (dossier) {
       this.dossier_importation = dossier;
     },
-    ajouter_son: async function (blob, nom) {
+    ajouter_son: async function (blob, id) {
       this.configuration.sources.push({
-        id: (nom || Date.now()),
+        id: (id || Date.now()),
         actif: false,
         local: true,
         dossier: "local",
@@ -295,14 +276,13 @@ export default {
 
     // OUTILS
     crop: function () {
-
-      // TODO creer un nouveau son dans la liste
-      //let audio_blob = new Blob([toWav(this.mixer.audio_buffer)]);
-      //blob2base64(audio_blob).then((base64) => {
-      
       this.mixer.crop();
       this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
       this.reset_selecteur();
+      this.ajouter_son(new Blob([toWav(this.mixer.audio_buffer)]), this.source_active().id + "_crop");
+    },
+    source_active: function () {
+      return _.find(this.configuration.sources, "actif");
     },
     get_enregistreur: function () {
       return new Promise ((resolve) => {

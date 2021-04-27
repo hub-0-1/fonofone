@@ -6,9 +6,6 @@ import PowerActif from "../../images/icon-power-actif.svg";
 import ReverbPetit from "../../images/reverb-petit.png";
 import ReverbGrand from "../../images/reverb-grand.png";
 
-import ImpulsePetit from "../donnees/impulse/masonic_lodge_1.wav";
-import ImpulseGrand from "../donnees/impulse/parking_garage_2.wav";
-
 const Reverberation = Globales.modules.reverberation;
 const min_x = Reverberation.border_width / 2;
 const max_x = Reverberation.largeur_module - Reverberation.largeur_controlleur - Reverberation.border_width / 2;
@@ -52,25 +49,25 @@ export default {
         <rect class="curseur controlleur" :x="x" width="${Reverberation.largeur_controlleur}" y="${Reverberation.hauteur_module * Reverberation.y_relatif_centre_controlleur - Reverberation.hauteur_controlleur / 2}" height="${Reverberation.hauteur_controlleur}" rx="0.02" ref="controlleur_curseur"/>
 
         <rect class="bordure-images" x="${Reverberation.largeur_module / 2 - Reverberation.largeur_image}" width="${Reverberation.largeur_image * 2}" y="0.3" height="${Reverberation.hauteur_image}" rx="0.02" />
-        <rect class="image-bg" :class="{actif: url == '${ImpulsePetit}'}" 
+        <rect class="image-bg" :class="{actif: url == '${Reverberation.sons[0]}'}" 
           x="${Reverberation.largeur_module / 2 - Reverberation.largeur_image + Reverberation.border_width / 2}" 
           width="${Reverberation.largeur_image - Reverberation.border_width}" 
           y="${0.3 + Reverberation.border_width / 2}" 
           height="${Reverberation.hauteur_image - Reverberation.border_width}" 
         />
-        <image preserveAspectRatio="none" href="${ReverbPetit}" class="image" :class="{actif: url == '${ImpulsePetit}'}" @click="update_son('${ImpulsePetit}')"
+        <image preserveAspectRatio="none" href="${ReverbPetit}" class="image" :class="{actif: url == '${Reverberation.sons[0]}'}" @click="update_son('${Reverberation.sons[0]}')"
           x="${Reverberation.largeur_module / 2 - Reverberation.largeur_image + Reverberation.border_width / 2}" 
           width="${Reverberation.largeur_image - Reverberation.border_width}" 
           y="${0.3 + Reverberation.border_width / 2}" 
           height="${Reverberation.hauteur_image - Reverberation.border_width}" 
         />
-        <rect class="image-bg" :class="{actif: url == '${ImpulseGrand}'}" 
+        <rect class="image-bg" :class="{actif: url == '${Reverberation.sons[1]}'}" 
           x="${Reverberation.largeur_module / 2 + Reverberation.border_width / 2}" 
           width="${Reverberation.largeur_image - Reverberation.border_width}" 
           y="${0.3 + Reverberation.border_width / 2}" 
           height="${Reverberation.hauteur_image - Reverberation.border_width}" 
         />
-        <image preserveAspectRatio="none" href="${ReverbGrand}" class="image" :class="{actif: url == '${ImpulseGrand}'}" @click="update_son('${ImpulseGrand}')"
+        <image preserveAspectRatio="none" href="${ReverbGrand}" class="image" :class="{actif: url == '${Reverberation.sons[1]}'}" @click="update_son('${Reverberation.sons[1]}')"
           x="${Reverberation.largeur_module / 2 + Reverberation.border_width / 2}" 
           width="${Reverberation.largeur_image - Reverberation.border_width}" 
           y="${0.3 + Reverberation.border_width / 2}" 

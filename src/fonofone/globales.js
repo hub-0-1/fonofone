@@ -4,10 +4,8 @@
  * doivent aussi etre definies dans src/modules/styles.less
  */
 
-import Impulse1 from "./donnees/impulse/masonic_lodge_1.wav";
-import Impulse2 from "./donnees/impulse/parking_garage_2.wav";
-import Impulse3 from "./donnees/impulse/scala_milan_opera_hall_3.wav";
-import Impulse4 from "./donnees/impulse/in_the_silo_revised_4.wav";
+import ImpulsePetit from "./donnees/impulse/masonic_lodge_1.wav";
+import ImpulseGrand from "./donnees/impulse/parking_garage_2.wav";
 
 export default {
   configuration_primitive: "https://hub-0-1.github.io/fonofone/src/fonofone/configurations/dauphin.fnfn",
@@ -66,12 +64,7 @@ export default {
       y_relatif_centre_images: 0.80,
       dimension_relative_img: 0.175,
       border_width: 0.02,
-      sons: [
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse1 },
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse2 },
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse3 },
-        { image: "https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png", son: Impulse4 }
-      ]
+      sons: [ImpulsePetit, ImpulseGrand]
     },
     vitesse: {
       largeur_module: 1,
@@ -95,12 +88,5 @@ export default {
       border_width: 0.02,
       hauteur_centre: 0.1
     }
-  },
-  sons: [{
-    nom: "Impulse",
-    url: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav"
-  }, {
-    nom: "Son 2",
-    url: "https://hub-0-1.github.io/fonofone/src/donnees/impulse.wav"
-  }]
+  }
 };
