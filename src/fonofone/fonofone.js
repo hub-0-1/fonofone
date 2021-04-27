@@ -315,7 +315,8 @@ export default {
   computed: {
     waveform_id: function () { return `waveform-${this.id}`; },
     liste_dossiers_sons: function () { return _.uniq(_.map(this.configuration.sources, source => source.dossier)); },
-    liste_sources: function () { return _.filter(this.configuration.sources, {dossier: this.dossier_importation}); }
+    liste_sources: function () { return _.filter(this.configuration.sources, {dossier: this.dossier_importation}); },
+    liste_sources_locales: function () { return _.filter(this.configuration.sources, "local"); }
   },
   created: function () {
     this.mixer = new Mixer(this);
@@ -366,7 +367,7 @@ export default {
         <menu>
           <img src="${Reload}" class="invert" @click="reset">
           <img src="${Import}" @click="toggle_ecran('importation')">
-          <img src="${Export}" @click="exporter">
+          <img src="${Export}" @click="toggle_ecran('exportation')">
         </menu>
         <section v-show="ecran == 'normal'" class="ecran app-fonofone">
           <header>
@@ -398,13 +399,28 @@ export default {
           </main>
         </section>
         <section v-show="ecran == 'importation'" class="ecran">
-          <div class="fenetre-importation">
+          <div class="fenetre">
             <h3 class="titre">Importer une archive Fonofone</h3>
             <div class="wrapper-filepond" ref="filepond_archive"></div>
           </div>
         </section>
+        <section v-show="ecran == 'exportation'" class="ecran">
+          <div class="fenetre exportation">
+            <h3 class="titre">Fichers à inclure dans la sauvegarde</h3>
+            <ul class="sons">
+              <li v-for="source in liste_sources_locales" @click="console.log(source)">
+                <input :name="source.id" type="checkbox" checked/>
+                <input @click.stop :value="source.id" type="text"/>
+              </li>
+            </ul>
+            <menu>
+              <button @click="toggle_ecran('exportation')">Annuler</button>
+              <button @click="exporter">Exporter</button>
+            </menu>
+          </div>
+        </section>
         <section v-show="ecran == 'selection_son'" class="ecran">
-          <div class="fenetre-selection-son">
+          <div class="fenetre">
             <h3 class="titre">
               <img src="${Folder}" @click="toggle_ecran('selection_son')"/>
               Liste des sons

@@ -53,13 +53,44 @@
     right: 10px;
   }
 
-  .fenetre-selection-son, .fenetre-importation {
+  .fenetre {
     display: flex;
     flex-direction: column;
     height: 100%;
     border: 1px solid @noir;
     border-radius: @border_radius;
     overflow: auto;
+
+    &.exportation {
+      display: flex;
+      flex-direction: column;
+
+      ul {
+        flex: 1;
+        background-color: @blanc;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+          border-bottom: 1px solid @gris;
+          padding: 5px 10px;
+
+          input {
+            background-color: none;
+            border: none;
+          }
+        }
+      }
+      
+      menu {
+        display: flex;
+        justify-content: space-between;
+
+        margin: 0;
+        padding: 10px;
+      }
+    }
 
     .wrapper-filepond {
       flex: 1;
