@@ -93,7 +93,22 @@ export default {
 
     // IMPORT / EXPORT
     exporter: function () {
-      return saveAs(new Blob([JSON.stringify(this.configuration)]), `${this.configuration.parametres.nom}.fnfn`);
+
+      // Init
+      let sources_locales_selectionnees = this.$refs.sources_export.querySelectorAll("input:checked");
+      let exp = {
+        parametres: this.configuration.parametres,
+        modules: this.configuration.modules,
+        sources: _.cloneDeep(this.configuration.sources)
+      };
+
+      // Menage dans les sources
+      _.each(sources_locales_selectionnees, (s) => { console.log(s) });
+
+      // Sauvegarde
+      saveAs(new Blob([JSON.stringify(exp)]), `${this.configuration.parametres.nom}.fnfn`);
+
+      this.toggle_ecran("exportation");
     },
     importer: function (fichier) {
       return new Promise (async (resolve) => {
@@ -221,8 +236,9 @@ export default {
         _.each(this.configuration.modules, (v, key) => {
           let module = this.$refs[key][0];
           if(module.charger_props) module.charger_props();
+          this.toggle_ecran('normal');
         });
-      })
+      });
     },
 
     // UI
@@ -365,7 +381,7 @@ export default {
   template: `
       <div :id="id" class="fonofone" ref="fonofone">
         <menu>
-          <img src="${Reload}" class="invert" @click="reset">
+          <img src="${Reload}" class="invert" @click="toggle_ecran('reinitialisation')">
           <img src="${Import}" @click="toggle_ecran('importation')">
           <img src="${Export}" @click="toggle_ecran('exportation')">
         </menu>
@@ -398,6 +414,12 @@ export default {
             </div>
           </main>
         </section>
+        <section v-show="ecran == 'reinitialisation'" class="ecran">
+          <div class="fenetre reinitialisation">
+            <button @click="toggle_ecran('reinitialisation')">Annuler</button>
+            <button @click="reset">Rétablir les réglages d'origine</button>
+          </div>
+        </section>
         <section v-show="ecran == 'importation'" class="ecran">
           <div class="fenetre">
             <h3 class="titre">Importer une archive Fonofone</h3>
@@ -407,8 +429,8 @@ export default {
         <section v-show="ecran == 'exportation'" class="ecran">
           <div class="fenetre exportation">
             <h3 class="titre">Fichers à inclure dans la sauvegarde</h3>
-            <ul class="sons">
-              <li v-for="source in liste_sources_locales" @click="console.log(source)">
+            <ul class="sons" ref="sources_export">
+              <li v-for="source in liste_sources_locales">
                 <input :name="source.id" type="checkbox" checked/>
                 <input @click.stop :value="source.id" type="text"/>
               </li>
