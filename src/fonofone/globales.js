@@ -10,7 +10,7 @@ import Impulse3 from "./donnees/impulse/scala_milan_opera_hall_3.wav";
 import Impulse4 from "./donnees/impulse/in_the_silo_revised_4.wav";
 
 export default {
-  configuration_primitive: "https://hub-0-1.github.io/fonofone/src/configurations/dauphin.fnfn",
+  configuration_primitive: "https://hub-0-1.github.io/fonofone/src/fonofone/configurations/dauphin.fnfn",
   min_width_grille: 600,
   max_width_colonne: 300,
   mimetype_export: "audio/wav",

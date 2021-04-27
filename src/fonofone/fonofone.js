@@ -92,8 +92,9 @@ export default {
 
     // IMPORT / EXPORT
     exporter: function () {
+      return saveAs(new Blob([JSON.stringify(this.configuration)]), `${this.configuration.parametres.nom}.fnfn`);
       this.serialiser().then((archive) => { 
-        saveAs(new Blob([archive]), `${this.configuration.parametres.nom}.fnfn`);
+        saveAs(new Blob([JSON.stringify(this.configuration)]), `${this.configuration.parametres.nom}.fnfn`);
       });
     },
     serialiser: function () {
@@ -103,8 +104,7 @@ export default {
           let archive = {
             parametres: this.configuration.parametres,
             modules: this.configuration.modules,
-            sources: this.configuration.sources,
-            fichier: base64,
+            sources: this.configuration.sources
           };
           resolve(JSON.stringify(archive));
         });
@@ -120,6 +120,7 @@ export default {
           });
         }
 
+        console.log(fichier);
         this.configuration = JSON.parse(fichier);
         let source_active = _.find(this.configuration.sources, "actif");
 
@@ -166,6 +167,15 @@ export default {
     charger_dossier: function (dossier) {
       this.dossier_importation = dossier;
     },
+    ajouter_son: async function (blob, nom) {
+      this.configuration.sources.push({
+        id: (nom || Date.now()),
+        actif: false,
+        local: true,
+        dossier: "local",
+        url: await blob2base64(blob)
+      });
+    },
 
     // CONTROLLEURS
     force_play: function () {
@@ -203,15 +213,7 @@ export default {
         if(!this.enregistrement.encours) {
           enregistreur.debuter();
         } else {
-          enregistreur.terminer().then(async (blob) => {
-            this.configuration.sources.push({
-              id: Date.now(),
-              actif: false,
-              local: true,
-              dossier: "local",
-              url: await blob2base64(blob)
-            });
-          });
+          enregistreur.terminer().then((blob) => { this.ajouter_son(blob) });
         } 
         this.enregistrement.encours = !this.enregistrement.encours;
       });
@@ -293,6 +295,11 @@ export default {
 
     // OUTILS
     crop: function () {
+
+      // TODO creer un nouveau son dans la liste
+      //let audio_blob = new Blob([toWav(this.mixer.audio_buffer)]);
+      //blob2base64(audio_blob).then((base64) => {
+      
       this.mixer.crop();
       this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
       this.reset_selecteur();
@@ -336,9 +343,7 @@ export default {
 
       // Importation de nouveau fichier audio
       if(fichier.fileType.match(/audio|webm/)) {
-        new Response(fichier.file).blob().then((blob) => {
-          this.globales.sons.push({ nom: fichier.filenameWithoutExtension, blob: blob });
-        }); 
+        new Response(fichier.file).blob().then((blob) => { this.ajouter_son(blob, fichier.filenameWithoutExtension); }); 
       }
       else {
         this.mode_selection_son = false;
