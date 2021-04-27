@@ -14,7 +14,7 @@ const espacement_images = (Reverberation.largeur_module - Reverberation.dimensio
 export default {
   mixins: [Utils],
   data: function () {
-    return { wet: null, url: null, sons: Reverberation.sons, x: 0 };
+    return { wet: null, url: null, x: 0 };
   },
   methods: {
     charger_props: function () {
@@ -22,6 +22,7 @@ export default {
       this.url = this.valeur.url;
 
       this.x = (this.wet * (max_x - min_x)) + min_x;
+      console.log(this.url, Reverberation.sons);
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
@@ -36,6 +37,7 @@ export default {
       this.update();
     },
     update: function () {
+      console.log(this.url);
       this.$emit('update:valeur', { actif: this.module_actif, wet: this.wet, url: this.url });
     }
   },
