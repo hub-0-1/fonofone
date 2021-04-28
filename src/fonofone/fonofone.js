@@ -142,6 +142,7 @@ export default {
     charger_source: function (source) {
       return new Promise ((resolve, reject) => {
 
+        console.log(source);
         // Desactiver toutes les sources
         _.each(this.configuration.sources, (source) => { source.actif = false; });
         source.actif = true;
@@ -446,21 +447,23 @@ export default {
           </div>
         </section>
         <section v-show="ecran == 'selection_son'" class="ecran">
-          <div class="fenetre">
+          <div class="fenetre importation">
             <h3 class="titre">
               <img src="${Folder}" @click="toggle_ecran('selection_son')"/>
               Liste des sons
             </h3>
             <main>
               <ul class="dossiers">
-                <li v-for="dossier in liste_dossiers_sons" @click="charger_dossier(dossier)">
-                  <span>{{ dossier }}</span>
-                  <img src="${FlecheDroite}" alt="fleche de selection" :class="{actif: dossier_importation == dossier}"/>
-                </li>
-              </ul>
-              <ul class="sons">
-                <li v-for="source in liste_sources" @click="charger_source(source)">
-                  <input @click.stop :value="source.id" type="text" :disabled="!source.local"/>
+                <li class="dossier" v-for="dossier in liste_dossiers_sons" @click="charger_dossier(dossier)">
+                  <div class="entete">
+                    <span>{{ dossier }}</span>
+                    <img src="${FlecheDroite}" alt="fleche de selection" :class="{actif: dossier_importation == dossier}"/>
+                  </div>
+                  <ul class="sons">
+                    <li class="source" v-show="dossier == dossier_importation" v-for="source in liste_sources" @click="charger_source(source)">
+                      <input @click.stop :value="source.id" type="text" :disabled="!source.local"/>
+                    </li>
+                  </ul>
                 </li>
               </ul>
               <h3 class="titre">Importer un son</h3>

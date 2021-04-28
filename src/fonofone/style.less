@@ -143,25 +143,50 @@
       }
     }
 
-    main {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      background-color: @blanc_creme;
+    &.importation {
 
-      ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
+      main {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        background-color: @blanc_creme;
 
-        li {
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          
+          li {
+            border-top: 2px solid #D4D4D4;
+          }
+        }
+
+        .dossier {
           display: flex;
-          justify-content: space-between;
-          padding: 2px 10px;
-          border: 1px solid #D4D4D4;
+          flex-direction: column;
 
-          img.actif {
-            transform: rotate(90deg);
+          &:first-of-type {
+            border-top: none;
+          }
+
+          .entete {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 2px 10px;
+          }
+
+          img {
+            height: 15px;
+
+            &.actif {
+              transform: rotate(90deg);
+            }
+          }
+
+          .source {
+            padding: 2px 10px;
           }
 
           input {
@@ -169,11 +194,6 @@
             border: none;
             font-family: inherit;
             font-size: smaller;
-          }
-
-          a {
-            text-decoration: none;
-            color: @charcoal;
           }
         }
       }
@@ -224,7 +244,7 @@
       .menu-controlleurs {
         display: flex;
         justify-content: space-between;
-        
+
         span {
           margin-right: 10px;
           text-transform: none;
