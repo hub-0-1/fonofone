@@ -46,6 +46,15 @@ import Import from '../images/folder-open.svg';
 import Micro from '../images/micro.svg';
 import ModeMix from '../images/mode_mix.svg';
 import ModePic from '../images/mode_pic.svg';
+import DossierBref from '../images/icones_dossiers/icon-son-brefs.svg';
+import DossierBruiteux from '../images/icones_dossiers/icon-son-bruiteux.svg';
+import DossierDivers from '../images/icones_dossiers/icon-son-divers.svg';
+import DossierGlisses from '../images/icones_dossiers/icon-son-glisses.svg';
+import DossierHumains from '../images/icones_dossiers/icon-son-humains.svg';
+import DossierMelodiques from '../images/icones_dossiers/icon-son-melodiques.svg';
+import DossierNatures from '../images/icones_dossiers/icon-son-natures.svg';
+import DossierResonnants from '../images/icones_dossiers/icon-son-resonnants.svg';
+import DossierSoutenus from '../images/icones_dossiers/icon-son-soutenus.svg';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -297,6 +306,21 @@ export default {
       this.wavesurfer_region.end = this.mixer.parametres.debut + this.mixer.parametres.longueur;
       this.wavesurfer_region.updateRender();
     },
+    icones_dossiers: function (dossier) {
+      switch (dossier) {
+        case 'brefs': return DossierBref;
+        case 'bruiteux': return DossierBruiteux;
+        case 'divers': return DossierDivers;
+        case 'glisses': return DossierGlisses;
+        case 'humains': return DossierHumains;
+        case 'melodiques': return DossierMelodiques;
+        case 'natures': return DossierNatures;
+        case 'resonnants': return DossierResonnants;
+        case 'soutenus': return DossierSoutenus;
+        default: return '';
+      }
+
+    },
 
     // OUTILS
     crop: function () {
@@ -455,7 +479,7 @@ export default {
               <ul class="dossiers">
                 <li class="dossier" v-for="dossier in liste_dossiers_sons" @click="charger_dossier(dossier)">
                   <div class="entete">
-                    <span>{{ dossier }}</span>
+                    <span><img :src="icones_dossiers(dossier)" :alt="dossier"/>{{ $t(dossier) }}</span>
                     <img src="${FlecheDroite}" alt="fleche de selection" :class="{actif: dossier_importation == dossier}"/>
                   </div>
                   <ul class="sons">
