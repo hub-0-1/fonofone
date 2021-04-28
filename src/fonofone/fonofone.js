@@ -150,7 +150,6 @@ export default {
     charger_source: function (source) {
       return new Promise ((resolve, reject) => {
 
-        console.log(source);
         // Desactiver toutes les sources
         _.each(this.configuration.sources, (source) => { source.actif = false; });
         source.actif = true;
@@ -162,7 +161,7 @@ export default {
           return this.mixer.charger_blob(blob);
         }).then(() => {
           this.toggle_ecran("normal");
-          this.reset_selecteur();
+          this.paint();
           resolve(source);
         }).catch((e) => {
           reject(e);
@@ -186,10 +185,6 @@ export default {
     force_play: function () {
       this.set_loop(true);
       this.mixer.lancer();
-    },
-    reset_selecteur: function () {
-      this.configuration.modules.selecteur.valeur = { debut: 0, longueur: 1 };
-      this.paint();
     },
     toggle_loop: function () {
       this.set_loop(!this.mixer.etat.loop);
@@ -326,7 +321,10 @@ export default {
     crop: function () {
       this.mixer.crop();
       this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
-      this.reset_selecteur();
+
+      this.$refs.selecteur[0].set_plage(0, 1);
+      this.paint();
+
       this.ajouter_son(new Blob([toWav(this.mixer.audio_buffer)]), this.source_active().id + "_crop");
     },
     source_active: function () {

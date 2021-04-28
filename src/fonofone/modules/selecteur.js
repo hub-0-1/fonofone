@@ -80,11 +80,13 @@ export default {
       this.$refs.controlleur_curseur.style.transform = `translate(${this.x * 100}%, ${this.y * 100}%)`;
     },
     mixer_a_svg: function () {
-      this.y = (1 - this.longueur) * (1 - Selecteur.hauteur_controlleur);
+      let y = (1 - this.longueur) * (1 - Selecteur.hauteur_controlleur);
+      this.y = this.borner(y, min_y_controlleur, max_y_controlleur);
 
       let x_gauche = this.x_cote_gauche(this.y);
       let x_droit  = this.x_cote_droit(this.y);
-      this.x = (((this.debut / (1 - this.longueur)) || 0) * (x_droit - x_gauche)) + x_gauche;
+      let x = (((this.debut / (1 - this.longueur)) || 0) * (x_droit - x_gauche)) + x_gauche;
+      this.x = this.borner(x, x_gauche, x_droit);
     }
   },
   mounted: function () {
