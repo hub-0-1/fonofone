@@ -7,8 +7,6 @@ import Power from "../../images/icon-power.svg";
 import PowerActif from "../../images/icon-power-actif.svg";
 
 const Vitesse = Globales.modules.vitesse;
-const min_x = Vitesse.border_width;
-const max_x = Vitesse.largeur_module - Vitesse.largeur_controlleur - Vitesse.border_width;
 const min_x_coche = Vitesse.border_width;
 const max_x_coche = Vitesse.largeur_module - Vitesse.border_width;
 
@@ -22,14 +20,14 @@ export default {
       this.vitesse = this.valeur.vitesse;
       this.mode = this.valeur.mode;
 
-      this.x = (this.vitesse * (max_x - min_x)) + min_x;
+      this.x = (this.vitesse * (this.max_x - this.min_x)) + this.min_x;
     },
     drag: function (e) {
       let coords = this.get_mouse_position(e);
 
       let x = (this.aimant ? this.arrondir(coords.x, this.nb_divisions + 2) : coords.x) - (Vitesse.largeur_controlleur / 2);
-      this.x = this.borner(x, min_x, max_x);
-      this.vitesse = (this.x - min_x) / (max_x - min_x);
+      this.x = this.borner(x, this.min_x, this.max_x);
+      this.vitesse = (this.x - this.min_x) / (this.max_x - this.min_x);
       this.update();
     },
     update: function () {
@@ -38,6 +36,9 @@ export default {
     change_mode: function () {
       this.mode = (this.mode % 3) + 1;
       this.update();
+    },
+    x_coche: function (i) {
+      return ((i / (this.nb_divisions + 1)) * Vitesse.largeur_module * (max_x_coche - min_x_coche)) + min_x_coche - this.largeur_coche(i) / 2;
     },
     hauteur_coche: function (i) {
       if(i % 12 == 0) return 1;
@@ -56,11 +57,17 @@ export default {
     }
   },
   computed: {
+    min_x: function () {
+      return this.x_coche(1) - Vitesse.largeur_controlleur / 2;
+    },
+    max_x: function () {
+      return this.x_coche(this.nb_divisions) - Vitesse.largeur_controlleur / 2;
+    },
     affichage_mode: function () {
       switch (this.mode) {
         case 1: return "I";
         case 2: return "II";
-        case 3: return "IIII";
+        default: return "IIII";
       }
     },
     nb_divisions: function () { return Vitesse.modes[this.mode - 1].nb_divisions; }
@@ -71,7 +78,7 @@ export default {
         <rect class="bg controlleur" x="${Vitesse.border_width / 2}" width="${Vitesse.largeur_module - Vitesse.border_width}" y="${Vitesse.border_width / 2}" height="${Vitesse.hauteur_module - Vitesse.border_width}" ref="controlleur"/>
         <rect v-for="i in nb_divisions" 
           class="coche" :class="{blanc: coche_blanche(i), cachee: !aimant && (i_affichage(i)%12 != 0)}" 
-          :x="((i / (nb_divisions + 1)) * ${Vitesse.largeur_module * (max_x_coche - min_x_coche)}) + ${min_x_coche} - largeur_coche(i) / 2" 
+          :x="x_coche(i)"
           :width="largeur_coche(i)"
           :y="${Vitesse.hauteur_module} * (1 - hauteur_coche(i_affichage(i))) / 2" 
           :height="${Vitesse.hauteur_module} * hauteur_coche(i_affichage(i))" 
