@@ -76,7 +76,6 @@ export default {
       mode_affichage: "colonne", // "grille" ou "colonne"
       mode_importation: false,
       dossier_importation: null,
-      mode_selection_son: false,
       enregistrement: {
         encours: false,
         enregistreur: null
@@ -153,7 +152,7 @@ export default {
         }).then((blob) => {
           return this.mixer.charger_blob(blob);
         }).then(() => {
-          this.mode_selection_son = false;
+          this.toggle_ecran("normal");
           this.reset_selecteur();
           resolve(source);
         }).catch((e) => {
@@ -352,7 +351,7 @@ export default {
         new Response(fichier.file).blob().then((blob) => { this.ajouter_son(blob, fichier.filenameWithoutExtension); }); 
       }
       else {
-        this.mode_selection_son = false;
+        this.toggle_ecran("normal");
         throw "type de fichier non valide";
       }
     });
