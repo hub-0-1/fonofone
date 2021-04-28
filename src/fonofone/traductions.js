@@ -20,6 +20,17 @@ export default {
         selecteur: "Sélecteur",
         volume: "Volume",
         vitesse: "Vitesse"
+      },
+      dossiers: {
+        brefs: "Sons brefs",
+        bruiteux: "Sons bruiteux",
+        divers: "Sons divers",
+        glisses: "Sons glissés",
+        humains: "Sons humais",
+        melodiques: "Sons mélodiques",
+        natures: "Sons natures",
+        resonnants: "Sons résonnants",
+        soutenus: "Sons soutenus"
       }
     }
   }

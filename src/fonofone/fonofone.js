@@ -479,7 +479,7 @@ export default {
               <ul class="dossiers">
                 <li class="dossier" v-for="dossier in liste_dossiers_sons" @click="charger_dossier(dossier)">
                   <div class="entete">
-                    <span><img :src="icones_dossiers(dossier)" :alt="dossier"/>{{ $t(dossier) }}</span>
+                    <span><img :src="icones_dossiers(dossier)" :alt="dossier"/>{{ $t('dossiers.' + dossier) }}</span>
                     <img src="${FlecheDroite}" alt="fleche de selection" :class="{actif: dossier_importation == dossier}"/>
                   </div>
                   <ul class="sons">

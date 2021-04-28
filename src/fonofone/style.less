@@ -174,19 +174,30 @@
             justify-content: space-between;
             align-items: center;
 
-            padding: 2px 10px;
-          }
+            padding: 10px;
 
-          img {
-            height: 15px;
+            span {
+              display: flex;
+              align-items: center;
+              font-size: 1.1em;
 
-            &.actif {
-              transform: rotate(90deg);
+              img {
+                margin-right: 5px;
+                height: 20px;
+              }
+            }
+
+            img {
+              height: 15px;
+
+              &.actif {
+                transform: rotate(90deg);
+              }
             }
           }
 
           .source {
-            padding: 2px 10px;
+            padding: 5px 10px;
           }
 
           input {
