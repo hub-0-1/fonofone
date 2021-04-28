@@ -66,7 +66,7 @@ export default {
     affichage_mode: function () {
       switch (this.mode) {
         case 1: return "I";
-        case 2: return "II";
+        case 2: return "I I";
         default: return "IIII";
       }
     },
