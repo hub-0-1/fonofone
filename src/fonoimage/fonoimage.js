@@ -377,14 +377,6 @@ window.Fonoimage = class Fonoimage {
           this.mode_importation = false;
         });
 
-        this.init_filepond(this.$refs.filepond_arriereplan, (fichier) => { 
-
-          if (fichier.fileType.match(/image/)) { this.arrieres_plans.push(fichier.getFileEncodeDataURL()); }
-          else { throw "type de fichier non valide"; }
-
-          this.mode_importation = false;
-        });
-
         // Creer le canva
         this.canva = new Fabric.Canvas('canva-fonoimage', {
           width: application.offsetWidth,
@@ -438,11 +430,6 @@ window.Fonoimage = class Fonoimage {
               <div class="container-arrieres-plans">
                 <div v-for="arpl in arrieres_plans" class="img" :style="{'background-image': 'url(' + arpl + ')'}" @click="set_arriere_plan(arpl)"/>
               </div>
-              <h3 class="entete">
-                <img src="${Images}"/>
-                <span>{{ $t('formes') }}</span>
-              </h3>
-              <div ref="filepond_arriereplan"></div>
             </div>
           </section>
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
