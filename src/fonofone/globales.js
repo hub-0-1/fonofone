@@ -55,7 +55,7 @@ export default {
     reverberation: {
       largeur_module: 1,
       hauteur_module: 0.55,
-      largeur_controlleur: 0.1,
+      largeur_controlleur: 0.05,
       hauteur_controlleur: 0.1,
       hauteur_centre_controlleur: 0.03,
       largeur_image: 0.4,
