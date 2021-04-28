@@ -27,6 +27,7 @@ export default {
         divers: "Sons divers",
         glisses: "Sons glissés",
         humains: "Sons humais",
+        local: "Sons locaux",
         melodiques: "Sons mélodiques",
         natures: "Sons natures",
         resonnants: "Sons résonnants",
