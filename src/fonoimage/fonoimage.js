@@ -154,8 +154,27 @@ window.Fonoimage = class Fonoimage {
         },
 
         // Controlleurs
+        toggle_solo: function (zone, val) {
+          if(zone.solo) {
+            _.each(this.zones, (zone) => {
+              zone.solo = false;
+              this.activer_son(zone);
+            });
+          }
+          else {
+            _.each(this.zones, (zone) => {
+              zone.solo = false;
+              this.desactiver_son(zone);
+            });
+            this.activer_son(zone);
+            zone.solo = true;
+          }
+        },
         toggle_ff_pleine_largeur: function () {
           this.ff_pleine_largeur = !this.ff_pleine_largeur;
+          setTimeout(() => {
+            this.get_fonofone(this.zone_active).paint();
+          }, 1000);
         },
         toggle_gestion_bg: function () {
           this.gestion_bg = !this.gestion_bg;
@@ -276,6 +295,7 @@ window.Fonoimage = class Fonoimage {
         ajouter_zone: function (x, y, rx, ry, fonofone = null) {
           let zone = new Zone(x, y, rx, ry, this.ctx_audio, this.canvas, this.master, (zone) => {
             this.afficher_zone(zone);
+            this.zone_active = zone;
           });
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
@@ -361,7 +381,7 @@ window.Fonoimage = class Fonoimage {
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
           <div class="rond-central" @click="toggle_ff_pleine_largeur"></div>
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" :class="{actif: zone == zone_active}"></fonofone>
+          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:solo="toggle_solo(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">

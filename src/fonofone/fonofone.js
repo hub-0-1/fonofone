@@ -41,6 +41,7 @@ import LoopActif from '../images/btn-loop-actif.svg';
 import Sens from '../images/fleche-sens.svg';
 import Crop from '../images/crop.svg';
 import Solo from '../images/solo.svg';
+import SoloActif from '../images/solo-actif.svg';
 import Export from '../images/export.svg';
 import Import from '../images/folder-open.svg';
 import Micro from '../images/micro.svg';
@@ -192,9 +193,6 @@ export default {
     set_loop: function (val) {
       this.mixer.set_loop(val);
     },
-    toggle_solo: function () {
-      this.fonoimage.solo = !this.fonoimage.solo;
-    },
     toggle_sens: function () {
       this.configuration.parametres.sens *= -1;
       this.mixer.set_sens(this.configuration.parametres.sens);
@@ -230,6 +228,10 @@ export default {
     toggle_mode_fonoimage: function () {
       this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
       this.$emit('update:mode', this.fonoimage.mode);
+    },
+    toggle_mode_solo: function () {
+      this.fonoimage.solo = !this.fonoimage.solo;
+      this.$emit('update:solo', this.fonoimage.solo);
     },
     toggle_ecran: function (ecran) {
       this.ecran = ecran == this.ecran ? "normal" : ecran;
@@ -421,7 +423,7 @@ export default {
             <div class="menu-controlleurs">
               <div class="gauche">
                 <img :src="mixer.etat.jouer ? '${JouerActif}' : '${Jouer}'" class="icone pause" :class="{actif: mixer.etat.jouer}" @click="toggle_pause"/>
-                <img v-if="fonoimage.integration" src="${Solo}" class="icone solo" :class="{actif: fonoimage.solo}" @click="toggle_solo"/>
+                <img v-if="fonoimage.integration" :src="fonoimage.solo ? '${SoloActif}' : '${Solo}'" class="icone solo" @click="toggle_mode_solo"/>
                 <img :src="mixer.etat.loop ? '${LoopActif}' : '${Loop}'" class="icone loop" @click="toggle_loop"/>
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
                 <img src="${Record}" class="icone session" :class="{actif: mixer.etat.en_session}" @click="toggle_session"/>
