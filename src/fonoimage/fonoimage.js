@@ -82,6 +82,7 @@ window.Fonoimage = class Fonoimage {
             // Ajouter les zones et les fonofones
             _.each(configuration_archive.zones, (zone) => {
               let ellipse = zone.zone.ellipse;
+              // TODO
               this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, zone.fonofone);
             });
 
@@ -103,7 +104,7 @@ window.Fonoimage = class Fonoimage {
           })).then((zones) => {
             return JSON.stringify({ 
               arriere_plan: this.canva.backgroundImage.toDataURL(),
-              zones 
+              zones: zones 
             });
           });
         },
@@ -160,6 +161,9 @@ window.Fonoimage = class Fonoimage {
         toggle_session: function () {
           this.mode.match(/session/) ? this.fin_session() : this.debut_session();
         },
+        toggle_cadenas: function () {
+          this.cadenas = !this.cadenas;
+        },
         toggle_mode_edition: function () {
           this.mode.match(/edition/) ? this.set_mode_normal() : this.set_mode_edition();
         },
@@ -168,39 +172,17 @@ window.Fonoimage = class Fonoimage {
           this.master.gain.setValueAtTime(0, this.haut_parleur ? 1 : 0);
         },
         activer_son: function (zone) {
-          zone.master.gain.setValueAtTime(0, 1);
+          zone.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
         },
         desactiver_son: function (zone) {
-          zone.master.gain.setValueAtTime(0, 0);
-        },
-        toggle_cadenas: function () {
-          this.cadenas = !this.cadenas;
-        },
-        toggle_mode_zone: function (zone, ev) {
-          zone.mode = ev;
-          if(zone.mode == 'pic') {
-            zone.ellipse.set('stroke', 'orange');
-          } else {
-            zone.ellipse.set('stroke', 'blue');
-            if(zone.pointeur) {
-              this.canva.remove(zone.pointeur);
-              zone.pointeur = null;
-              zone.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-            }
-          }
-
-          // Sinon, pas de rendu
-          this.canva.renderAll();
+          zone.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
         },
         set_mode_normal: function () {
           this.mode = "normal";
           _.each(this.zones, (zone) => {
-            zone.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-            this.$refs[zone.id][0].force_play();
-            zone.ellipse.hasControls = false;
-            zone.ellipse.hasBorders = false;
-            zone.ellipse.lockMovementX = true;
-            zone.ellipse.lockMovementY = true;
+            zone.immobiliser();
+            this.activer_son(zone);
+            this.get_fonofone(zone).force_play();
           });
 
           // Afficher le micro
@@ -229,18 +211,15 @@ window.Fonoimage = class Fonoimage {
         set_mode_edition: function () {
           this.mode = "edition";
           _.each(this.zones, (zone) => {
-            zone.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-            zone.ellipse.hasControls = true;
-            zone.ellipse.hasBorders = true;
-            zone.ellipse.lockMovementX = false;
-            zone.ellipse.lockMovementY = false;
+            zone.rendre_mobile()
+            this.desactiver_son(zone);
           });
 
+          // TODO simplement rendre invisble
           if(this.micro) {
             this.canva.remove(this.micro);
             this.micro = null;
           }
-
         },
 
         // Gestion des zones
@@ -298,6 +277,11 @@ window.Fonoimage = class Fonoimage {
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
           this.canva.setActiveObject(zone.ellipse);
+        },
+
+        // Outils
+        get_fonofone: function (zone) {
+          return this.$refs[zone.id][0];
         }
       },
       created: function () {
@@ -387,24 +371,3 @@ window.Fonoimage = class Fonoimage {
     });
   }
 }
-
-function theta (x, y) {
-  return Math.atan2(y, x);
-}
-
-function cartesian2Polar(x, y){
-  return { distance: Math.sqrt(x*x + y*y), radians: Math.atan2(y,x) };
-}
-
-function rad2deg (rad) {
-  return rad * 180 / Math.PI;
-}
-
-function deg2rad (deg) {
-  return deg * Math.PI / 180;
-}
-
-function distance_euclidienne (point) {
-  return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
-}
-

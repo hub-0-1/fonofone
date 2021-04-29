@@ -51,6 +51,20 @@ export default class Zone {
     });
   }
 
+  rendre_mobile () {
+    this.ellipse.hasControls = true;
+    this.ellipse.hasBorders = true;
+    this.ellipse.lockMovementX = false;
+    this.ellipse.lockMovementY = false;
+  }
+
+  immobiliser () {
+    this.ellipse.hasControls = false;
+    this.ellipse.hasBorders = false;
+    this.ellipse.lockMovementX = true;
+    this.ellipse.lockMovementY = true;
+  }
+
   toggle_mode (mode) {
     this.mode = mode;
     if(mode == 'pic') {
@@ -133,3 +147,24 @@ export default class Zone {
     return { x: polaire.distance * Math.cos(polaire.radians) + centre.x, y: polaire.distance * Math.sin(polaire.radians) + centre.y };
   }
 }
+
+function theta (x, y) {
+  return Math.atan2(y, x);
+}
+
+function cartesian2Polar(x, y){
+  return { distance: Math.sqrt(x*x + y*y), radians: Math.atan2(y,x) };
+}
+
+function rad2deg (rad) {
+  return rad * 180 / Math.PI;
+}
+
+function deg2rad (deg) {
+  return deg * Math.PI / 180;
+}
+
+function distance_euclidienne (point) {
+  return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
+}
+
