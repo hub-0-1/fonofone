@@ -74,39 +74,44 @@
   }
 
   .panneau-fonoimage {
-    height: 100%;
+    position: relative;
     display: flex;
     flex-direction: column;
     flex: 1;
-    min-width: 0;
 
-    & > menu.horizontal {
-      color: @blanc;
+    min-width: 0;
+    height: 100%;
+
+    & > menu {
       display: flex;
+      justify-content: space-between;
       margin: 0;
+      padding: 10px;
+
+      background-color: @charcoal;
+
+      .bouton-coin-g-b {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        width: 20px;
+        height: 20px;
+      }
 
       img {
-        height: 20px;
+        height: 25px;
         padding: 5px;
 
         &.invert {
           filter: invert(1);
         }
-      }
 
-      .crayon {
         &.actif {
           background-color: @charcoal;
         }
       }
 
       .record {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        width: 20px;
-        height: 20px;
-
         visibility: hidden;
 
         &.actif {
@@ -126,46 +131,6 @@
       display: flex;
       width: 100%;
       flex: 1;
-
-      menu.vertical {
-        height: 100%;
-        background-color: @noir;
-        width: @largeur_menu_vertical;
-        margin: 0;
-        padding: 0;
-        visibility: hidden;
-
-        &.actif{
-          visibility: initial;
-        }
-
-        .icone-wrapper {
-          padding: 5px;
-
-          &.actif {
-            background-color: @charcoal;
-          }
-
-          &.invert {
-            img {
-              filter: invert(1);
-            }
-          }
-
-          img {
-            width: 100%;
-          }
-
-          &.supprimer-zone {
-            visibility: hidden;
-            background-color: red;
-
-            &.actif {
-              visibility: initial;
-            }
-          }
-        }
-      }
 
       .app-fonoimage {
         position: relative;
