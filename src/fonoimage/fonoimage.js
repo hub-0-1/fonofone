@@ -20,6 +20,11 @@ import Export from '../images/export.svg';
 import Import from '../images/import.svg';
 import Maison from '../images/maison.jpg';
 
+import Cadenas from '../images/cadenas.svg';
+import CadenasOuvert from '../images/cadenas-ouvert.svg';
+import HautParleur from '../images/hp.svg';
+import HautParleurActif from '../images/hp-actif.svg';
+
 import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
@@ -39,6 +44,8 @@ window.Fonoimage = class Fonoimage {
         archive,
         fonofone_pardefaut: null,
         configuration: {parametres: {}},
+        haut_parleur: true,
+        cadenas: false,
         mode: 'normal',
         zone_active: null,
         ctx_audio: new AudioContext,
@@ -124,6 +131,12 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_mode_edition: function () {
           this.mode.match(/edition/) ? this.set_mode_normal() : this.set_mode_edition();
+        },
+        toggle_hp: function () {
+          this.haut_parleur = !this.haut_parleur;
+        },
+        toggle_cadenas: function () {
+          this.cadenas = !this.cadenas;
         },
         set_mode_normal: function () {
           this.mode = "normal";
@@ -429,6 +442,9 @@ window.Fonoimage = class Fonoimage {
       <div class="fonoimage">
         <div class="panneau-fonoimage">
           <menu class="horizontal">
+            <img :src="haut_parleur ? '${HautParleurActif}' : '${HautParleur}'" class="hp" @click="toggle_hp"/>
+            <img :src="cadenas ? '${Cadenas}' : '${CadenasOuvert}'" class="cadenas" @click="toggle_cadenas"/>
+            <img src="${Export}" class="export invert" @click="exporter"/>
             <img src="${Record}" class="record" :class="{actif: mode.match(/normal|session/), flash: mode == 'session:active'}" @click="toggle_session"/>
             <img src="${Crayon}" class="crayon" :class="{actif: mode.match(/edition/)}" @click="toggle_mode_edition"/>
             <img src="${Export}" class="export invert" @click="exporter"/>
