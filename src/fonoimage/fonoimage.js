@@ -50,6 +50,7 @@ window.Fonoimage = class Fonoimage {
         ctx_audio: new AudioContext,
         master: null,
         media_stream_destination: null,
+        ff_pleine_largeur: false,
         mode_importation: false,
         arriere_plan: Maison,
         arrieres_plans: Globales.arrieres_plans,
@@ -153,6 +154,9 @@ window.Fonoimage = class Fonoimage {
         },
 
         // Controlleurs
+        toggle_ff_pleine_largeur: function () {
+          this.ff_pleine_largeur = !this.ff_pleine_largeur;
+        },
         toggle_gestion_bg: function () {
           this.gestion_bg = !this.gestion_bg;
         },
@@ -345,7 +349,7 @@ window.Fonoimage = class Fonoimage {
             </div>
             <div class="gestion-arriere-plan" :class="{actif: gestion_bg}" ref="gestion_arriere_plan">
               <h3 class="entete">
-                <img src="${Images}"/>
+                <img src="${Images}" @click="toggle_gestion_bg"/>
                 <span>{{ $t('arriereplan') }}</span>
               </h3>
               <div class="container-arrieres-plans">
@@ -355,7 +359,8 @@ window.Fonoimage = class Fonoimage {
           </section>
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
         </div>
-        <div class="panneau-fonofone" :class="{actif: zone_active}" ref="panneau_fonofone">
+        <div class="panneau-fonofone" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
+          <div class="rond-central" @click="toggle_ff_pleine_largeur"></div>
           <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" :class="{actif: zone == zone_active}"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
