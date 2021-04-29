@@ -46,7 +46,7 @@ export default {
     width: function () { return Math.max(this.longueur, Filtre.largeur_controlleur_minimale) - Filtre.border_width; }
   },
   template: `
-    <generique :module="$t('modules.filtre')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
+    <generique :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Filtre.largeur_module} ${Filtre.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="bg controlleur" x="${Filtre.border_width / 2}" width="${Filtre.largeur_module - Filtre.border_width}" y="${Filtre.border_width / 2}" height="${Filtre.hauteur_module - Filtre.border_width}" ref="controlleur"/>
         <rect class="centre" x="0.49" width="0.02" y="${Filtre.hauteur_module - Filtre.border_width - Filtre.hauteur_centre}" height="${Filtre.hauteur_centre}"/>

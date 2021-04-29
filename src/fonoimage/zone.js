@@ -27,8 +27,10 @@ export default class Zone {
       on_selected(this);
     }).on('mousedown', (options) => {
 
+      return console.log("ici");
+
       // Seulement en mode pic
-      if(fonoimage.mode.match(/normal|session/) && nouvelle_zone.mode == 'pic') {
+      if(this.mode == 'mix') {
 
         // Preparation du pointeur
         let pointer_pos = canvas.getPointer(options.e);
@@ -47,6 +49,51 @@ export default class Zone {
         this.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
       }
     });
+  }
+
+  toggle_mode (mode) {
+    this.mode = mode;
+    if(mode == 'pic') {
+      this.ellipse.set('stroke', 'orange');
+      this.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
+    } else {
+      this.ellipse.set('stroke', 'blue');
+      if(this.pointeur) {
+        this.canvas.remove(this.pointeur);
+        this.pointeur = null;
+        this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+      }
+    }
+
+    // Sinon, pas de rendu
+    this.canvas.renderAll();
+  }
+
+  initialiser_selection_par_bordure () {
+    Fabric.Ellipse.prototype._checkTarget = function(pointer, obj, globalPointer) {
+      if (obj &&
+        obj.visible &&
+        obj.evented &&
+        this.containsPoint(null, obj, pointer)) {
+        if ((this.perPixelTargetFind || obj.perPixelTargetFind) && !obj.isEditing) {
+          var isTransparent = this.isTargetTransparent(obj, globalPointer.x, globalPointer.y);
+          if (!isTransparent) { return true; }
+        } else {
+          var isInsideBorder = this.isInsideBorder(obj);
+          if (!isInsideBorder) { return true; }
+        }
+      }
+    }
+
+    Fabric.Ellipse.prototype.isInsideBorder = function(target) {
+      var pointerCoords = target.getLocalPointer();
+      if (pointerCoords.x > target.clickableMargin &&
+        pointerCoords.x < target.getScaledWidth() - clickableMargin &&
+        pointerCoords.y > clickableMargin &&
+        pointerCoords.y < target.getScaledHeight() - clickableMargin) {
+        return true;
+      }
+    }
   }
 
   proximite_centre_ellipse (options, ellipse) {

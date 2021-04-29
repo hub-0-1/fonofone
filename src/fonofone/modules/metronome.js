@@ -106,7 +106,7 @@ export default {
     this.update_font_size_bpm();
   },
   template: `
-    <generique :module="$t('modules.metronome')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
+    <generique :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Metronome.largeur_module} ${Metronome.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.18"/>
         <circle class="concentrique" cx="${Metronome.centre_cercle.x}" cy="${Metronome.centre_cercle.y}" r="0.145"/>

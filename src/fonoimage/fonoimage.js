@@ -112,7 +112,7 @@ window.Fonoimage = class Fonoimage {
         clearCanva: function () {
           _.each(this.canva._objects, (obj) => { this.canva.remove(obj); });
         },
-        afficher_fonofone: function (zone_active) {
+        afficher_zone: function (zone_active) {
           this.zone_active = zone_active;
         },
         set_arriere_plan: function (url) {
@@ -165,6 +165,13 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_hp: function () {
           this.haut_parleur = !this.haut_parleur;
+          this.master.gain.setValueAtTime(0, this.haut_parleur ? 1 : 0);
+        },
+        activer_son: function (zone) {
+          zone.master.gain.setValueAtTime(0, 1);
+        },
+        desactiver_son: function (zone) {
+          zone.master.gain.setValueAtTime(0, 0);
         },
         toggle_cadenas: function () {
           this.cadenas = !this.cadenas;
@@ -184,13 +191,6 @@ window.Fonoimage = class Fonoimage {
 
           // Sinon, pas de rendu
           this.canva.renderAll();
-        },
-        toggle_mode_ajout: function () {
-          if(this.mode.match(/edition:ajout/)) {
-            this.mode = "edition";
-          } else {
-            this.mode = 'edition:ajout:pret';
-          }
         },
         set_mode_normal: function () {
           this.mode = "normal";
@@ -293,7 +293,7 @@ window.Fonoimage = class Fonoimage {
         },
         ajouter_zone: function (x, y, rx, ry, fonofone = null) {
           let zone = new Zone(x, y, rx, ry, this.ctx_audio, this.canvas, this.master, (zone) => {
-            this.afficher_fonofone(zone);
+            this.afficher_zone(zone);
           });
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
@@ -314,7 +314,6 @@ window.Fonoimage = class Fonoimage {
         });
       },
       mounted: function () {
-        let application = this.$refs.application_fonoimage;
 
         // Filepond
         this.init_filepond(this.$refs.filepond_archive, (fichier) => { 
@@ -325,51 +324,21 @@ window.Fonoimage = class Fonoimage {
           this.mode_importation = false;
         });
 
-        // Configurer le canva
-        Fabric.Ellipse.prototype._checkTarget = function(pointer, obj, globalPointer) {
-          if (obj &&
-            obj.visible &&
-            obj.evented &&
-            this.containsPoint(null, obj, pointer)) {
-            if ((this.perPixelTargetFind || obj.perPixelTargetFind) && !obj.isEditing) {
-              var isTransparent = this.isTargetTransparent(obj, globalPointer.x, globalPointer.y);
-              if (!isTransparent) { return true; }
-            } else {
-              var isInsideBorder = this.isInsideBorder(obj);
-              if (!isInsideBorder) { return true; }
-            }
-          }
-        }
-        Fabric.Ellipse.prototype.isInsideBorder = function(target) {
-          var pointerCoords = target.getLocalPointer();
-          if (pointerCoords.x > target.clickableMargin &&
-            pointerCoords.x < target.getScaledWidth() - clickableMargin &&
-            pointerCoords.y > clickableMargin &&
-            pointerCoords.y < target.getScaledHeight() - clickableMargin) {
-            return true;
-          }
-        }
-
         // Créer le canva
+        let application = this.$refs.application_fonoimage;
         this.canva = new Fabric.Canvas('canva-fonoimage', {
           width: application.offsetWidth,
           height: application.offsetHeight
         }).on('mouse:down', (options) => {
 
           // Si on ne clique pas sur une zone
-          if(!options.target) { 
-
-            // Cacher les fonofones
+          if(!options.target && !this.cadenas) { 
             this.zone_active = null; 
-
-            // Creation d'une nouvelle zone
             this.dessiner_nouvelle_zone(options);
           }
         });
 
         this.set_arriere_plan(Maison);
-
-        this.set_mode_edition();
       },
       template: `
       <div class="fonoimage">
@@ -405,7 +374,7 @@ window.Fonoimage = class Fonoimage {
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_active}" ref="panneau_fonofone">
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="toggle_mode_zone(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
+          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" :class="{actif: zone == zone_active}"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">

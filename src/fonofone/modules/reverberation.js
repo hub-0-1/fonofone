@@ -40,7 +40,7 @@ export default {
     }
   },
   template: `
-    <generique :module="$t('modules.reverberation')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
+    <generique :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Reverberation.largeur_module} ${Reverberation.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <text x="0" y="0.075" width="0.15">0%</text>
         <text x="0.85" y="0.075" width="0.15">100%</text>

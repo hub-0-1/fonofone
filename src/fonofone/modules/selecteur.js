@@ -96,7 +96,7 @@ export default {
     this.update_position_controlleur();
   },
   template: `
-    <generique :module="$t('modules.selecteur')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
+    <generique :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 1 1" preserveAspectRatio="none" ref="canvas">
         <polygon class="bg controlleur" points="${min_x_module},${max_y_module} ${Selecteur.largeur_module / 2},${min_y_module} ${max_x_module},${max_y_module}" ref="controlleur"/>
 

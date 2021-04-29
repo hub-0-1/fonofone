@@ -5,7 +5,6 @@ import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 import Disposition from "./mixins/disposition.js";
 
 export default {
-  props: ['module'],
   mixins: [Disposition],
   data: function () { return { collapsed: false } },
   components: { "vue-draggable-resizable": VueDraggableResizable },

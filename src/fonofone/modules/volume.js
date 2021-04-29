@@ -43,7 +43,7 @@ export default {
     }
   },
   template: `
-    <generique :module="$t('modules.volume')" :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
+    <generique :disposition="disposition" :modifiable="modifiable && !is_dragging" @redispose="this.update_disposition">
       <svg viewBox="0 0 ${Volume.largeur_module} ${Volume.hauteur_module}" preserveAspectRatio="none" ref="canvas">
         <rect class="bg controlleur" x="0" width="${Volume.largeur_module}" y="0" height="${Volume.hauteur_module}" ref="controlleur"/>
         <rect v-for="i in ${Volume.nb_divisions}" class="ligne" :x="((i / ${Volume.nb_divisions + 1}) * ${Volume.largeur_module}) - ${Volume.width_division / 2}" y="0" height="${Volume.hauteur_module}" :width="i == Math.round(${Volume.nb_divisions} / 2) ? ${Volume.width_division} * 5 : ${Volume.width_division}" />
