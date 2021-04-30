@@ -5,7 +5,7 @@ const couleur_zone_mix = "blue";
 const couleur_zone_pic = "orange";
 
 export default class Zone {
-  constructor (x, y, rx, ry, ctx_audio, canvas, master, on_selected, configuration_fonofone =  null) {
+  constructor (x, y, rx, ry, ctx_audio, canvas, master_fonoimage, on_selected, configuration_fonofone =  null) {
 
     this.canvas = canvas;
     this.ctx_audio = ctx_audio;
@@ -17,8 +17,8 @@ export default class Zone {
 
     // Audio fonofone
     this.master = ctx_audio.createGain();
-    this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-    this.master.connect(master);
+    //this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+    this.master.connect(master_fonoimage);
 
     // Visuel
     this.ellipse = new Fabric.Ellipse({

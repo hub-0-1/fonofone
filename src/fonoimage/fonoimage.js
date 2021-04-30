@@ -12,7 +12,7 @@ import Globales from './globales.js';
 import './style.less';
 import Images from '../images/image.svg';
 import Record from '../images/record.svg';
-import Micro from '../images/micro.svg';
+import Oreille from '../images/oreille.svg';
 import Poubelle from '../images/trash.svg';
 import Export from '../images/export.svg';
 import Import from '../images/import.svg';
@@ -150,7 +150,7 @@ window.Fonoimage = class Fonoimage {
           return this.enregistrement.enregistreur;
         },
         supprimer_zone_active: function () {
-          this.canva.remove(this.canva.getActiveObject());
+          this.canva.remove(this.zone_active.ellipse);
           delete this.zones[this.zone_active.id];
           this.zone_active = null;
         },
@@ -167,6 +167,12 @@ window.Fonoimage = class Fonoimage {
             this.activer_son(zone);
           }
         },
+        activer_son: function (zone) {
+          zone.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
+        },
+        desactiver_son: function (zone) {
+          zone.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+        },
         toggle_ff_pleine_largeur: function () {
           this.ff_pleine_largeur = !this.ff_pleine_largeur;
           setTimeout(() => {
@@ -182,65 +188,25 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_cadenas: function () {
           this.cadenas = !this.cadenas;
-          this.cadenas ? this.set_mode_normal() : this.set_mode_edition();
+          _.each(this.zones, (zone) => {
+            this.cadenas ? zone.immobiliser() : zone.rendre_mobile();
+          });
         },
         toggle_hp: function () {
           this.haut_parleur = !this.haut_parleur;
-          console.log('ici', this.haut_parleur);
           this.master.gain.setValueAtTime(this.haut_parleur ? 1 : 0, this.ctx_audio.currentTime);
         },
-        activer_son: function (zone) {
-          zone.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
-        },
-        desactiver_son: function (zone) {
-          zone.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-        },
-        set_mode_normal: function () {
-          this.mode = "normal";
+        moduler_son_zones: function (options) {
           _.each(this.zones, (zone) => {
-            zone.immobiliser();
-            this.get_fonofone(zone).force_play();
+            if(zone.mode == 'mix') {
+              let proximite = proximite_centre_ellipse(this.canva, options, zone.ellipse);
+              zone.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
+            }
           });
-
-          // Afficher le micro
-          new Fabric.Image.fromURL(Micro, (micro) => {
-            this.micro = micro;
-            micro.originX = "center";
-            micro.set('left', this.canva.width / 2);
-            micro.set('top', this.canva.height / 2);
-            micro.setCoords();
-            micro.on('moving', (options) => { 
-              _.each(this.zones, (zone) => {
-
-                // Seulement pour les zones en mode mix
-                if(this.mode.match(/normal|session/) && zone.mode == 'mix') {
-                  let proximite = proximite_centre_ellipse(this.canva, options, zone.ellipse);
-                  zone.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
-                }
-              });
-            });
-
-            // Empecher le resize
-            micro.hasControls = false;
-            this.canva.add(micro);
-          });
-        },
-        set_mode_edition: function () {
-          this.mode = "edition";
-          _.each(this.zones, (zone) => {
-            zone.rendre_mobile()
-          });
-
-          // TODO simplement rendre invisble
-          if(this.micro) {
-            this.canva.remove(this.micro);
-            this.micro = null;
-          }
         },
 
         // Gestion des zones
         dessiner_nouvelle_zone: function (options) {
-          this.mode = "edition:ajout:encours";
 
           // Initialisation des variables de scope
           let init_options = options;
@@ -276,8 +242,6 @@ window.Fonoimage = class Fonoimage {
               Math.abs(coords[0].x - coords[1].x) / 2, // rayon width
               Math.abs(coords[0].y - coords[1].y) / 2// rayon height
             );
-
-            this.set_mode_edition();
           });
 
           // Afficher le shadow
@@ -290,7 +254,9 @@ window.Fonoimage = class Fonoimage {
           let zone = new Zone(x, y, rx, ry, this.ctx_audio, this.canva, this.master, (zone) => { this.afficher_zone(zone); });
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
+          this.canva.setActiveObject(this.oreille); // Pour activer le son
           this.canva.setActiveObject(zone.ellipse);
+          this.$nextTick(() => {this.get_fonofone(zone).force_play()});
         },
 
         // Outils
@@ -337,6 +303,23 @@ window.Fonoimage = class Fonoimage {
         });
 
         this.set_arriere_plan(Maison);
+
+        // Afficher le micro
+        new Fabric.Image.fromURL(Oreille, (oreille) => {
+          this.oreille = oreille;
+          oreille.originX = "center";
+          oreille.set('left', this.canva.width / 2);
+          oreille.set('top', this.canva.height / 2);
+          oreille.setCoords();
+          oreille.on('moving', (options) => { this.moduler_son_zones(options); });
+          oreille.on('selected', (options) => { this.moduler_son_zones(options); });
+
+          // Empecher le resize
+          oreille.hasControls = false;
+          this.canva.add(oreille);
+        });
+
+        this.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
       },
       template: `
       <div class="fonoimage">
