@@ -17,6 +17,7 @@ import Poubelle from '../images/trash.svg';
 import Export from '../images/export.svg';
 import Import from '../images/import.svg';
 import Maison from '../images/maison.jpg';
+import FlecheDroite from '../images/fleche-droite.svg';
 
 import Cadenas from '../images/cadenas.svg';
 import CadenasOuvert from '../images/cadenas-ouvert.svg';
@@ -46,6 +47,7 @@ window.Fonoimage = class Fonoimage {
         cadenas: false,
         gestion_bg: false,
         mode: 'normal',
+        mode_solo: null,
         zone_active: null,
         ctx_audio: new AudioContext,
         master: null,
@@ -155,19 +157,14 @@ window.Fonoimage = class Fonoimage {
 
         // Controlleurs
         toggle_solo: function (zone, val) {
-          if(zone.solo) {
-            _.each(this.zones, (zone) => {
-              zone.solo = false;
-              this.activer_son(zone);
-            });
+          if(this.mode_solo == zone) {
+            this.mode_solo = null;
+            _.each(this.zones, (zone) => { this.activer_son(zone); });
           }
           else {
-            _.each(this.zones, (zone) => {
-              zone.solo = false;
-              this.desactiver_son(zone);
-            });
+            this.mode_solo = zone;
+            _.each(this.zones, (zone) => { this.desactiver_son(zone); });
             this.activer_son(zone);
-            zone.solo = true;
           }
         },
         toggle_ff_pleine_largeur: function () {
@@ -367,6 +364,7 @@ window.Fonoimage = class Fonoimage {
             <div class="app-fonoimage" ref="application_fonoimage">
               <canvas id="canva-fonoimage" ref="canva_fonoimage"></canvas>
             </div>
+            <div class="pellicule" :class="{actif: mode_solo}" ref="masque"></div>
             <div class="gestion-arriere-plan" :class="{actif: gestion_bg}" ref="gestion_arriere_plan">
               <h3 class="entete">
                 <img src="${Images}" @click="toggle_gestion_bg"/>
@@ -380,7 +378,9 @@ window.Fonoimage = class Fonoimage {
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
-          <div class="rond-central" @click="toggle_ff_pleine_largeur"></div>
+          <div class="rond-central" @click="toggle_ff_pleine_largeur">
+            <img src="${FlecheDroite}" />
+          </div>
           <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:solo="toggle_solo(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">

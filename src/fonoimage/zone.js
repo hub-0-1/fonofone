@@ -9,7 +9,6 @@ export default class Zone {
     this.configuration_fonofone = configuration_fonofone;
     this.survolee = false;
     this.pointeur = null;
-    this.solo = false;
 
     // Audio fonofone
     this.master = ctx_audio.createGain();
