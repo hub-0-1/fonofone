@@ -182,9 +182,7 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_cadenas: function () {
           this.cadenas = !this.cadenas;
-        },
-        toggle_mode_edition: function () {
-          this.mode.match(/edition/) ? this.set_mode_normal() : this.set_mode_edition();
+          this.cadenas ? this.set_mode_normal() : this.set_mode_edition();
         },
         toggle_hp: function () {
           this.haut_parleur = !this.haut_parleur;
@@ -200,7 +198,6 @@ window.Fonoimage = class Fonoimage {
           this.mode = "normal";
           _.each(this.zones, (zone) => {
             zone.immobiliser();
-            this.activer_son(zone);
             this.get_fonofone(zone).force_play();
           });
 
@@ -216,7 +213,7 @@ window.Fonoimage = class Fonoimage {
 
                 // Seulement pour les zones en mode mix
                 if(this.mode.match(/normal|session/) && zone.mode == 'mix') {
-                  let proximite = this.proximite_centre_ellipse(options, zone.ellipse);
+                  let proximite = proximite_centre_ellipse(this.canva, options, zone.ellipse);
                   zone.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
                 }
               });
@@ -231,7 +228,6 @@ window.Fonoimage = class Fonoimage {
           this.mode = "edition";
           _.each(this.zones, (zone) => {
             zone.rendre_mobile()
-            this.desactiver_son(zone);
           });
 
           // TODO simplement rendre invisble
@@ -388,4 +384,61 @@ window.Fonoimage = class Fonoimage {
       </div>`
     });
   }
+}
+
+function theta (x, y) {
+  return Math.atan2(y, x);
+}
+
+function cartesian2Polar(x, y){
+  return { distance: Math.sqrt(x*x + y*y), radians: Math.atan2(y,x) };
+}
+
+function rad2deg (rad) {
+  return rad * 180 / Math.PI;
+}
+
+function deg2rad (deg) {
+  return deg * Math.PI / 180;
+}
+
+function distance_euclidienne (point) {
+  return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
+}
+
+function proximite_centre_ellipse (canvas, options, ellipse) {
+
+  // Initialisation
+  let pointer_pos = canvas.getPointer(options.e);
+  let aCoords = ellipse.aCoords;
+  let centre = { x: (aCoords.tl.x + aCoords.br.x) / 2, y: (aCoords.tl.y + aCoords.br.y) / 2 };
+
+  // Enlever la rotation
+  let angle = ellipse.get('angle');
+  let pointer_sans_rotation = annuler_rotation(angle, centre, pointer_pos);
+
+  // Calculer l'angle entre le centre et le curseur
+  let pointeur_sans_rotation_normalise = { x: pointer_sans_rotation.x - centre.x, y: pointer_sans_rotation.y - centre.y };
+  let theta_pointeur_sans_rotation = theta(pointeur_sans_rotation_normalise.x, pointeur_sans_rotation_normalise.y);
+
+  // Calculer les x et y max pour l'angle donne
+  let coord_max = { x: ellipse.rx * Math.cos(theta_pointeur_sans_rotation), y: ellipse.ry * Math.sin(theta_pointeur_sans_rotation) };
+  let distance_max = distance_euclidienne(coord_max);
+
+  // Calculer la distance entre le centre et les x/y max
+  let distance_pointeur = distance_euclidienne(pointeur_sans_rotation_normalise);
+
+  return 1 - Math.min(distance_pointeur / distance_max, 1);
+}
+
+function annuler_rotation (angle, centre, obj) {
+
+  // Cartesien en polaire
+  let polaire = cartesian2Polar(obj.x - centre.x, obj.y - centre.y);
+
+  // Annuler rotation
+  polaire.radians -= angle * Math.PI / 180;
+
+  // polaire en cartesien
+  return { x: polaire.distance * Math.cos(polaire.radians) + centre.x, y: polaire.distance * Math.sin(polaire.radians) + centre.y };
 }
