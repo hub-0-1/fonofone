@@ -115,8 +115,8 @@ window.Fonoimage = class Fonoimage {
         clearCanva: function () {
           _.each(this.canva._objects, (obj) => { this.canva.remove(obj); });
         },
-        afficher_zone: function (zone_active) {
-          this.zone_active = zone_active;
+        afficher_zone: function (zone) {
+          this.zone_active = zone;
         },
         set_arriere_plan: function (url) {
           if(url.match(/^data/)) {
@@ -291,8 +291,8 @@ window.Fonoimage = class Fonoimage {
         },
         ajouter_zone: function (x, y, rx, ry, fonofone = null) {
           let zone = new Zone(x, y, rx, ry, this.ctx_audio, this.canvas, this.master, (zone) => {
+            console.log(zone.id);
             this.afficher_zone(zone);
-            this.zone_active = zone;
           });
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
@@ -381,7 +381,7 @@ window.Fonoimage = class Fonoimage {
           <div class="rond-central" @click="toggle_ff_pleine_largeur">
             <img src="${FlecheDroite}" />
           </div>
-          <fonofone v-for="(zone, key) in zones" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:solo="toggle_solo(zone, $event)" :class="{actif: zone == zone_active}"></fonofone>
+          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:solo="toggle_solo(zone, $event)"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">
