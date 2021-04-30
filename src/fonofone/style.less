@@ -255,11 +255,30 @@
       .menu-controlleurs {
         display: flex;
         justify-content: space-between;
+        align-items: center;
 
         span {
           margin-right: 10px;
           text-transform: none;
         }
+
+        .gauche {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .droite {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+
+          img {
+            height: 25px;
+          }
+        }
+
+
       }
     }
 
@@ -269,12 +288,6 @@
       overflow: auto;
       border-radius: @border_radius;
     }
-  }
-
-  .gauche {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
   }
 
   .icone {

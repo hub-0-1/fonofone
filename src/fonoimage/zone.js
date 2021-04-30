@@ -1,9 +1,14 @@
 const Fabric = require("fabric").fabric;
 
+const couleur_zone_active = "white";
+const couleur_zone_mix = "blue";
+const couleur_zone_pic = "orange";
+
 export default class Zone {
   constructor (x, y, rx, ry, ctx_audio, canvas, master, on_selected, configuration_fonofone =  null) {
 
     this.canvas = canvas;
+    this.ctx_audio = ctx_audio;
     this.id = `zone${Date.now()}${Math.round(Math.random() * 50)}`;
     this.mode = 'mix';
     this.configuration_fonofone = configuration_fonofone;
@@ -68,10 +73,10 @@ export default class Zone {
   toggle_mode (mode) {
     this.mode = mode;
     if(mode == 'pic') {
-      this.ellipse.set('stroke', 'orange');
+      this.ellipse.set('stroke', couleur_zone_pic);
       this.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
     } else {
-      this.ellipse.set('stroke', 'blue');
+      this.ellipse.set('stroke', couleur_zone_mix);
       if(this.pointeur) {
         this.canvas.remove(this.pointeur);
         this.pointeur = null;

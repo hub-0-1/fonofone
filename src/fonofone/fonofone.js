@@ -45,8 +45,8 @@ import SoloActif from '../images/solo-actif.svg';
 import Export from '../images/export.svg';
 import Import from '../images/folder-open.svg';
 import Micro from '../images/micro.svg';
-import ModeMix from '../images/mode_mix.svg';
-import ModePic from '../images/mode_pic.svg';
+import ModeMix from '../images/mode-mix.svg';
+import ModePic from '../images/mode-pic.svg';
 import DossierBref from '../images/icones_dossiers/icon-son-brefs.svg';
 import DossierBruiteux from '../images/icones_dossiers/icon-son-bruiteux.svg';
 import DossierDivers from '../images/icones_dossiers/icon-son-divers.svg';
@@ -431,8 +431,7 @@ export default {
                 <img src="${Crop}" class="icone" @click="crop"/>
               </div>
               <div v-if="fonoimage.integration" class="droite">
-                <img src="${ModeMix}" class="icone" @click="toggle_mode_fonoimage"/>
-                <img src="${ModePic}" class="icone" @click="toggle_mode_fonoimage"/>
+                <img :src="fonoimage.mode == 'mix' ? '${ModeMix}' : '${ModePic}'" @click="toggle_mode_fonoimage"/>
               </div>
             </div>
           </header>
