@@ -186,7 +186,8 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_hp: function () {
           this.haut_parleur = !this.haut_parleur;
-          this.master.gain.setValueAtTime(0, this.haut_parleur ? 1 : 0);
+          console.log('ici', this.haut_parleur);
+          this.master.gain.setValueAtTime(this.haut_parleur ? 1 : 0, this.ctx_audio.currentTime);
         },
         activer_son: function (zone) {
           zone.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);

@@ -55,10 +55,10 @@ export default class Zone {
       this.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
     } else {
       this.ellipse.set('stroke', couleur_zone_mix);
+      this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
       if(this.pointeur) {
         this.canvas.remove(this.pointeur);
         this.pointeur = null;
-        this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
       }
     }
 
