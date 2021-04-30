@@ -404,6 +404,7 @@ export default {
     this.importer(this.archive).then(() => {
       this.appliquer_configuration(this.configuration);
       this.mixer.etat.chargement = false;
+      this.$emit("mounted", true); // Pour le fonoimage
     });
   },
   template: `

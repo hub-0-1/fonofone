@@ -195,6 +195,8 @@ window.Fonoimage = class Fonoimage {
         toggle_hp: function () {
           this.haut_parleur = !this.haut_parleur;
           this.master.gain.setValueAtTime(this.haut_parleur ? 1 : 0, this.ctx_audio.currentTime);
+          this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+          console.log(this.haut_parleur, this.master.gain);
         },
         moduler_son_zones: function (options) {
           _.each(this.zones, (zone) => {
@@ -256,7 +258,9 @@ window.Fonoimage = class Fonoimage {
           this.canva.add(zone.ellipse);
           this.canva.setActiveObject(this.oreille); // Pour activer le son
           this.canva.setActiveObject(zone.ellipse);
-          this.$nextTick(() => {this.get_fonofone(zone).force_play()});
+        },
+        faire_jouer: function (zone) {
+          this.get_fonofone(zone).force_play();
         },
 
         // Outils
@@ -318,8 +322,6 @@ window.Fonoimage = class Fonoimage {
           oreille.hasControls = false;
           this.canva.add(oreille);
         });
-
-        this.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
       },
       template: `
       <div class="fonoimage">
@@ -356,7 +358,7 @@ window.Fonoimage = class Fonoimage {
         </div>
         <div class="panneau-fonofone" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
           <div class="rond-central" @click="toggle_ff_pleine_largeur"><img src="${FlecheDroite}"/></div>
-          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:solo="toggle_solo(zone, $event)"></fonofone>
+          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:solo="toggle_solo(zone, $event)" @mounted="faire_jouer(zone)"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">

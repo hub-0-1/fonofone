@@ -17,7 +17,6 @@ export default class Zone {
 
     // Audio fonofone
     this.master = ctx_audio.createGain();
-    //this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
     this.master.connect(master_fonoimage);
 
     // Visuel
