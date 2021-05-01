@@ -119,18 +119,7 @@ window.Fonoimage = class Fonoimage {
           this.zone_active = zone;
         },
         set_arriere_plan: function (url) {
-          if(url.match(/^data/)) {
-            let img = new Image();
-            img.onload = () => {
-              var f_img = new Fabric.Image(img);
-              this.canva.setBackgroundImage(f_img);
-              this.canva.renderAll();
-            };
-            img.src = url;
-          }
-          else {
-            this.canva.setBackgroundImage(url, this.canva.renderAll.bind(this.canva), { backgroundImageStretch: true });
-          }
+          this.arriere_plan = url;
         },
 
         // Sessions
@@ -339,7 +328,7 @@ window.Fonoimage = class Fonoimage {
               <img src="${Import}" class="import invert" @click="mode_importation = !mode_importation"/>
             </div>
           </menu>
-          <section class="principal">
+          <section class="principal" :style="{ backgroundImage: 'url(' + arriere_plan + ')' }">
             <div class="app-fonoimage" ref="application_fonoimage">
               <canvas id="canva-fonoimage" ref="canva_fonoimage"></canvas>
             </div>
