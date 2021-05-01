@@ -47,6 +47,8 @@ import Import from '../images/folder-open.svg';
 import Micro from '../images/micro.svg';
 import ModeMix from '../images/mode-mix.svg';
 import ModePic from '../images/mode-pic.svg';
+import Maximiser from '../images/maximiser.svg';
+import Minimiser from '../images/minimiser.svg';
 import DossierBref from '../images/icones_dossiers/icon-son-brefs.svg';
 import DossierBruiteux from '../images/icones_dossiers/icon-son-bruiteux.svg';
 import DossierDivers from '../images/icones_dossiers/icon-son-divers.svg';
@@ -82,6 +84,7 @@ export default {
       fonoimage: {
         integration: (this.integration_fonoimage || false),
         mode: 'mix',
+        minimiser: false,
         solo: false
       },
       mode_affichage: "colonne", // "grille" ou "colonne"
@@ -235,6 +238,10 @@ export default {
       this.fonoimage.mode = this.fonoimage.mode == 'pic' ? 'mix' : 'pic';
       this.$emit('update:mode', this.fonoimage.mode);
     },
+    toggle_affichage_fonoimage: function () {
+      this.fonoimage.minimiser = !this.fonoimage.minimiser;
+      this.$emit('update:minimiser', this.fonoimage.minimiser);
+    },
     toggle_mode_solo: function () {
       this.fonoimage.solo = !this.fonoimage.solo;
       this.$emit('update:solo', this.fonoimage.solo);
@@ -259,34 +266,28 @@ export default {
 
     // UI
     pulsation: function () {
-      let barre = this.creer_barre_pulsation();
+      let region = this.$refs.wavesurfer.querySelector(".wavesurfer-region");
+      if(this.mixer.etat.chargement || !region) return;
+      let pulsation = this.creer_barre_pulsation(region);
 
-      setTimeout(() => {
-        this.lancer_barre_pulsation(barre);
-      }, 0);
+      setTimeout(() => { this.lancer_barre_pulsation(pulsation, region); }, 0);
 
-      setTimeout(() => {
-        this.supprimer_barre_pulsation(barre);
-      }, this.mixer.parametres.longueur * 1000);
+      setTimeout(() => { pulsation.remove(); }, this.mixer.parametres.longueur * 1000);
     },
-    creer_barre_pulsation: function () {
+    creer_barre_pulsation: function (region) {
       let temps_pulsation = this.mixer.parametres.longueur;
       let pulsation = document.createElement('div');
 
       pulsation.className = "pulsation";
-      pulsation.style.left = this.$refs.wavesurfer.querySelector(".wavesurfer-region").style.left;
+      pulsation.style.left = region.style.left;
       pulsation.style.transition = temps_pulsation + "s left linear";
 
       this.$refs.wavesurfer.appendChild(pulsation);
       return pulsation;
     },
-    lancer_barre_pulsation: function (pulsation) {
-      let region = this.$refs.wavesurfer.querySelector(".wavesurfer-region");
+    lancer_barre_pulsation: function (pulsation, region) {
       let droite = region.offsetLeft + region.offsetWidth;
       pulsation.style.left = droite + "px";
-    },
-    supprimer_barre_pulsation: function (pulsation) {
-      pulsation.remove();
     },
     paint: function () {
 
@@ -449,6 +450,7 @@ export default {
           <img src="${Reload}" class="invert" @click="toggle_ecran('reinitialisation')">
           <img src="${Import}" @click="toggle_ecran('importation')">
           <img src="${Export}" @click="toggle_ecran('exportation')">
+          <img v-if="fonoimage.integration" class="invert" :src="fonoimage.minimiser ? '${Minimiser}' : '${Maximiser}'" @click="toggle_affichage_fonoimage"/>
         </menu>
         <section v-show="ecran == 'normal'" class="ecran app-fonofone">
           <header>
