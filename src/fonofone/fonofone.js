@@ -257,25 +257,30 @@ export default {
     // UI
     pulsation: function () {
       let barre = this.creer_barre_pulsation();
-      this.lancer_barre_pulsation(barre);
+
+      setTimeout(() => {
+        this.lancer_barre_pulsation(barre);
+      }, 0);
 
       setTimeout(() => {
         this.supprimer_barre_pulsation(barre);
-      }, this.mixer.parametres.longeur);
+      }, this.mixer.parametres.longueur * 1000);
     },
     creer_barre_pulsation: function () {
-      let temps_pulsation = this.parametres.mixer.longueur;
+      let temps_pulsation = this.mixer.parametres.longueur;
       let pulsation = document.createElement('div');
 
       pulsation.className = "pulsation";
-      pulsation.style.left = 0; // TODO Wavesurfer region
+      pulsation.style.left = this.$refs.wavesurfer.querySelector(".wavesurfer-region").style.left;
       pulsation.style.transition = temps_pulsation + "s left";
 
       this.$refs.wavesurfer.appendChild(pulsation);
       return pulsation;
     },
     lancer_barre_pulsation: function (pulsation) {
-      pulsation.style.left = 1; // TODO Wavesurfeur
+      let region = this.$refs.wavesurfer.querySelector(".wavesurfer-region");
+      let droite = region.offsetLeft + region.offsetWidth;
+      pulsation.style.left = droite + "px";
     },
     supprimer_barre_pulsation: function (pulsation) {
       pulsation.remove();

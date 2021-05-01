@@ -240,7 +240,17 @@
       }
 
       .wavesurfer {
+        position: relative;
         margin: 15px 0;
+
+        .pulsation {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 5px;
+          border-radius: 5px;
+          border: 1px solid @blanc_creme;
+        }
 
         wave {
           border: none !important;
