@@ -187,6 +187,9 @@ export default {
       this.set_loop(true);
       this.mixer.lancer();
     },
+    set_solo: function (val) {
+      this.fonoimage.solo = val;
+    },
     toggle_loop: function () {
       this.set_loop(!this.mixer.etat.loop);
     },

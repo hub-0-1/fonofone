@@ -148,28 +148,24 @@ window.Fonoimage = class Fonoimage {
         // Controlleurs
         toggle_solo: function (zone, val) {
           if(this.mode_solo == zone) {
-            this.mode_solo = null;
             _.each(this.zones, (zone) => { this.activer_son(zone); });
+            this.mode_solo = null;
           }
           else {
+            _.each(this.zones, (z) => { 
+              if(z == zone) return;
+              this.get_fonofone(z).set_solo(false);
+              this.desactiver_son(z); 
+            });
+            this.activer_son(zone);
             this.mode_solo = zone;
-            _.each(this.zones, (zone) => { this.desactiver_son(zone); });
-
-            if(zone.mode == 'mix') {
-              // TODO marche pas
-              this.canva.setActiveObject(this.oreille); // Pour activer le son
-              this.canva.setActiveObject(zone.ellipse);
-            }
-            else {
-              this.activer_son(zone);
-            }
           }
         },
         activer_son: function (zone) {
-          zone.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
+          zone.master_solo.gain.setValueAtTime(1, this.ctx_audio.currentTime);
         },
         desactiver_son: function (zone) {
-          zone.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
+          zone.master_solo.gain.setValueAtTime(0, this.ctx_audio.currentTime);
         },
         toggle_ff_pleine_largeur: function () {
           this.ff_pleine_largeur = !this.ff_pleine_largeur;

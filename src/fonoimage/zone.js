@@ -17,7 +17,10 @@ export default class Zone {
 
     // Audio fonofone
     this.master = ctx_audio.createGain();
-    this.master.connect(master_fonoimage);
+    this.master_solo = ctx_audio.createGain();
+
+    this.master.connect(this.master_solo);
+    this.master_solo.connect(master_fonoimage);
 
     // Visuel
     this.ellipse = new Fabric.Ellipse({
