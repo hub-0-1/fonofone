@@ -56,6 +56,7 @@ import DossierMelodiques from '../images/icones_dossiers/icon-son-melodiques.svg
 import DossierNatures from '../images/icones_dossiers/icon-son-natures.svg';
 import DossierResonnants from '../images/icones_dossiers/icon-son-resonnants.svg';
 import DossierSoutenus from '../images/icones_dossiers/icon-son-soutenus.svg';
+import DossierLocal from '../images/icones_dossiers/home.svg';
 
 // Traduction
 import VueI18n from 'vue-i18n';
@@ -162,6 +163,7 @@ export default {
           return this.mixer.charger_blob(blob);
         }).then(() => {
           this.toggle_ecran("normal");
+          this.$refs.selecteur[0].set_plage(0, 1);
           this.paint();
           resolve(source);
         }).catch((e) => {
@@ -207,6 +209,7 @@ export default {
       this.mixer.toggle_pause();
     },
     arreter: function () {
+      _.each(this.$refs.wavesurfer.querySelectorAll(".pulsation"), (pulsation) => { pulsation.remove(); })
       this.mixer.toggle_pause();
     },
     toggle_enregistrement: function () {
@@ -272,7 +275,7 @@ export default {
 
       pulsation.className = "pulsation";
       pulsation.style.left = this.$refs.wavesurfer.querySelector(".wavesurfer-region").style.left;
-      pulsation.style.transition = temps_pulsation + "s left";
+      pulsation.style.transition = temps_pulsation + "s left linear";
 
       this.$refs.wavesurfer.appendChild(pulsation);
       return pulsation;
@@ -347,7 +350,7 @@ export default {
         case 'natures': return DossierNatures;
         case 'resonnants': return DossierResonnants;
         case 'soutenus': return DossierSoutenus;
-        default: return '';
+        default: return DossierLocal;
       }
 
     },
