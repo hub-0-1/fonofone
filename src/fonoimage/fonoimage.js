@@ -139,7 +139,7 @@ window.Fonoimage = class Fonoimage {
           return this.enregistrement.enregistreur;
         },
         supprimer_zone_active: function () {
-          // TODO Force stop
+          this.desactiver_son(this.zone_active);
           this.canva.remove(this.zone_active.ellipse);
           delete this.zones[this.zone_active.id];
           this.zone_active = null;
@@ -154,7 +154,15 @@ window.Fonoimage = class Fonoimage {
           else {
             this.mode_solo = zone;
             _.each(this.zones, (zone) => { this.desactiver_son(zone); });
-            this.activer_son(zone);
+
+            if(zone.mode == 'mix') {
+              // TODO marche pas
+              this.canva.setActiveObject(this.oreille); // Pour activer le son
+              this.canva.setActiveObject(zone.ellipse);
+            }
+            else {
+              this.activer_son(zone);
+            }
           }
         },
         activer_son: function (zone) {
