@@ -139,6 +139,7 @@ window.Fonoimage = class Fonoimage {
           return this.enregistrement.enregistreur;
         },
         supprimer_zone_active: function () {
+          // TODO Force stop
           this.canva.remove(this.zone_active.ellipse);
           delete this.zones[this.zone_active.id];
           this.zone_active = null;
@@ -164,9 +165,7 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_ff_pleine_largeur: function () {
           this.ff_pleine_largeur = !this.ff_pleine_largeur;
-          setTimeout(() => {
-            this.get_fonofone(this.zone_active).paint();
-          }, 1000);
+          setTimeout(() => { this.get_fonofone(this.zone_active).paint(); }, 1000);
         },
         toggle_gestion_bg: function () {
           this.gestion_bg = !this.gestion_bg;
@@ -184,8 +183,6 @@ window.Fonoimage = class Fonoimage {
         toggle_hp: function () {
           this.haut_parleur = !this.haut_parleur;
           this.master.gain.setValueAtTime(this.haut_parleur ? 1 : 0, this.ctx_audio.currentTime);
-          this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
-          console.log(this.haut_parleur, this.master.gain);
         },
         moduler_son_zones: function (options) {
           _.each(this.zones, (zone) => {
@@ -262,6 +259,8 @@ window.Fonoimage = class Fonoimage {
         // Diagramme audio
         this.master = this.ctx_audio.createGain();
         this.media_stream_destination = this.ctx_audio.createMediaStreamDestination(); 
+
+        this.master.connect(this.ctx_audio.destination);
         this.master.connect(this.media_stream_destination);
 
         fetch(Globales.fonofone_pardefaut).then((response) => {

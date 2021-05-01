@@ -74,12 +74,9 @@ class Mixer {
     this.nodes.highpass_filter.connect(this.nodes.bandpass_filter);
     this.nodes.bandpass_filter.connect(this.nodes.master);
 
-    // Gain
+    // (Gain) Sortie standard et sortie enregistrement
     this.nodes.master.connect(fonofone.noeud_sortie);
-
-    // Sortie controllable de l'externe du Fonofone
-    fonofone.noeud_sortie.connect(this.ctx_audio.destination);
-    fonofone.noeud_sortie.connect(this.nodes.media_stream_destination);
+    this.nodes.master.connect(this.nodes.media_stream_destination);
   }
 
   charger_blob (blob) {

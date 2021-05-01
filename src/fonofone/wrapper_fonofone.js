@@ -27,7 +27,7 @@ window.Fonofone = class Fonofone {
     parametres.ctx_audio = (parametres.ctx_audio || new AudioContext);
 
     // Creer un noeud de sortie controllable par le Fonoimage
-    parametres.noeud_sortie = (parametres.noeud_sortie || parametres.ctx_audio.createGain());
+    parametres.noeud_sortie = (parametres.noeud_sortie || parametres.ctx_audio.destination);
 
     return new Promise((resolve) => {
       fetch(parametres.configuration)
