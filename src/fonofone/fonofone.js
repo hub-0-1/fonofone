@@ -255,6 +255,31 @@ export default {
     },
 
     // UI
+    pulsation: function () {
+      let barre = this.creer_barre_pulsation();
+      this.lancer_barre_pulsation(barre);
+
+      setTimeout(() => {
+        this.supprimer_barre_pulsation(barre);
+      }, this.mixer.parametres.longeur);
+    },
+    creer_barre_pulsation: function () {
+      let temps_pulsation = this.parametres.mixer.longueur;
+      let pulsation = document.createElement('div');
+
+      pulsation.className = "pulsation";
+      pulsation.style.left = 0; // TODO Wavesurfer region
+      pulsation.style.transition = temps_pulsation + "s left";
+
+      this.$refs.wavesurfer.appendChild(pulsation);
+      return pulsation;
+    },
+    lancer_barre_pulsation: function (pulsation) {
+      pulsation.style.left = 1; // TODO Wavesurfeur
+    },
+    supprimer_barre_pulsation: function (pulsation) {
+      pulsation.remove();
+    },
     paint: function () {
 
       // Largeur modules
@@ -423,7 +448,7 @@ export default {
               <img src="${Folder}" @click="toggle_ecran('selection_son')"/>
               <input v-model="configuration.parametres.nom" class="titre texte-nom-archive" placeholder="Archive"/>
             </div>
-            <div :id="waveform_id" class="wavesurfer"></div>
+            <div :id="waveform_id" class="wavesurfer" ref="wavesurfer"></div>
             <div class="menu-controlleurs">
               <div class="gauche">
                 <img :src="mixer.etat.jouer ? '${JouerActif}' : '${Jouer}'" class="icone pause" :class="{actif: mixer.etat.jouer}" @click="toggle_pause"/>

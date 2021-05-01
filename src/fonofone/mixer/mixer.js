@@ -18,6 +18,7 @@ class Mixer {
     this.tracks_timeouts = [];
     this.prochaines_tracks = [];
     this.nodes = {};
+    this.pulser = fonofone.pulsation;
 
     // Enregistrement de session
     this.nodes.media_stream_destination = this.ctx_audio.createMediaStreamDestination();
@@ -127,6 +128,7 @@ class Mixer {
 
     // Creer et lancer la track
     let track = new Track(this.ctx_audio, this.audio_buffer, this.nodes.n0, this.parametres);
+    this.pulser();
     this.tracks.push(track);
 
     // Lors de la fin
