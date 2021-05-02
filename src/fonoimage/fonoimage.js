@@ -240,10 +240,9 @@ window.Fonoimage = class Fonoimage {
           this.master.gain.setValueAtTime(this.haut_parleur ? 1 : 0, this.ctx_audio.currentTime);
         },
         moduler_son_zones: function (options) {
-          console.log(options);
           _.each(this.zones, (zone) => {
             if(zone.mode == 'mix') {
-              let proximite = proximite_centre_ellipse(this.canva, options, zone.ellipse);
+              let proximite = proximite_centre_ellipse(this.canva, this.oreille, zone.ellipse);
               zone.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
             }
           });
@@ -449,16 +448,15 @@ function distance_euclidienne (point) {
   return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
 }
 
-function proximite_centre_ellipse (canvas, options, ellipse) {
+function proximite_centre_ellipse (canvas, oreille, ellipse) {
 
   // Initialisation
-  let pointer_pos = canvas.getPointer(options.e);
+  let pointer_pos = {x: oreille.left, y: oreille.top};
   let aCoords = ellipse.aCoords;
   let centre = { x: (aCoords.tl.x + aCoords.br.x) / 2, y: (aCoords.tl.y + aCoords.br.y) / 2 };
 
   // Enlever la rotation
-  let angle = ellipse.get('angle');
-  let pointer_sans_rotation = annuler_rotation(angle, centre, pointer_pos);
+  let pointer_sans_rotation = annuler_rotation(ellipse.angle, centre, pointer_pos);
 
   // Calculer l'angle entre le centre et le curseur
   let pointeur_sans_rotation_normalise = { x: pointer_sans_rotation.x - centre.x, y: pointer_sans_rotation.y - centre.y };
