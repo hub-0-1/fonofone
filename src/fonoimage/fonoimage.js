@@ -100,7 +100,7 @@ window.Fonoimage = class Fonoimage {
             arriere_plan: this.arriere_plan,
             zones: _.map(this.zones, (zone) => { 
               return { 
-                zone: zone, // Cest ici que ca plante pour la recursion
+                ellipse: zone.ellipse.getBoundindRect(),
                 fonofone: this.get_fonofone(zone).serialiser() 
               } 
             })
