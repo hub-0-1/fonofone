@@ -41,8 +41,7 @@ window.Fonoimage = class Fonoimage {
       },
       data: {
         archive,
-        fonofone_pardefaut: null,
-        configuration: {parametres: {}},
+        fonofone_pardefaut: null, // ne devrait pas servir
         haut_parleur: true,
         cadenas: false,
         gestion_bg: false,
@@ -74,7 +73,9 @@ window.Fonoimage = class Fonoimage {
               fileReader.readAsText(fichier);
             });
 
-            let configuration_archive = JSON.parse(archive_serialisee);
+
+            console.log(archive_serialisee);
+            let archive = JSON.parse(archive_serialisee);
 
             // Faire le menage
             this.zone_active = null;
@@ -82,14 +83,13 @@ window.Fonoimage = class Fonoimage {
             this.clearCanva();
 
             // Ajouter les zones et les fonofones
-            _.each(configuration_archive.zones, (zone) => {
-              let ellipse = zone.zone.ellipse;
-              // TODO
-              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, zone.fonofone);
+            _.each(archive.zones, (zone) => {
+              let ellipse = zone.ellipse;
+              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.width / 2, ellipse.height / 2, zone.fonofone);
             });
 
             // Charger l'arriere-plan
-            this.set_arriere_plan(configuration_archive.arriere_plan);
+            this.set_arriere_plan(archive.arriere_plan);
           });
         },
         exporter: function () {
@@ -100,7 +100,7 @@ window.Fonoimage = class Fonoimage {
             arriere_plan: this.arriere_plan,
             zones: _.map(this.zones, (zone) => { 
               return { 
-                ellipse: zone.ellipse.getBoundindRect(),
+                ellipse: zone.ellipse.getBoundingRect(),
                 fonofone: this.get_fonofone(zone).serialiser() 
               } 
             })
@@ -108,9 +108,6 @@ window.Fonoimage = class Fonoimage {
         },
 
         // UI
-        set_affichage_dirty: function (zone) {
-          console.log('repaint?');
-        },
         clearCanva: function () {
           _.each(this.canva._objects, (obj) => { this.canva.remove(obj); });
         },
@@ -386,7 +383,7 @@ window.Fonoimage = class Fonoimage {
               </div>
             </div>
             <div class="panneau-importation" :class="{actif: mode_importation}">
-              <div class="fenetre" ref="filepond_archive"> </div>
+              <div class="fenetre" ref="filepond_archive"></div>
             </div>
           </section>
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
