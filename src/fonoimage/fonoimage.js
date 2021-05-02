@@ -165,7 +165,11 @@ window.Fonoimage = class Fonoimage {
         },
         toggle_ff_pleine_largeur: function () {
           this.ff_pleine_largeur = !this.ff_pleine_largeur;
-          setTimeout(() => { this.get_fonofone(this.zone_active).paint(); }, 1000);
+
+          // Resfresh mitaine pour avoir l'air moins fou
+          let fps_refresh = 30;
+          let refresh = setInterval(() => { this.get_fonofone(this.zone_active).paint(); }, 1000 / fps_refresh);
+          setTimeout(() => { clearInterval(refresh); }, 1000);
         },
         toggle_ff_minimiser: function (zone, val) {
           zone.minimiser = val;
