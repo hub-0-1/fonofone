@@ -240,12 +240,15 @@ window.Fonoimage = class Fonoimage {
           this.master.gain.setValueAtTime(this.haut_parleur ? 1 : 0, this.ctx_audio.currentTime);
         },
         moduler_son_zones: function (options) {
-          _.each(this.zones, (zone) => {
-            if(zone.mode == 'mix') {
-              let proximite = proximite_centre_ellipse(this.canva, this.oreille, zone.ellipse);
-              zone.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
-            }
-          });
+          _.each(this.zones, (zone) => { this.moduler_son_zone(zone); });
+        },
+        moduler_son_zone: function (zone) {
+          if(zone.mode == 'mix') {
+            let coords_oreille = { x: this.oreille.left + this.oreille.width / 2, y: this.oreille.top + this.oreille.height / 2};
+            let coords_zone = { x: zone.left + zone.width / 2, y: zone.top + zone.height / 2};
+            let proximite = proximite_centre_ellipse(coords_oreille, zone.ellipse);
+            zone.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
+          }
         },
 
         // Gestion des zones
@@ -300,7 +303,10 @@ window.Fonoimage = class Fonoimage {
             canvas: this.canva,
             master_fonoimage: this.master,
             on_selected: (zone) => { this.afficher_zone(zone) },
-            on_moving: (zone) => { this.set_masque(this.get_coords_ellipse(zone.ellipse)) }
+            on_moving: (zone) => { 
+              this.set_masque(this.get_coords_ellipse(zone.ellipse));
+              this.moduler_son_zone(zone);
+            }
           }, fonofone);
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
@@ -371,7 +377,8 @@ window.Fonoimage = class Fonoimage {
         // Afficher le micro
         new Fabric.Image.fromURL(Oreille, (oreille) => {
           this.oreille = oreille;
-          oreille.originX = "center";
+          //oreille.originX = "center";
+          //oreille.originY = "center";
           oreille.set('left', this.canva.width / 2);
           oreille.set('top', this.canva.height / 2);
           oreille.setCoords();
@@ -448,15 +455,13 @@ function distance_euclidienne (point) {
   return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
 }
 
-function proximite_centre_ellipse (canvas, oreille, ellipse) {
+function proximite_centre_ellipse (coords_oreille, ellipse) {
 
   // Initialisation
-  let pointer_pos = {x: oreille.left, y: oreille.top};
-  let aCoords = ellipse.aCoords;
-  let centre = { x: (aCoords.tl.x + aCoords.br.x) / 2, y: (aCoords.tl.y + aCoords.br.y) / 2 };
+  let centre = { x: ellipse.left + ellipse.width / 2, y: ellipse.top + ellipse.height / 2 };
 
   // Enlever la rotation
-  let pointer_sans_rotation = annuler_rotation(ellipse.angle, centre, pointer_pos);
+  let pointer_sans_rotation = annuler_rotation(ellipse.angle, centre, coords_oreille);
 
   // Calculer l'angle entre le centre et le curseur
   let pointeur_sans_rotation_normalise = { x: pointer_sans_rotation.x - centre.x, y: pointer_sans_rotation.y - centre.y };
