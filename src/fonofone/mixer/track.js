@@ -21,8 +21,8 @@ export default class Track {
     enveloppe.gain.linearRampToValueAtTime(0, now + attack + parametres.longueur + release);
 
     // Vitesse
-    //console.log(parametres.vitesse, parametres.sens);
-    source.playbackRate.setValueAtTime(parametres.vitesse * parametres.sens, now);
+    // TODO pas de playback negatif : https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/WebAudio_playbackRate_explained, https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playbackRate
+    source.playbackRate.setValueAtTime(parametres.vitesse * -1, now);
 
     // Lancer
     source.start(now, parametres.debut, attack + parametres.longueur + release);

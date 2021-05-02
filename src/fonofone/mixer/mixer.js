@@ -283,7 +283,6 @@ class Mixer {
   }
 
   update_tracks () {
-    console.log(this.parametres.vitesse, this.parametres.sens);
     _.each(this.tracks, (track) => {
       track.source.playbackRate.setValueAtTime(this.parametres.vitesse * this.parametres.sens, this.ctx_audio.currentTime);
     });
