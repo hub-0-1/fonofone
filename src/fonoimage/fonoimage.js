@@ -272,6 +272,8 @@ window.Fonoimage = class Fonoimage {
 
           // Creer a la fin du drag
           this.canva.on('mouse:up', (options) => {
+            this.canva.setCursor("default");
+
             this.canva.off('mouse:move');
             this.canva.off('mouse:up');
 
@@ -293,6 +295,7 @@ window.Fonoimage = class Fonoimage {
 
           // Afficher le shadow
           this.canva.on('mouse:move', (options) => {
+            //this.canva.renderAll();
             shadow_style.width = (options.e.clientX - init_event.clientX) + "px";
             shadow_style.height = (options.e.clientY - init_event.clientY) + "px";
           });
@@ -366,6 +369,7 @@ window.Fonoimage = class Fonoimage {
           width: application.offsetWidth,
           height: application.offsetHeight
         }).on('mouse:down', (options) => {
+          this.canva.setCursor("cell");
 
           // Si on ne clique pas sur une zone
           if(!options.target && !this.cadenas) { 

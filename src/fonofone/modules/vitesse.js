@@ -47,6 +47,7 @@ export default {
       else return 0.15;
     },
     largeur_coche: function (i) {
+      // coche du centre
       return i == ((this.nb_divisions - 1) / 2) + 1 ? Vitesse.width_division * 3 : Vitesse.width_division;
     },
     coche_blanche: function (i) {
