@@ -65,30 +65,27 @@ window.Fonoimage = class Fonoimage {
       methods: {
 
         // Import / Export
-        importer: function (fichier) {
-          return new Promise (async (resolve) => {
-            let archive_serialisee = await new Promise((resolve) => {
-              let fileReader = new FileReader();
-              fileReader.onload = (e) => resolve(fileReader.result);
-              fileReader.readAsText(fichier);
-            });
-
-            let archive = JSON.parse(archive_serialisee);
-
-            // Faire le menage
-            this.zone_active = null;
-            this.zones = {};
-            this.clearCanva();
-
-            // Ajouter les zones et les fonofones
-            _.each(archive.zones, (zone) => {
-              let ellipse = zone.ellipse;
-              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, ellipse.angle, zone.fonofone);
-            });
-
-            // Charger l'arriere-plan
-            this.set_arriere_plan(archive.arriere_plan);
+        importer: async function (fichier) {
+          let archive_serialisee = await new Promise((resolve) => {
+            let fileReader = new FileReader();
+            fileReader.onload = (e) => resolve(fileReader.result);
+            fileReader.readAsText(fichier);
           });
+
+          let archive = JSON.parse(archive_serialisee);
+
+          // Faire le menage
+          _.each(this.zones, (zone) => { this.supprimer_zone(zone) });
+          this.zone_active = null;
+
+          // Ajouter les zones et les fonofones
+          _.each(archive.zones, (zone) => {
+            let ellipse = zone.ellipse;
+            this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, ellipse.angle, zone.fonofone);
+          });
+
+          // Charger l'arriere-plan
+          this.set_arriere_plan(archive.arriere_plan);
         },
         exporter: function () {
           saveAs(new Blob([this.serialiser()]), `archive.fnmg`);
@@ -106,9 +103,6 @@ window.Fonoimage = class Fonoimage {
         },
 
         // UI
-        clearCanva: function () {
-          _.each(this.canva._objects, (obj) => { this.canva.remove(obj); });
-        },
         afficher_zone: function (zone) {
           this.zone_active = zone;
         },
@@ -142,11 +136,15 @@ window.Fonoimage = class Fonoimage {
           return this.enregistrement.enregistreur;
         },
         supprimer_zone_active: function () {
-          if(this.zone_active == this.mode_solo) this.mode_solo = null;
-          this.desactiver_son(this.zone_active);
-          this.canva.remove(this.zone_active.ellipse);
-          delete this.zones[this.zone_active.id];
+          this.supprimer_zone(this.zone_active);
           this.zone_active = null;
+        },
+        supprimer_zone: function (zone) {
+          if(zone == this.mode_solo) this.mode_solo = null;
+          this.desactiver_son(zone);
+          this.get_fonofone(zone).$destroy();
+          this.canva.remove(zone.ellipse);
+          delete this.zones[zone.id];
         },
 
         // Controlleurs
@@ -242,6 +240,7 @@ window.Fonoimage = class Fonoimage {
           this.master.gain.setValueAtTime(this.haut_parleur ? 1 : 0, this.ctx_audio.currentTime);
         },
         moduler_son_zones: function (options) {
+          console.log(options);
           _.each(this.zones, (zone) => {
             if(zone.mode == 'mix') {
               let proximite = proximite_centre_ellipse(this.canva, options, zone.ellipse);
