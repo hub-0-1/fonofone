@@ -5,10 +5,10 @@ const couleur_zone_mix = "blue";
 const couleur_zone_pic = "orange";
 
 export default class Zone {
-  constructor (x, y, rx, ry, angle, ctx_audio, canvas, master_fonoimage, on_selected, configuration_fonofone =  null) {
+  constructor (parametres, configuration_fonofone =  null) {
 
-    this.canvas = canvas;
-    this.ctx_audio = ctx_audio;
+    this.canvas = parametres.canvas;
+    this.ctx_audio = parametres.ctx_audio;
     this.id = `zone${Date.now()}${Math.round(Math.random() * 50)}`;
     this.mode = 'mix';
     this.configuration_fonofone = configuration_fonofone;
@@ -16,23 +16,29 @@ export default class Zone {
     this.pointeur = null;
 
     // Audio fonofone
-    this.master = ctx_audio.createGain();
-    this.master_solo = ctx_audio.createGain();
+    this.master = this.ctx_audio.createGain();
+    this.master_solo = this.ctx_audio.createGain();
 
     this.master.connect(this.master_solo);
-    this.master_solo.connect(master_fonoimage);
+    this.master_solo.connect(parametres.master_fonoimage);
 
     // Visuel
     this.ellipse = new Fabric.Ellipse({
-      top: y, left: x, rx: rx, ry: ry, angle: angle, 
+      top: parametres.y,
+      left: parametres.x,
+      rx: parametres.rx,
+      ry: parametres.ry,
+      angle: parametres.angle, 
       stroke: 'blue',
       strokeWidth: 5,
       fill: 'transparent',
       // Pour la selection par bordure seulement
-      perPixelTargetFind:true,
+      perPixelTargetFind: true,
       clickableMargin: 100
+    }).on('moving', () => {
+      parametres.on_moving(this);
     }).on('selected', () => {
-      on_selected(this);
+      parametres.on_selected(this);
     });
   }
 

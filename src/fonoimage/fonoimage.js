@@ -118,7 +118,7 @@ window.Fonoimage = class Fonoimage {
         set_masque: function (coords) {
           let el = this.$refs.masque; 
           let cx = coords.left + coords.width / 2;
-          let cx = coords.top + coords.height / 2;
+          let cy = coords.top + coords.height / 2;
           let svg_masque = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.canva.width} ${this.canva.height}" preserveAspectRatio="none"><ellipse cx="${cx}" cy="${cy}" rx="${coords.rx}" ry="${coords.ry}" transform="rotate(${coords.angle} ${cx} ${cy})" fill="black" /></svg>'), linear-gradient(#fff,#fff)`;
 
           el.style['-webkit-mask-image'] = svg_masque; // Chrome / Safari
@@ -296,7 +296,14 @@ window.Fonoimage = class Fonoimage {
           });
         },
         ajouter_zone: function (x, y, rx, ry, angle = 0, fonofone = null) {
-          let zone = new Zone(x, y, rx, ry, angle, this.ctx_audio, this.canva, this.master, (zone) => { this.afficher_zone(zone); }, fonofone);
+          let zone = new Zone({
+            x, y, rx, ry, angle,
+            ctx_audio: this.ctx_audio,
+            canvas: this.canva,
+            master_fonoimage: this.master,
+            on_selected: (zone) => { this.afficher_zone(zone) },
+            on_moving: (zone) => { this.set_masque(this.get_coords_ellipse(zone.ellipse)) }
+          }, fonofone);
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
           this.canva.setActiveObject(this.oreille); // Pour activer le son
