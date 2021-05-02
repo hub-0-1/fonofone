@@ -85,7 +85,7 @@ window.Fonoimage = class Fonoimage {
             // Ajouter les zones et les fonofones
             _.each(archive.zones, (zone) => {
               let ellipse = zone.ellipse;
-              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.width / 2, ellipse.height / 2, zone.fonofone);
+              this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, ellipse.angle, zone.fonofone);
             });
 
             // Charger l'arriere-plan
@@ -99,8 +99,9 @@ window.Fonoimage = class Fonoimage {
           return JSON.stringify({ 
             arriere_plan: this.arriere_plan,
             zones: _.map(this.zones, (zone) => { 
+              console.log(zone);
               return { 
-                ellipse: zone.ellipse.getBoundingRect(),
+                ellipse: this.get_coords_ellipse(zone.ellipse),
                 fonofone: this.get_fonofone(zone).serialiser() 
               } 
             })
@@ -167,7 +168,7 @@ window.Fonoimage = class Fonoimage {
           this.ff_pleine_largeur = !this.ff_pleine_largeur;
 
           // Resfresh mitaine pour avoir l'air moins fou
-          let fps_refresh = 30;
+          let fps_refresh = 15;
           let refresh = setInterval(() => { this.get_fonofone(this.zone_active).paint(); }, 1000 / fps_refresh);
           setTimeout(() => { clearInterval(refresh); }, 1000);
         },
@@ -283,12 +284,13 @@ window.Fonoimage = class Fonoimage {
             shadow_style.height = (options.e.clientY - init_event.clientY) + "px";
           });
         },
-        ajouter_zone: function (x, y, rx, ry, fonofone = null) {
-          let zone = new Zone(x, y, rx, ry, this.ctx_audio, this.canva, this.master, (zone) => { this.afficher_zone(zone); });
+        ajouter_zone: function (x, y, rx, ry, angle = 0, fonofone = null) {
+          let zone = new Zone(x, y, rx, ry, angle, this.ctx_audio, this.canva, this.master, (zone) => { this.afficher_zone(zone); }, fonofone);
           this.zones[zone.id] = zone;
           this.canva.add(zone.ellipse);
           this.canva.setActiveObject(this.oreille); // Pour activer le son
           this.canva.setActiveObject(zone.ellipse);
+          this.get_fonofone(zone).paint();
         },
         faire_jouer: function (zone) {
           this.get_fonofone(zone).force_play();
@@ -297,6 +299,13 @@ window.Fonoimage = class Fonoimage {
         // Outils
         get_fonofone: function (zone) {
           return this.$refs[zone.id][0];
+        },
+        get_coords_ellipse: function (ellipse) {
+          let coords = ellipse.getBoundingRect();
+          coords.angle = ellipse.angle;
+          coords.rx = ellipse.rx;
+          coords.ry = ellipse.ry;
+          return coords; 
         }
       },
       created: function () {
@@ -328,6 +337,7 @@ window.Fonoimage = class Fonoimage {
         // Créer le canva
         let application = this.$refs.application_fonoimage;
         this.canva = new Fabric.Canvas('canva-fonoimage', {
+          hoverCursor: 'pointer',
           width: application.offsetWidth,
           height: application.offsetHeight
         }).on('mouse:down', (options) => {

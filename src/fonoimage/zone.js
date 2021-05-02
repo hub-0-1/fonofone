@@ -5,7 +5,7 @@ const couleur_zone_mix = "blue";
 const couleur_zone_pic = "orange";
 
 export default class Zone {
-  constructor (x, y, rx, ry, ctx_audio, canvas, master_fonoimage, on_selected, configuration_fonofone =  null) {
+  constructor (x, y, rx, ry, angle, ctx_audio, canvas, master_fonoimage, on_selected, configuration_fonofone =  null) {
 
     this.canvas = canvas;
     this.ctx_audio = ctx_audio;
@@ -24,7 +24,7 @@ export default class Zone {
 
     // Visuel
     this.ellipse = new Fabric.Ellipse({
-      top: y, left: x, rx: rx, ry: ry,
+      top: y, left: x, rx: rx, ry: ry, angle: angle, 
       stroke: 'blue',
       strokeWidth: 5,
       fill: 'transparent',
