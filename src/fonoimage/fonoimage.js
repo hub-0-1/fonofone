@@ -390,7 +390,7 @@ window.Fonoimage = class Fonoimage {
         </div>
         <div class="panneau-fonofone" v-show="zone_active && !zone_active.minimiser" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
           <div class="rond-central" @click="toggle_ff_pleine_largeur"><img src="${FlecheDroite}"/></div>
-          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @update:ecran="set_affichage_dirty(zone)" @mounted="faire_jouer(zone)"></fonofone>
+          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="faire_jouer(zone)"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">

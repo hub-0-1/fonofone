@@ -80,6 +80,7 @@ export default {
     return {
       configuration: {parametres:{}},
       ecran: "normal",
+      painting: false,
       globales: Globales,
       fonoimage: {
         integration: (this.integration_fonoimage || false),
@@ -248,7 +249,7 @@ export default {
     },
     toggle_ecran: function (ecran) {
       this.ecran = ecran == this.ecran ? "normal" : ecran;
-      this.$emit('update:ecran');
+      this.paint(); // Surtout pour mode fonoimage
     },
     reset: function () {
       fetch(Globales.configuration_primitive).then((response) => {
@@ -297,6 +298,12 @@ export default {
       let nb_colonnes = Math.ceil(mixer.offsetWidth / Globales.max_width_colonne);
       mixer.style.columnCount = nb_colonnes;
 
+      // Metronome
+      this.$refs.metronome[0].update_font_size_bpm();
+
+      if(this.painting) return;
+
+      this.painting = true;
       // Wavesurfer
       if(this.wavesurfer) {
         this.wavesurfer.destroy();
@@ -331,8 +338,7 @@ export default {
           color: '#323232' 
         });
         this.paint_regions();
-
-        this.$refs.metronome[0].update_font_size_bpm();
+        this.painting = false;
       });
     },
     paint_regions: function () {
@@ -354,7 +360,6 @@ export default {
         case 'soutenus': return DossierSoutenus;
         default: return DossierLocal;
       }
-
     },
 
     // OUTILS
