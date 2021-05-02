@@ -268,8 +268,13 @@ export default {
 
     // UI
     pulsation: function () {
+
+      // Init
+      if(this.mixer.etat.chargement || !this.$refs.wavesurfer) return;
+       
       let region = this.$refs.wavesurfer.querySelector(".wavesurfer-region");
-      if(this.mixer.etat.chargement || !region) return;
+      if(!region) return;
+
       let pulsation = this.creer_barre_pulsation(region);
 
       setTimeout(() => { this.lancer_barre_pulsation(pulsation, region); }, 0);
@@ -277,19 +282,21 @@ export default {
       setTimeout(() => { pulsation.remove(); }, this.mixer.parametres.longueur * 1000);
     },
     creer_barre_pulsation: function (region) {
+      let wavesurfer = this.$refs.wavesurfer;
       let temps_pulsation = this.mixer.parametres.longueur;
       let pulsation = document.createElement('div');
+      let taille_pulsation = 5;
 
       pulsation.className = "pulsation";
-      pulsation.style.left = region.style.left;
+      pulsation.style.left = ((region.offsetLeft - taille_pulsation) / wavesurfer.offsetWidth) * 100 + "%";
       pulsation.style.transition = temps_pulsation + "s left linear";
 
       this.$refs.wavesurfer.appendChild(pulsation);
       return pulsation;
     },
     lancer_barre_pulsation: function (pulsation, region) {
-      let droite = region.offsetLeft + region.offsetWidth;
-      pulsation.style.left = droite + "px";
+      let taille_pulsation = 5;
+      pulsation.style.left = ((region.offsetLeft + region.offsetWidth - taille_pulsation) / this.$refs.wavesurfer.offsetWidth) * 100 + "%";
     },
     paint: function () {
 

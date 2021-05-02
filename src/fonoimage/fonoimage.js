@@ -142,6 +142,7 @@ window.Fonoimage = class Fonoimage {
           return this.enregistrement.enregistreur;
         },
         supprimer_zone_active: function () {
+          if(this.zone_active == this.mode_solo) this.mode_solo = null;
           this.desactiver_son(this.zone_active);
           this.canva.remove(this.zone_active.ellipse);
           delete this.zones[this.zone_active.id];
@@ -221,7 +222,6 @@ window.Fonoimage = class Fonoimage {
             this.$refs.panneau_fonofone.appendChild(el_ff);
           }
 
-          console.log(zone, el_ff);
           this.$forceUpdate(); // Sinon le panneau ne se rafraichi pas
         },
         toggle_gestion_bg: function () {
