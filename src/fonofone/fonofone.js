@@ -248,6 +248,7 @@ export default {
     },
     toggle_ecran: function (ecran) {
       this.ecran = ecran == this.ecran ? "normal" : ecran;
+      this.$emit('update:ecran');
     },
     reset: function () {
       fetch(Globales.configuration_primitive).then((response) => {

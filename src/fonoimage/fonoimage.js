@@ -112,6 +112,9 @@ window.Fonoimage = class Fonoimage {
         },
 
         // UI
+        set_affichage_dirty: function (zone) {
+          console.log('repaint?');
+        },
         clearCanva: function () {
           _.each(this.canva._objects, (obj) => { this.canva.remove(obj); });
         },
@@ -172,8 +175,45 @@ window.Fonoimage = class Fonoimage {
           setTimeout(() => { this.get_fonofone(this.zone_active).paint(); }, 1000);
         },
         toggle_ff_minimiser: function (zone, val) {
+          zone.minimiser = val;
+          let fonoimage = this.$refs.fonoimage;
+          let el_ff = fonoimage.querySelector(`#${zone.id}`);
 
-          console.log(zone, val, "minimiser");
+          // Mode minimiser
+          if(zone.minimiser) {
+            el_ff.classList.add("flottant");
+            let coords_ellipse = zone.ellipse.getBoundingRect();
+
+            // Axe des X
+            if(coords_ellipse.left > zone.canvas.getElement().offsetWidth / 2) {
+              el_ff.style.left = (coords_ellipse.left - 300) + "px"
+            }
+            else {
+              el_ff.style.left = (coords_ellipse.left + coords_ellipse.width) + "px"
+            }
+            
+            // Axe des Y
+            if(coords_ellipse.top > zone.canvas.getElement().offsetHeight / 2) {
+              el_ff.style.top = Math.max(coords_ellipse.top - 500, 0) + "px"
+            }
+            else {
+              el_ff.style.top = (coords_ellipse.top + coords_ellipse.height) + "px"
+            }
+
+            // Deplacer l'element
+            fonoimage.appendChild(el_ff);
+          }
+
+          // Mode maximiser
+          else {
+            el_ff.style.left = 0;
+            el_ff.style.top = 0;
+            el_ff.classList.remove("flottant");
+            this.$refs.panneau_fonofone.appendChild(el_ff);
+          }
+
+          console.log(zone, el_ff);
+          this.$forceUpdate(); // Sinon le panneau ne se rafraichi pas
         },
         toggle_gestion_bg: function () {
           this.gestion_bg = !this.gestion_bg;
@@ -320,7 +360,7 @@ window.Fonoimage = class Fonoimage {
         });
       },
       template: `
-      <div class="fonoimage">
+      <div class="fonoimage" ref="fonoimage">
         <div class="panneau-fonoimage">
           <menu>
             <img src="${Record}" class="record bouton-coin-g-b" :class="{actif: cadenas, flash: mode == 'session:active'}" @click="toggle_session"/>
@@ -352,9 +392,9 @@ window.Fonoimage = class Fonoimage {
           </section>
           <div class="shadow" :class="{actif: mode == 'edition:ajout:encours'}" ref="shadow"></div>
         </div>
-        <div class="panneau-fonofone" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
+        <div class="panneau-fonofone" v-show="zone_active && !zone_active.minimiser" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
           <div class="rond-central" @click="toggle_ff_pleine_largeur"><img src="${FlecheDroite}"/></div>
-          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="faire_jouer(zone)"></fonofone>
+          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @update:ecran="set_affichage_dirty(zone)" @mounted="faire_jouer(zone)"></fonofone>
         </div>
         <div class="panneau-importation" :class="{actif: mode_importation}">
           <div class="background-importation">
