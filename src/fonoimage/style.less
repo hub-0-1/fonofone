@@ -195,12 +195,12 @@
       display: none;
 
       // Webkit (Chrome / Safari)
-      -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><polygon points="20,20 20,180 180,100 " fill="black"/></svg>') 0/100% 100%, linear-gradient(#fff,#fff);
       -webkit-mask-composite: destination-out;
+      -webkit-mask-size: 100% 100%;
 
       // FF
-      mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><polygon points="20,20 20,180 180,100 " fill="black"/></svg>') 0/100% 100%, linear-gradient(#fff,#fff);
       mask-composite: exclude;  
+      mask-size: 100% 100%;
 
       &.actif {
         display: initial;

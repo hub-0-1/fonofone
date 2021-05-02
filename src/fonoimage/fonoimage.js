@@ -73,8 +73,6 @@ window.Fonoimage = class Fonoimage {
               fileReader.readAsText(fichier);
             });
 
-
-            console.log(archive_serialisee);
             let archive = JSON.parse(archive_serialisee);
 
             // Faire le menage
@@ -99,7 +97,6 @@ window.Fonoimage = class Fonoimage {
           return JSON.stringify({ 
             arriere_plan: this.arriere_plan,
             zones: _.map(this.zones, (zone) => { 
-              console.log(zone);
               return { 
                 ellipse: this.get_coords_ellipse(zone.ellipse),
                 fonofone: this.get_fonofone(zone).serialiser() 
@@ -117,6 +114,17 @@ window.Fonoimage = class Fonoimage {
         },
         set_arriere_plan: function (url) {
           this.arriere_plan = url;
+        },
+        set_masque: function (coords) {
+          let el = this.$refs.masque; 
+          console.log(coords);
+          let ellipse = `<ellipse cx="${coords.left + coords.width / 2}" cy="${coords.top + coords.height / 2}" rx="${coords.rx}" ry="${coords.ry}" transform="rotate(10)" fill="black"/>`;
+
+          // Chrome / Safari
+          el.style['-webkit-mask-image'] = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><ellipse cx="100" cy="50" rx="100" ry="50" transform="rotate(-10 50 100)" fill="black" /></svg>'), linear-gradient(#fff,#fff)`;
+
+          // FF
+          el.style['mask-image'] = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><ellipse cx="100" cy="50" rx="100" ry="50" transform="rotate(-10 50 100)" fill="black" /></svg>'), linear-gradient(#fff,#fff)`;
         },
 
         // Sessions
@@ -144,10 +152,14 @@ window.Fonoimage = class Fonoimage {
 
         // Controlleurs
         toggle_solo: function (zone, val) {
+
+          // Enlever le masque
           if(this.mode_solo == zone) {
             _.each(this.zones, (zone) => { this.activer_son(zone); });
             this.mode_solo = null;
           }
+
+          // Appliquer le masque
           else {
             _.each(this.zones, (z) => { 
               if(z == zone) return;
@@ -156,6 +168,7 @@ window.Fonoimage = class Fonoimage {
             });
             this.activer_son(zone);
             this.mode_solo = zone;
+            this.set_masque(this.get_coords_ellipse(zone.ellipse));
           }
         },
         activer_son: function (zone) {
@@ -290,7 +303,7 @@ window.Fonoimage = class Fonoimage {
           this.canva.add(zone.ellipse);
           this.canva.setActiveObject(this.oreille); // Pour activer le son
           this.canva.setActiveObject(zone.ellipse);
-          this.get_fonofone(zone).paint();
+          //this.$nextTick(() => { this.get_fonofone(zone).paint(); }) // Pour importation
         },
         faire_jouer: function (zone) {
           this.get_fonofone(zone).force_play();
@@ -345,6 +358,7 @@ window.Fonoimage = class Fonoimage {
           // Si on ne clique pas sur une zone
           if(!options.target && !this.cadenas) { 
             this.zone_active = null; 
+            this.gestion_bg = false;
             this.dessiner_nouvelle_zone(options);
           }
         });
