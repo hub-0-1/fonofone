@@ -119,7 +119,7 @@ export default {
       };
 
       // Menage dans les sources
-      exp.sources = _.filter(exp.sources, (s) => { return (!s.local || sources_locales_selectionnees.includes(s.id)) })
+      exp.sources = _.filter(exp.sources, (s) => { return (s.actif || !s.local || sources_locales_selectionnees.includes(s.id)) })
 
       return JSON.stringify(exp);
     },
@@ -510,7 +510,7 @@ export default {
             <h3 class="titre">Fichers à inclure dans la sauvegarde</h3>
             <ul class="sons" ref="sources_export">
               <li v-for="source in liste_sources_locales">
-                <input :name="source.id" type="checkbox" checked/>
+                <input v-model="source.id" type="checkbox" checked :disabled="source.actif"/>
                 <input @click.stop :value="source.id" type="text"/>
               </li>
             </ul>
@@ -535,7 +535,7 @@ export default {
                   </div>
                   <ul class="sons">
                     <li class="source" v-show="dossier == dossier_importation" v-for="source in liste_sources" @click="charger_source(source)">
-                      <input @click.stop :value="source.id" type="text" :disabled="!source.local"/>
+                      <input @click.stop v-model="source.id" type="text" :disabled="!source.local"/>
                     </li>
                   </ul>
                 </li>
