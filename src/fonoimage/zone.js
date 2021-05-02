@@ -37,6 +37,8 @@ export default class Zone {
       clickableMargin: 100
     }).on('moving', () => {
       parametres.on_moving(this);
+    }).on('rotating', () => {
+      parametres.on_moving(this);
     }).on('selected', () => {
       parametres.on_selected(this);
     });
