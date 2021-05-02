@@ -117,14 +117,12 @@ window.Fonoimage = class Fonoimage {
         },
         set_masque: function (coords) {
           let el = this.$refs.masque; 
-          console.log(coords);
-          let ellipse = `<ellipse cx="${coords.left + coords.width / 2}" cy="${coords.top + coords.height / 2}" rx="${coords.rx}" ry="${coords.ry}" transform="rotate(10)" fill="black"/>`;
+          let cx = coords.left + coords.width / 2;
+          let cx = coords.top + coords.height / 2;
+          let svg_masque = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.canva.width} ${this.canva.height}" preserveAspectRatio="none"><ellipse cx="${cx}" cy="${cy}" rx="${coords.rx}" ry="${coords.ry}" transform="rotate(${coords.angle} ${cx} ${cy})" fill="black" /></svg>'), linear-gradient(#fff,#fff)`;
 
-          // Chrome / Safari
-          el.style['-webkit-mask-image'] = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><ellipse cx="100" cy="50" rx="100" ry="50" transform="rotate(-10 50 100)" fill="black" /></svg>'), linear-gradient(#fff,#fff)`;
-
-          // FF
-          el.style['mask-image'] = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><ellipse cx="100" cy="50" rx="100" ry="50" transform="rotate(-10 50 100)" fill="black" /></svg>'), linear-gradient(#fff,#fff)`;
+          el.style['-webkit-mask-image'] = svg_masque; // Chrome / Safari
+          el.style['mask-image'] = svg_masque; // FF
         },
 
         // Sessions
