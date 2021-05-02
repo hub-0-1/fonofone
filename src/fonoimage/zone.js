@@ -13,6 +13,7 @@ export default class Zone {
     this.mode = 'mix';
     this.configuration_fonofone = configuration_fonofone;
     this.survolee = false;
+    this.mounted = false;
     this.pointeur = null;
 
     // Audio fonofone

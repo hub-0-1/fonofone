@@ -105,6 +105,7 @@ window.Fonoimage = class Fonoimage {
         // UI
         afficher_zone: function (zone) {
           this.zone_active = zone;
+          if(zone.mounted) { this.get_fonofone(zone).paint(); }
         },
         set_arriere_plan: function (url) {
           this.arriere_plan = url;
@@ -315,7 +316,9 @@ window.Fonoimage = class Fonoimage {
           //this.$nextTick(() => { this.get_fonofone(zone).paint(); }) // Pour importation
         },
         faire_jouer: function (zone) {
-          this.get_fonofone(zone).force_play();
+          let ff = this.get_fonofone(zone);
+          ff.force_play();
+          ff.paint();
         },
 
         // Outils
@@ -428,7 +431,7 @@ window.Fonoimage = class Fonoimage {
         </div>
         <div class="panneau-fonofone" v-show="zone_active && !zone_active.minimiser" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
           <div class="rond-central" @click="toggle_ff_pleine_largeur"><img src="${FlecheDroite}"/></div>
-          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="faire_jouer(zone)"></fonofone>
+          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="zone.mounted = true"></fonofone>
         </div>
       </div>`
     });
