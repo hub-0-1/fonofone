@@ -105,8 +105,11 @@ export default {
 
     // IMPORT / EXPORT
     exporter: function () {
+      saveAs(new Blob([this.serialiser()]), `${this.configuration.parametres.nom}.fnfn`);
+      this.toggle_ecran("normal");
+    },
+    serialiser: function () {
 
-      // Init
       let sources_locales_selectionnees = _.map(this.$refs.sources_export.querySelectorAll("input:checked"), s => s.name);
       let exp = {
         parametres: this.configuration.parametres,
@@ -117,10 +120,7 @@ export default {
       // Menage dans les sources
       exp.sources = _.filter(exp.sources, (s) => { return (!s.local || sources_locales_selectionnees.includes(s.id)) })
 
-      // Sauvegarde
-      saveAs(new Blob([JSON.stringify(exp)]), `${this.configuration.parametres.nom}.fnfn`);
-
-      this.toggle_ecran("normal");
+      return JSON.stringify(exp);
     },
     importer: function (fichier) {
       return new Promise (async (resolve) => {

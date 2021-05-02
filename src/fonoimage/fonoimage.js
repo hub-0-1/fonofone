@@ -93,21 +93,17 @@ window.Fonoimage = class Fonoimage {
           });
         },
         exporter: function () {
-          this.serialiser().then((archive) => {
-            saveAs(new Blob([archive]), `archive.fnmg`);
-          });
+          saveAs(new Blob([this.serialiser()]), `archive.fnmg`);
         },
         serialiser: function () {
-          return Promise.all(_.map(this.zones, async (zone) => {
-            return {
-              zone: zone,
-              fonofone: await this.$refs[zone.id][0].serialiser()
-            }
-          })).then((zones) => {
-            return JSON.stringify({ 
-              arriere_plan: this.canva.backgroundImage.toDataURL(),
-              zones: zones 
-            });
+          return JSON.stringify({ 
+            arriere_plan: this.arriere_plan,
+            zones: _.map(this.zones, (zone) => { 
+              return { 
+                zone: zone, // Cest ici que ca plante pour la recursion
+                fonofone: this.get_fonofone(zone).serialiser() 
+              } 
+            })
           });
         },
 
@@ -191,7 +187,7 @@ window.Fonoimage = class Fonoimage {
             else {
               el_ff.style.left = (coords_ellipse.left + coords_ellipse.width) + "px"
             }
-            
+
             // Axe des Y
             if(coords_ellipse.top > zone.canvas.getElement().offsetHeight / 2) {
               el_ff.style.top = Math.max(coords_ellipse.top - 500, 0) + "px"

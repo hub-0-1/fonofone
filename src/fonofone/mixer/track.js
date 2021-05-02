@@ -21,9 +21,10 @@ export default class Track {
     enveloppe.gain.linearRampToValueAtTime(0, now + attack + parametres.longueur + release);
 
     // Vitesse
-    source.playbackRate.setValueAtTime(parametres.vitesse * parametres.sens, context.currentTime);
+    //console.log(parametres.vitesse, parametres.sens);
+    source.playbackRate.setValueAtTime(parametres.vitesse * parametres.sens, now);
 
     // Lancer
-    source.start(context.currentTime, parametres.debut, attack + parametres.longueur + release);
+    source.start(now, parametres.debut, attack + parametres.longueur + release);
   }
 }
