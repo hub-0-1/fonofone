@@ -105,7 +105,7 @@ window.Fonoimage = class Fonoimage {
         // UI
         afficher_zone: function (zone) {
           this.zone_active = zone;
-          if(zone.mounted) { this.get_fonofone(zone).paint(); }
+          this.$nextTick(() => { if(zone.mounted) this.get_fonofone(zone).paint(); });
         },
         set_arriere_plan: function (url) {
           this.arriere_plan = url;
@@ -222,6 +222,7 @@ window.Fonoimage = class Fonoimage {
           }
 
           this.$forceUpdate(); // Sinon le panneau ne se rafraichi pas
+          this.$nextTick(() => { this.get_fonofone(this.zone_active).paint(); });
         },
         toggle_gestion_bg: function () {
           this.gestion_bg = !this.gestion_bg;
@@ -301,6 +302,8 @@ window.Fonoimage = class Fonoimage {
           });
         },
         ajouter_zone: function (x, y, rx, ry, angle = 0, fonofone = null) {
+
+          // Creation
           let zone = new Zone({
             x, y, rx, ry, angle,
             ctx_audio: this.ctx_audio,
@@ -312,11 +315,11 @@ window.Fonoimage = class Fonoimage {
               this.moduler_son_zone(zone);
             }
           }, fonofone);
+          
+          // Mise en service
           this.zones[zone.id] = zone;
-          this.canva.add(zone.ellipse);
           this.canva.setActiveObject(this.oreille); // Pour activer le son
           this.canva.setActiveObject(zone.ellipse);
-          //this.$nextTick(() => { this.get_fonofone(zone).paint(); }) // Pour importation
         },
         faire_jouer: function (zone) {
           let ff = this.get_fonofone(zone);

@@ -454,7 +454,12 @@ export default {
     this.importer(this.archive).then(() => {
       this.appliquer_configuration(this.configuration);
       this.mixer.etat.chargement = false;
-      this.$emit("mounted", true); // Pour le fonoimage
+
+      // Fonoimage
+      if(this.integration_fonoimage) {
+        this.jouer();
+        this.$emit("mounted", true); // Pour le fonoimage
+      }
     });
   },
   template: `
@@ -474,7 +479,7 @@ export default {
             <div :id="waveform_id" class="wavesurfer" ref="wavesurfer"></div>
             <div class="menu-controlleurs">
               <div class="gauche">
-                <img :src="mixer.etat.jouer ? '${JouerActif}' : '${Jouer}'" class="icone pause" :class="{actif: mixer.etat.jouer}" @click="toggle_pause"/>
+                <img :src="(mixer.etat.jouer && mixer.tracks.length > 0)? '${JouerActif}' : '${Jouer}'" class="icone pause" @click="toggle_pause"/>
                 <img v-if="fonoimage.integration" :src="fonoimage.solo ? '${SoloActif}' : '${Solo}'" class="icone solo" @click="toggle_mode_solo"/>
                 <img :src="mixer.etat.loop ? '${LoopActif}' : '${Loop}'" class="icone loop" @click="toggle_loop"/>
                 <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>

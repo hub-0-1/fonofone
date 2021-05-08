@@ -7,6 +7,7 @@ const couleur_zone_pic = "orange";
 export default class Zone {
   constructor (parametres, configuration_fonofone =  null) {
 
+    this.parametres = parametres;
     this.canvas = parametres.canvas;
     this.ctx_audio = parametres.ctx_audio;
     this.id = `zone${Date.now()}${Math.round(Math.random() * 50)}`;
@@ -24,25 +25,40 @@ export default class Zone {
     this.master_solo.connect(parametres.master_fonoimage);
 
     // Visuel
+    this.paint_ellipse(parametres.x, parametres.y, parametres.rx, parametres.ry, parametres.angle);
+  }
+  
+  paint_ellipse (left, top, rx, ry, angle) {
+
+    // Reset
+    if(this.ellipse) {
+      this.canvas.remove(this.ellipse);
+      this.ellipse = null;
+    }
+
+    // Paint
     this.ellipse = new Fabric.Ellipse({
-      top: parametres.y,
-      left: parametres.x,
-      rx: parametres.rx,
-      ry: parametres.ry,
-      angle: parametres.angle, 
+      left, top, rx, ry, angle, 
       stroke: 'blue',
       strokeWidth: 5,
       fill: 'transparent',
+
       // Pour la selection par bordure seulement
       perPixelTargetFind: true,
       clickableMargin: 100
+    }).on('scaled', (e) => {
+      let ellipse = this.ellipse;
+      this.paint_ellipse(ellipse.left, ellipse.top, ellipse.rx * ellipse.scaleX, ellipse.ry * ellipse.scaleY, ellipse.angle);
+      this.parametres.on_moving(this);
     }).on('moving', () => {
-      parametres.on_moving(this);
+      this.parametres.on_moving(this);
     }).on('rotating', () => {
-      parametres.on_moving(this);
+      this.parametres.on_moving(this);
     }).on('selected', () => {
-      parametres.on_selected(this);
+      this.parametres.on_selected(this);
     });
+
+    this.canvas.add(this.ellipse);
   }
 
   rendre_mobile () {
