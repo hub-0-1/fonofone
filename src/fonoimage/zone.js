@@ -11,8 +11,8 @@ export default class Zone {
     this.canvas = parametres.canvas;
     this.ctx_audio = parametres.ctx_audio;
     this.id = `zone${Date.now()}${Math.round(Math.random() * 50)}`;
-    this.mode = 'mix';
     this.configuration_fonofone = configuration_fonofone;
+    this.mode = parametres.mode;
     this.survolee = false;
     this.mounted = false;
     this.pointeur = null;
@@ -35,11 +35,11 @@ export default class Zone {
       this.canvas.remove(this.ellipse);
       this.ellipse = null;
     }
-
+    
     // Paint
     this.ellipse = new Fabric.Ellipse({
       left, top, rx, ry, angle, 
-      stroke: 'blue',
+      stroke: this.mode == 'mix' ? 'blue' : 'orange',
       strokeWidth: 5,
       fill: 'transparent',
 

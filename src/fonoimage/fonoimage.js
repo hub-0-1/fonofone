@@ -303,9 +303,14 @@ window.Fonoimage = class Fonoimage {
         },
         ajouter_zone: function (x, y, rx, ry, angle = 0, fonofone = null) {
 
+          let mode = 'mix';
+          if(fonofone) {
+            mode = JSON.parse(fonofone).fonoimage.mode;
+          }
+
           // Creation
           let zone = new Zone({
-            x, y, rx, ry, angle,
+            x, y, rx, ry, angle, mode,
             ctx_audio: this.ctx_audio,
             canvas: this.canva,
             master_fonoimage: this.master,

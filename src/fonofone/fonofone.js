@@ -113,6 +113,7 @@ export default {
 
       let sources_locales_selectionnees = _.map(this.$refs.sources_export.querySelectorAll("input:checked"), s => s.name);
       let exp = {
+        fonoimage: this.fonoimage,
         parametres: this.configuration.parametres,
         modules: this.configuration.modules,
         sources: _.cloneDeep(this.configuration.sources)
@@ -134,6 +135,8 @@ export default {
         }
 
         this.configuration = JSON.parse(fichier);
+        if(this.configuration.fonoimage) this.fonoimage = this.configuration.fonoimage; // Pas beau tout ca ...
+
         this.charger_source(this.source_active()).then(() => {
           this.paint();
           resolve(this.configuration);
