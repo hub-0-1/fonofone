@@ -518,7 +518,7 @@ export default {
             <h3 class="titre">Fichers à inclure dans la sauvegarde</h3>
             <ul class="sons" ref="sources_export">
               <li v-for="source in liste_sources_locales">
-                <input v-model="source.id" type="checkbox" checked :disabled="source.actif"/>
+                <input v-model="source.id" :name="source.id" type="checkbox" checked :disabled="source.actif"/>
                 <input @click.stop :value="source.id" type="text"/>
               </li>
             </ul>
