@@ -15,7 +15,7 @@ import Record from '../images/record.svg';
 import Oreille from '../images/oreille.svg';
 import Poubelle from '../images/trash.svg';
 import Export from '../images/export.svg';
-import Import from '../images/import.svg';
+import Import from '../images/folder-open.svg';
 import Maison from '../images/maison.jpg';
 import FlecheDroite from '../images/fleche-droite.svg';
 
@@ -370,6 +370,16 @@ window.Fonoimage = class Fonoimage {
           this.mode_importation = false;
         });
 
+        this.init_filepond(this.$refs.filepond_image, (image) => { 
+
+          if (image.fileType.match(/image/)) { 
+            Globales.arrieres_plans.push(image.getFileEncodeDataURL());
+          }
+          else { throw "Type de fichier non valide"; }
+
+          this.mode_importation = false;
+        })
+
         // Créer le canva
         let application = this.$refs.application_fonoimage;
         this.canva = new Fabric.Canvas('canva-fonoimage', {
@@ -417,8 +427,8 @@ window.Fonoimage = class Fonoimage {
             <img class="invert poubelle" :class="{actif: zone_active}" @click="supprimer_zone_active" src="${Poubelle}"/>
             </div>
             <div class="droite">
-              <img src="${Export}" class="export" @click="exporter"/>
-              <img src="${Import}" class="import invert" @click="mode_importation = !mode_importation"/>
+              <img src="${Export}" @click="exporter"/>
+              <img src="${Import}" @click="mode_importation = !mode_importation"/>
             </div>
           </menu>
           <section class="principal" :style="{ backgroundImage: 'url(' + arriere_plan + ')' }">
@@ -434,6 +444,8 @@ window.Fonoimage = class Fonoimage {
               <div class="container-arrieres-plans">
                 <div v-for="arpl in arrieres_plans" class="img" :style="{'background-image': 'url(' + arpl + ')'}" @click="set_arriere_plan(arpl)"/>
               </div>
+              <h3 class="entete">Importer une image</h3>
+              <div class="importation-images" ref="filepond_image"></div>
             </div>
             <div class="panneau-importation" :class="{actif: mode_importation}">
               <div class="fenetre" ref="filepond_archive"></div>
