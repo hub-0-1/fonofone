@@ -217,11 +217,15 @@ class Mixer {
 
   set_metronome (valeur) {
 
+    let etat_original = this.etat.metronome;
+
     // Rythme aleatoire
     this.etat.metronome = valeur.actif;
     this.parametres.syncope = valeur.syncope;
     this.parametres.aleatoire = valeur.aleatoire;
     this.parametres.bpm = Math.pow(valeur.bpm, 2) * (Globales.modules.metronome.max_bpm - Globales.modules.metronome.min_bpm) + Globales.modules.metronome.min_bpm;
+
+    if(!etat_original && valeur.actif) this.lancer();
   }
 
   // TODO Confirmer que ca fonctionne
