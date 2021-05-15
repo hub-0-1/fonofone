@@ -208,6 +208,7 @@ export default {
     toggle_sens: function () {
       this.configuration.parametres.sens *= -1;
       this.mixer.set_sens(this.configuration.parametres.sens);
+      this.update_buffer();
     },
     toggle_pause: function () {
       this.mixer.etat.jouer ? this.arreter() : this.jouer();
@@ -351,6 +352,10 @@ export default {
         this.painting = false;
       });
     },
+    update_buffer: function () {
+      this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
+      this.$nextTick(() => { this.paint(); });
+    },
     paint_regions: function () {
       if(!this.wavesurfer_region) return;
       this.wavesurfer_region.start = this.mixer.parametres.debut;
@@ -375,10 +380,8 @@ export default {
     // OUTILS
     crop: function () {
       this.mixer.crop();
-      this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
-
       this.$refs.selecteur[0].set_plage(0, 1);
-      this.paint();
+      this.update_buffer();
 
       this.ajouter_son(new Blob([toWav(this.mixer.audio_buffer)]), this.source_active().id + "_crop");
     },

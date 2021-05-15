@@ -274,8 +274,10 @@ class Mixer {
   }
 
   set_sens (valeur) {
+    if(this.etat.chargement) return;
+    Array.prototype.reverse.call(this.audio_buffer.getChannelData(0));
+    Array.prototype.reverse.call(this.audio_buffer.getChannelData(1));
     this.parametres.sens = valeur;
-    this.update_tracks();
   }
 
   crop () {
@@ -350,5 +352,4 @@ function mono2stereo (mono) {
   }
   return stereo;
 }
-
 
