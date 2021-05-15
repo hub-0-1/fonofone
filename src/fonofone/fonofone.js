@@ -137,10 +137,7 @@ export default {
         this.configuration = JSON.parse(fichier);
         if(this.configuration.fonoimage) this.fonoimage = this.configuration.fonoimage; // Pas beau tout ca ...
 
-        this.charger_source(this.source_active()).then(() => {
-          this.paint();
-          resolve(this.configuration);
-        });
+        this.charger_source(this.source_active()).then(() => { resolve(this.configuration); });
       });
     },
     appliquer_configuration: function (configuration) {
@@ -171,7 +168,7 @@ export default {
         }).then(() => {
           this.toggle_ecran("normal");
           this.$refs.selecteur[0].set_plage(0, 1);
-          this.paint();
+          this.update_buffer();
           resolve(source);
         }).catch((e) => {
           reject(e);
@@ -315,6 +312,7 @@ export default {
       if(this.painting) return;
 
       this.painting = true;
+
       // Wavesurfer
       if(this.wavesurfer) {
         this.wavesurfer.destroy();
@@ -353,6 +351,7 @@ export default {
       });
     },
     update_buffer: function () {
+      if(!this.wavesurfer) return;
       this.wavesurfer.loadDecodedBuffer(this.mixer.audio_buffer);
       this.$nextTick(() => { this.paint(); });
     },
@@ -488,7 +487,7 @@ export default {
                 <img :src="(mixer.etat.jouer && mixer.tracks.length > 0)? '${JouerActif}' : '${Jouer}'" class="icone pause" @click="toggle_pause"/>
                 <img v-if="fonoimage.integration" :src="fonoimage.solo ? '${SoloActif}' : '${Solo}'" class="icone solo" @click="toggle_mode_solo"/>
                 <img :src="mixer.etat.loop ? '${LoopActif}' : '${Loop}'" class="icone loop" @click="toggle_loop"/>
-                <img src="${Sens}" class="icone sens" :class="{actif: configuration.parametres.sens > 0}" @click="toggle_sens"/>
+                <img src="${Sens}" class="icone sens" :class="{actif: !configuration.parametres.inverse}" @click="toggle_sens"/>
                 <img src="${Record}" class="icone session" :class="{actif: mixer.etat.en_session}" @click="toggle_session"/>
                 <span v-show="mixer.etat.en_session && !mixer.etat.en_enregistrement">{{ $t('session.activer') }}</span>
                 <img src="${Crop}" class="icone" @click="crop"/>
