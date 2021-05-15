@@ -274,10 +274,11 @@ class Mixer {
   }
 
   set_sens (valeur) {
-    if(this.etat.chargement) return;
+    if(this.parametres.inverse == valeur) return;
+
     Array.prototype.reverse.call(this.audio_buffer.getChannelData(0));
     Array.prototype.reverse.call(this.audio_buffer.getChannelData(1));
-    this.parametres.sens = valeur;
+    this.parametres.inverse = valeur;
   }
 
   crop () {
@@ -286,7 +287,7 @@ class Mixer {
 
   update_tracks () {
     _.each(this.tracks, (track) => {
-      track.source.playbackRate.setValueAtTime(this.parametres.vitesse * this.parametres.sens, this.ctx_audio.currentTime);
+      track.source.playbackRate.setValueAtTime(this.parametres.vitesse, this.ctx_audio.currentTime);
     });
   }
 

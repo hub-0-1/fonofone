@@ -206,8 +206,8 @@ export default {
       this.mixer.set_loop(val);
     },
     toggle_sens: function () {
-      this.configuration.parametres.sens *= -1;
-      this.mixer.set_sens(this.configuration.parametres.sens);
+      this.configuration.parametres.inverse = !this.configuration.parametres.inverse;
+      this.mixer.set_sens(this.configuration.parametres.inverse);
       this.update_buffer();
     },
     toggle_pause: function () {
