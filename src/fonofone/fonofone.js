@@ -78,7 +78,7 @@ export default {
   props: ['id', 'archive', 'ctx_audio', 'noeud_sortie', 'integration_fonoimage'],
   data: function () {
     return {
-      configuration: {parametres:{}},
+      configuration: { parametres:{} },
       ecran: "normal",
       painting: false,
       globales: Globales,
@@ -125,12 +125,21 @@ export default {
       return JSON.stringify(exp);
     },
     importer: function (fichier) {
+      if(!fichier) fichier =  Globales.configuration_par_defaut;
+      
       return new Promise (async (resolve) => {
-        if(fichier instanceof Blob) {
-          fichier = await new Promise((resolve) => {
-            let fileReader = new FileReader();
-            fileReader.onload = (e) => resolve(fileReader.result);
-            fileReader.readAsText(fichier);
+        
+        // Charger l'archive
+        if(fichier.constructor.name == "File") {
+          await fichier.text().then((archive) => { fichier = archive; });
+        }
+
+        // Telecharger l'archive
+        if(fichier.match(/^https.*fnfn$/)) {
+          await fetch(fichier).then((response) => {
+            return response.text();
+          }).then((archive) => {
+            fichier = archive;
           });
         }
 
@@ -253,7 +262,7 @@ export default {
       this.paint(); // Surtout pour mode fonoimage
     },
     reset: function () {
-      fetch(Globales.configuration_primitive).then((response) => {
+      fetch(Globales.configuration_par_defaut).then((response) => {
         return response.blob();
       }).then((archive) => {
         return this.importer(archive);

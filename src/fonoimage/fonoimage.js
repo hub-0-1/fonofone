@@ -41,7 +41,7 @@ window.Fonoimage = class Fonoimage {
       },
       data: {
         archive,
-        fonofone_pardefaut: null, // ne devrait pas servir
+        fonofone_par_defaut: Globales.fonofone_par_defaut,
         haut_parleur: true,
         cadenas: false,
         gestion_bg: false,
@@ -72,11 +72,12 @@ window.Fonoimage = class Fonoimage {
             fileReader.readAsText(fichier);
           });
 
-          let archive = JSON.parse(archive_serialisee);
-
           // Faire le menage
           _.each(this.zones, (zone) => { this.supprimer_zone(zone) });
           this.zone_active = null;
+
+          let archive = JSON.parse(archive_serialisee);
+          this.fonofone_par_defaut = archive.fonofone_par_defaut;
 
           // Ajouter les zones et les fonofones
           _.each(archive.zones, (zone) => {
@@ -93,6 +94,7 @@ window.Fonoimage = class Fonoimage {
         serialiser: function () {
           return JSON.stringify({ 
             arriere_plan: this.arriere_plan,
+            fonofone_par_defaut: this.fonofone_par_defaut,
             zones: _.map(this.zones, (zone) => { 
               return { 
                 ellipse: this.get_coords_ellipse(zone.ellipse),
@@ -301,12 +303,14 @@ window.Fonoimage = class Fonoimage {
             shadow_style.height = (options.e.clientY - init_event.clientY) + "px";
           });
         },
-        ajouter_zone: function (x, y, rx, ry, angle = 0, fonofone = null) {
+        ajouter_zone: function (x, y, rx, ry, angle = 0, fonofone) {
 
+          // Charger une configuration
+          if(!fonofone) fonofone = this.fonofone_par_defaut; 
+
+          // Definir le mode
           let mode = 'mix';
-          if(fonofone) {
-            mode = JSON.parse(fonofone).fonoimage.mode;
-          }
+          if(fonofone.fonoimage) mode = JSON.parse(fonofone).fonoimage.mode;
 
           // Creation
           let zone = new Zone({
@@ -352,12 +356,6 @@ window.Fonoimage = class Fonoimage {
 
         this.master.connect(this.ctx_audio.destination);
         this.master.connect(this.media_stream_destination);
-
-        fetch(Globales.fonofone_pardefaut).then((response) => {
-          return response.blob();
-        }).then((archive) => {
-          this.fonofone_pardefaut = archive; 
-        });
       },
       mounted: function () {
 
@@ -455,7 +453,7 @@ window.Fonoimage = class Fonoimage {
         </div>
         <div class="panneau-fonofone" v-show="zone_active && !zone_active.minimiser" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
           <div class="rond-central" @click="toggle_ff_pleine_largeur"><img src="${FlecheDroite}"/></div>
-          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_pardefaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="zone.mounted = true"></fonofone>
+          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_par_defaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="zone.mounted = true"></fonofone>
         </div>
       </div>`
     });

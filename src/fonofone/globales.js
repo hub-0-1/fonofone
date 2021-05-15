@@ -8,11 +8,9 @@ import ImpulsePetit from "./donnees/impulse/masonic_lodge_1.wav";
 import ImpulseGrand from "./donnees/impulse/parking_garage_2.wav";
 
 export default {
-  configuration_primitive: "https://hub-0-1.github.io/fonofone/src/fonofone/configurations/dauphin.fnfn",
-  min_width_grille: 600,
-  max_width_colonne: 300,
-  mimetype_export: "audio/wav",
-  modules: {
+  configuration_par_defaut: "https://hub-0-1.github.io/fonofone/src/fonofone/configurations/dauphin.fnfn",
+  max_width_colonne: 300, // Largeur maximale des colonnes qui contiennent les modules avant un break
+  modules: { // Configuration surtout visuelle
     selecteur: {
       largeur_module: 1,
       hauteur_module: 1,
@@ -49,7 +47,7 @@ export default {
       y_relatif_image_aleatoire: 0.75,
       border_width: 0.01,
       nb_divisions: 1,
-      min_bpm: 5,
+      min_bpm: 5, // Limites du metronome
       max_bpm: 1000
     },
     reverberation: {
@@ -64,7 +62,7 @@ export default {
       y_relatif_centre_images: 0.80,
       dimension_relative_img: 0.175,
       border_width: 0.02,
-      sons: [ImpulsePetit, ImpulseGrand]
+      sons: [ImpulsePetit, ImpulseGrand] // Sons utilises dans la reverb
     },
     vitesse: {
       largeur_module: 1,
@@ -88,5 +86,6 @@ export default {
       border_width: 0.02,
       hauteur_centre: 0.1
     }
-  }
+  },
+  min_width_grille: 600 // Caduc
 };
