@@ -418,6 +418,7 @@ window.Fonoimage = class Fonoimage {
 
           // Si on ne clique pas sur une zone
           if(!options.target && !this.cadenas) { 
+            if(this.mode_solo) this.get_fonofone(this.mode_solo).toggle_mode_solo();
             this.zone_active = null; 
             this.gestion_bg = false;
             this.dessiner_nouvelle_zone(options);
