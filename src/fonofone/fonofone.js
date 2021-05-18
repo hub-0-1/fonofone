@@ -130,12 +130,12 @@ export default {
       return new Promise (async (resolve) => {
         
         // Charger l'archive
-        if(fichier.constructor.name == "File") {
+        if(fichier.constructor.name == "File" || fichier.constructor.name == "Blob") {
           await fichier.text().then((archive) => { fichier = archive; });
         }
 
         // Telecharger l'archive
-        if(fichier.match(/^https.*fnfn$/)) {
+        else if(fichier.match(/^https.*fnfn$/)) {
           await fetch(fichier).then((response) => {
             return response.text();
           }).then((archive) => {
@@ -143,6 +143,11 @@ export default {
           });
         }
 
+        else {
+          throw "Erreur de type de fichier"
+        }
+
+        console.log(fichier);
         this.configuration = JSON.parse(fichier);
         if(this.configuration.fonoimage) this.fonoimage = this.configuration.fonoimage; // Pas beau tout ca ...
 
@@ -281,7 +286,7 @@ export default {
 
       // Init
       if(this.mixer.etat.chargement || !this.$refs.wavesurfer) return;
-       
+
       let region = this.$refs.wavesurfer.querySelector(".wavesurfer-region");
       if(!region) return;
 

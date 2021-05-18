@@ -18,6 +18,7 @@ import Export from '../images/export.svg';
 import Import from '../images/folder-open.svg';
 import Maison from '../images/maison.jpg';
 import FlecheDroite from '../images/fleche-droite.svg';
+import Fonofone from '../images/logo-fonofone.svg';
 
 import Cadenas from '../images/cadenas.svg';
 import CadenasOuvert from '../images/cadenas-ouvert.svg';
@@ -151,6 +152,10 @@ window.Fonoimage = class Fonoimage {
         },
 
         // Controlleurs
+        definir_fonofone_par_defaut: function () {
+          let ff = this.get_fonofone(this.zone_active);
+          this.fonofone_par_defaut = new Blob([ff.serialiser()]);
+        },
         toggle_solo: function (zone, val) {
 
           // Enlever le masque
@@ -422,7 +427,8 @@ window.Fonoimage = class Fonoimage {
             <div class="gauche">
               <img :src="haut_parleur ? '${HautParleurActif}' : '${HautParleur}'" class="hp" @click="toggle_hp"/>
               <img :src="cadenas ? '${Cadenas}' : '${CadenasOuvert}'" class="cadenas" @click="toggle_cadenas"/>
-            <img class="invert poubelle" :class="{actif: zone_active}" @click="supprimer_zone_active" src="${Poubelle}"/>
+              <img class="invert poubelle" :class="{actif: zone_active}" @click="supprimer_zone_active" src="${Poubelle}"/>
+              <img src="${Fonofone}" class="ff_par_defaut" :class="{actif: zone_active}" @click="definir_fonofone_par_defaut"/>
             </div>
             <div class="droite">
               <img src="${Export}" @click="exporter"/>
