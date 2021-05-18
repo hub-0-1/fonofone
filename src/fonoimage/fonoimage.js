@@ -334,11 +334,35 @@ window.Fonoimage = class Fonoimage {
           this.zones[zone.id] = zone;
           this.canva.setActiveObject(this.oreille); // Pour activer le son
           this.canva.setActiveObject(zone.ellipse);
+          //this.$nextTick(() => { this.propager_sources(); });
         },
         faire_jouer: function (zone) {
           let ff = this.get_fonofone(zone);
           ff.force_play();
           ff.paint();
+        },
+        propager_sources: function () {
+
+          // Pour toutes les fonofones
+          _.each(this.zones, (zone) => {
+            let ff = this.get_fonofone(zone);
+
+            // Et leurs sources
+            _.each(ff.configuration.sources, (source) => {
+
+              // Regarder si toutes les fonfones contiennent deja les sons, sinon, les ajouter
+              _.each(this.zones, (zone_destination) => {
+                let ff_destination = this.get_fonofone(zone_destination);
+                if(!_.some(ff_destination.configuration.sources, s => s.url == source.url)) {
+                  ff_destination.configuration.sources.push(source);
+                }
+              })
+            })
+          });
+        },
+        set_mounted: function (zone) {
+          zone.mounted = true;
+          this.propager_sources();
         },
 
         // Outils
@@ -459,7 +483,7 @@ window.Fonoimage = class Fonoimage {
         </div>
         <div class="panneau-fonofone" v-show="zone_active && !zone_active.minimiser" :class="{actif: zone_active, pleinePage: ff_pleine_largeur}" ref="panneau_fonofone">
           <div class="rond-central" @click="toggle_ff_pleine_largeur"><img src="${FlecheDroite}"/></div>
-          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_par_defaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="zone.mounted = true"></fonofone>
+          <fonofone v-for="(zone, key) in zones" v-show="zone == zone_active" :id="key" :ref="key" :key="key" :ctx_audio="ctx_audio" :noeud_sortie="zone.master" :integration_fonoimage="true" :archive="zone.configuration_fonofone || fonofone_par_defaut" @update:mode="zone.toggle_mode($event)" @update:minimiser="toggle_ff_minimiser(zone, $event)" @update:solo="toggle_solo(zone, $event)" @mounted="set_mounted(zone)" @nouveau:son="propager_sources"></fonofone>
         </div>
       </div>`
     });

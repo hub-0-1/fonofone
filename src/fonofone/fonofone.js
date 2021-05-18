@@ -147,7 +147,6 @@ export default {
           throw "Erreur de type de fichier"
         }
 
-        console.log(fichier);
         this.configuration = JSON.parse(fichier);
         if(this.configuration.fonoimage) this.fonoimage = this.configuration.fonoimage; // Pas beau tout ca ...
 
@@ -193,13 +192,15 @@ export default {
       this.dossier_importation = this.dossier_importation == dossier ? null : dossier;
     },
     ajouter_son: async function (blob, id) {
-      this.configuration.sources.push({
+      let son = {
         id: (id || Date.now()),
         actif: false,
         local: true,
         dossier: "local",
         url: await blob2base64(blob)
-      });
+      };
+      this.configuration.sources.push(son);
+      this.$emit("nouveau:son", son);
     },
 
     // CONTROLLEURS
