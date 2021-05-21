@@ -87,7 +87,7 @@ class Mixer {
       }).then((audio_buffer) => {
         this.audio_buffer = audio_buffer;
         if(this.audio_buffer.numberOfChannels < 2) {
-          this.audio_buffer = mono2stereo(this.audio_buffer);
+          this.audio_buffer = mono2stereo(this.ctx_audio, this.audio_buffer);
         }
         resolve(true);
       });
@@ -349,8 +349,8 @@ function crop_audio_buffer(ctx_audio, buffer, begin, end) {
   return newArrayBuffer;
 }
 
-function mono2stereo (mono) {
-  let stereo = this.ctx_audio.createBuffer(2, mono.length, mono.sampleRate);
+function mono2stereo (ctx_audio, mono) {
+  let stereo = ctx_audio.createBuffer(2, mono.length, mono.sampleRate);
   for(let i = 0; i < mono.length; i++) {
     stereo.getChannelData(0)[i] = mono.getChannelData(0)[i];
     stereo.getChannelData(1)[i] = mono.getChannelData(0)[i];
