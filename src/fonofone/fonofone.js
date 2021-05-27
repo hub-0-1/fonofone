@@ -433,7 +433,11 @@ export default {
     liste_sources_locales: function () { return _.filter(this.configuration.sources, "local"); }
   },
   created: function () {
-    this.mixer = new Mixer(this);
+    this.mixer = new Mixer(this, {
+      update_selection: () => {
+        this.paint_regions();
+      }
+    });
   },
   mounted: function () {
 

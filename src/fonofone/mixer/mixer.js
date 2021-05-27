@@ -6,7 +6,8 @@ import Track from "./track.js";
 import Globales from "../globales.js";
 
 class Mixer {
-  constructor (fonofone) {
+  constructor (fonofone, options) {
+    this.options = options;
     this.waveform_element_id = fonofone.waveform_id;
     this.fnfn_id = fonofone.id;
     this.ctx_audio = fonofone.ctx_audio;
@@ -213,6 +214,9 @@ class Mixer {
 
     this.parametres.debut = (valeur.debut * this.audio_buffer.duration || 0);
     this.parametres.longueur = Math.max(valeur.longueur * this.audio_buffer.duration || 0, Globales.modules.selecteur.duration_min);
+
+    // Repaint la region
+    this.options.update_selection();
   }
 
   set_metronome (valeur) {
