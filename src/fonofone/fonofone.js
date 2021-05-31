@@ -134,10 +134,6 @@ export default {
           await fichier.text().then((archive) => { fichier = archive; });
         }
 
-        else if (typeof fichier === "string") {
-          // ne rien faire
-        }
-
         // Telecharger l'archive
         else if(fichier.match(/^https.*fnfn$/)) {
           await fetch(fichier).then((response) => {
@@ -145,6 +141,10 @@ export default {
           }).then((archive) => {
             fichier = archive;
           });
+        }
+
+        else if (typeof fichier === "string") {
+          // ne rien faire
         }
 
         else {
