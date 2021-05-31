@@ -310,12 +310,13 @@ window.Fonoimage = class Fonoimage {
         },
         ajouter_zone: function (x, y, rx, ry, angle = 0, fonofone) {
 
-          // Charger une configuration
-          if(!fonofone) fonofone = this.fonofone_par_defaut; 
-
-          // Definir le mode
           let mode = 'mix';
-          if(fonofone.fonoimage) mode = JSON.parse(fonofone).fonoimage.mode;
+          if(fonofone) { // Quand on importe
+            mode = JSON.parse(fonofone).fonoimage.mode
+          }
+          else {
+            fonofone = this.fonofone_par_defaut;
+          }
 
           // Creation
           let zone = new Zone({
