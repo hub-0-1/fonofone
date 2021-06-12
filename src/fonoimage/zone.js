@@ -49,6 +49,7 @@ export default class Zone {
     }).on('scaled', (e) => {
       let ellipse = this.ellipse;
       this.paint_ellipse(ellipse.left, ellipse.top, ellipse.rx * ellipse.scaleX, ellipse.ry * ellipse.scaleY, ellipse.angle);
+      this.canvas.setActiveObject(this.ellipse);
       this.parametres.on_moving(this);
     }).on('moving', () => {
       this.parametres.on_moving(this);
