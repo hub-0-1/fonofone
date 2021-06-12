@@ -40,7 +40,7 @@ export default class Zone {
     this.ellipse = new Fabric.Ellipse({
       left, top, rx, ry, angle, 
       stroke: this.mode == 'mix' ? 'blue' : 'orange',
-      strokeWidth: 5,
+      strokeWidth: 10,
       fill: 'transparent',
 
       // Pour la selection par bordure seulement

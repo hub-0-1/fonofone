@@ -337,11 +337,6 @@ window.Fonoimage = class Fonoimage {
           this.canva.setActiveObject(zone.ellipse);
           //this.$nextTick(() => { this.propager_sources(); });
         },
-        faire_jouer: function (zone) {
-          let ff = this.get_fonofone(zone);
-          ff.force_play();
-          ff.paint();
-        },
         propager_sources: function () {
 
           // Pour toutes les fonofones
