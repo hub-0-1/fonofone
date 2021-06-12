@@ -413,7 +413,7 @@ window.Fonoimage = class Fonoimage {
           this.canva.setCursor("cell");
 
           // Si on ne clique pas sur une zone
-          if(!options.target && !this.cadenas) { 
+          if(!options.target) {
             if(this.mode_solo) this.get_fonofone(this.mode_solo).toggle_mode_solo();
             this.zone_active = null; 
             this.gestion_bg = false;
