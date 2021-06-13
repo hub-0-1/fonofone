@@ -147,6 +147,13 @@
       }
 
       .record {
+        filter: grayscale(1);
+        transition: filter 2s;
+
+        &.actif {
+          filter: grayscale(0);
+        }
+
         &.flash {
           animation-name: flash;
           animation-duration: 2s;
@@ -253,27 +260,29 @@
     bottom: 0;
 
     width: 30%;
-    border: 1px solid @noir;
-    background-color: @gris;
 
     transition: 1s all;
+
+    .fonofone {
+      background-color: transparent !important;
+    }
 
     .rond-central {
       position: absolute;
       top: 50%;
-      left: 0;
-      width: 15px;
-      height: 15px;
+      left: -5px;
+      width: 25px;
+      height: 25px;
       transform: translate(-50%, -50%);
       z-index: 1;
-      border-radius: 10px;
+      border-radius: 25px;
       background-color: @noir;
 
       img {
         width: 40%;
         position: absolute;
         top: 50%;
-        left: 50%;
+        left: 45%;
         transform: translate(-50%, -50%) rotate(180deg);
         filter: brightness(100);
         transition: 2s all;
