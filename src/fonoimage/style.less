@@ -148,10 +148,11 @@
 
       .record {
         filter: grayscale(1);
-        transition: filter 2s;
 
         &.actif {
           filter: grayscale(0);
+          animation-name: rebours;
+          animation-duration: 2s;
         }
 
         &.flash {
@@ -316,3 +317,21 @@
     opacity: 0
   }
 }
+
+@keyframes rebours {
+  0% {
+    filter: grayscale(1);
+  }
+  92% {
+    background-color: initial;
+  }
+  98% {
+    background-color: white;
+  }
+  100% {
+    filter: grayscale(0);
+    background-color: initial;
+  }
+}
+
+

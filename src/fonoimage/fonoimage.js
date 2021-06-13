@@ -129,7 +129,9 @@ window.Fonoimage = class Fonoimage {
         // Sessions
         debut_session: function () {
           this.mode = "session:active";
-          this.get_enregistreur().debuter();
+          setTimeout(() => {
+            this.get_enregistreur().debuter();
+          }, 2000);
         },
         fin_session: function () {
           this.mode = "normal";
