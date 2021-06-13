@@ -443,9 +443,9 @@ window.Fonoimage = class Fonoimage {
       <div class="fonoimage" ref="fonoimage">
         <div class="panneau-fonoimage">
           <menu>
-            <img src="${Record}" class="record bouton-coin-g-b" :class="{actif: cadenas, flash: mode == 'session:active'}" @click="toggle_session"/>
-            <img src="${Images}" class="invert bouton-coin-g-b" :class="{actif: !cadenas}" @click="toggle_gestion_bg"/>
             <div class="gauche">
+              <img src="${Record}" class="record" :class="{flash: mode == 'session:active'}" @click="toggle_session"/>
+              <img src="${Images}" class="invert" @click="toggle_gestion_bg"/>
               <img :src="haut_parleur ? '${HautParleurActif}' : '${HautParleur}'" class="hp" @click="toggle_hp"/>
               <img :src="cadenas ? '${Cadenas}' : '${CadenasOuvert}'" class="cadenas" @click="toggle_cadenas"/>
               <img class="invert poubelle" :class="{actif: zone_active}" @click="supprimer_zone_active" src="${Poubelle}"/>

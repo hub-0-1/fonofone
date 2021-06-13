@@ -1,8 +1,8 @@
 const Fabric = require("fabric").fabric;
 
-const couleur_zone_active = "white";
-const couleur_zone_mix = "blue";
-const couleur_zone_pic = "orange";
+const couleur_zone_active = "rgb(255, 255, 255)";
+const couleur_zone_mix = "rgb(0, 0, 255)";
+const couleur_zone_pic = "rgb(242, 165, 26)";
 
 export default class Zone {
   constructor (parametres, configuration_fonofone =  null) {
@@ -35,11 +35,10 @@ export default class Zone {
       this.canvas.remove(this.ellipse);
       this.ellipse = null;
     }
-    
+
     // Paint
     this.ellipse = new Fabric.Ellipse({
       left, top, rx, ry, angle, 
-      stroke: this.mode == 'mix' ? 'blue' : 'orange',
       strokeWidth: 10,
       fill: 'transparent',
 
@@ -55,11 +54,17 @@ export default class Zone {
       this.parametres.on_moving(this);
     }).on('rotating', () => {
       this.parametres.on_moving(this);
+    }).on('deselected', () => {
+      this.actif = false;
+      this.set_couleurs();
     }).on('selected', () => {
       this.parametres.on_selected(this);
+      this.actif = true;
+      this.set_couleurs();
     });
 
     this.canvas.add(this.ellipse);
+    this.set_couleurs();
   }
 
   rendre_mobile () {
@@ -76,13 +81,22 @@ export default class Zone {
     this.ellipse.lockMovementY = true;
   }
 
+  set_couleurs () {
+    let couleur_bordure = null;
+    if(this.actif) {
+      couleur_bordure = couleur_zone_active;
+    } else {
+      couleur_bordure = this.mode == 'mix' ? couleur_zone_mix : couleur_zone_pic;
+    }
+    this.ellipse.set('stroke', couleur_bordure);
+  }
+
   toggle_mode (mode) {
     this.mode = mode;
+    this.set_couleurs();
     if(mode == 'pic') {
-      this.ellipse.set('stroke', couleur_zone_pic);
       this.master.gain.setValueAtTime(1, this.ctx_audio.currentTime);
     } else {
-      this.ellipse.set('stroke', couleur_zone_mix);
       this.master.gain.setValueAtTime(0, this.ctx_audio.currentTime);
       if(this.pointeur) {
         this.canvas.remove(this.pointeur);
