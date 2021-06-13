@@ -232,7 +232,7 @@ window.Fonoimage = class Fonoimage {
 
           // Axe des Y
           if(coords_ellipse.top > this.canva.getElement().offsetHeight / 3) {
-            ff.style.top = Math.max(coords_ellipse.top, 0) + "px";
+            ff.style.top = Math.max(coords_ellipse.top - hauteur_ff_minimise / 1.5, 0) + "px";
           } else {
             ff.style.top = (coords_ellipse.top + coords_ellipse.height) + "px";
           }
