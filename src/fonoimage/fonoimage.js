@@ -29,6 +29,9 @@ import VueI18n from 'vue-i18n';
 import i18n from './traductions.js';
 Vue.use(VueI18n);
 
+const largeur_ff_minimise = 250;
+const hauteur_ff_minimise = 400;
+
 window.Fonoimage = class Fonoimage {
   constructor (el, archive) {
     let AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -198,23 +201,7 @@ window.Fonoimage = class Fonoimage {
           // Mode minimiser
           if(zone.minimiser) {
             el_ff.classList.add("flottant");
-            let coords_ellipse = zone.ellipse.getBoundingRect();
-
-            // Axe des X
-            if(coords_ellipse.left > zone.canvas.getElement().offsetWidth / 2) {
-              el_ff.style.left = (coords_ellipse.left - 300) + "px"
-            }
-            else {
-              el_ff.style.left = (coords_ellipse.left + coords_ellipse.width) + "px"
-            }
-
-            // Axe des Y
-            if(coords_ellipse.top > zone.canvas.getElement().offsetHeight / 2) {
-              el_ff.style.top = Math.max(coords_ellipse.top - 500, 0) + "px"
-            }
-            else {
-              el_ff.style.top = (coords_ellipse.top + coords_ellipse.height) + "px"
-            }
+            this.placer_ff_minimise(el_ff, zone)
 
             // Deplacer l'element
             fonoimage.appendChild(el_ff);
@@ -230,6 +217,23 @@ window.Fonoimage = class Fonoimage {
 
           this.$forceUpdate(); // Sinon le panneau ne se rafraichi pas
           this.$nextTick(() => { this.get_fonofone(this.zone_active).paint(); });
+        },
+        placer_ff_minimise: function (ff, zone) {
+          let coords_ellipse = zone.ellipse.getBoundingRect();
+
+          // Axe des X
+          if(coords_ellipse.left > this.canva.getElement().offsetWidth / 3) {
+            ff.style.left = (coords_ellipse.left - largeur_ff_minimise - 10) + "px";
+          } else {
+            ff.style.left = (coords_ellipse.left + coords_ellipse.width + 10) + "px";
+          }
+
+          // Axe des Y
+          if(coords_ellipse.top > this.canva.getElement().offsetHeight / 3) {
+            ff.style.top = Math.max(coords_ellipse.top, 0) + "px";
+          } else {
+            ff.style.top = (coords_ellipse.top + coords_ellipse.height) + "px";
+          }
         },
         toggle_gestion_bg: function () {
           this.gestion_bg = !this.gestion_bg;
@@ -328,6 +332,9 @@ window.Fonoimage = class Fonoimage {
             on_moving: (zone) => { 
               this.set_masque(this.get_coords_ellipse(zone.ellipse));
               this.moduler_son_zone(zone);
+              if(zone.minimiser) {
+                this.placer_ff_minimise(this.$refs.fonoimage.querySelector(`#${zone.id}`), zone);
+              }
             }
           }, fonofone);
           
