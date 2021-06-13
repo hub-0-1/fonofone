@@ -82,6 +82,7 @@ window.Fonoimage = class Fonoimage {
 
           let archive = JSON.parse(archive_serialisee);
           this.fonofone_par_defaut = archive.fonofone_par_defaut;
+          this.arrieres_plans = archive.arrieres_plans;
 
           // Ajouter les zones et les fonofones
           _.each(archive.zones, (zone) => {
@@ -98,6 +99,7 @@ window.Fonoimage = class Fonoimage {
         serialiser: function () {
           return JSON.stringify({ 
             arriere_plan: this.arriere_plan,
+            arrieres_plans: this.arrieres_plans,
             fonofone_par_defaut: this.fonofone_par_defaut,
             zones: _.map(this.zones, (zone) => { 
               return { 
@@ -405,7 +407,7 @@ window.Fonoimage = class Fonoimage {
         this.init_filepond(this.$refs.filepond_image, (image) => { 
 
           if (image.fileType.match(/image/)) { 
-            Globales.arrieres_plans.push(image.getFileEncodeDataURL());
+            this.arrieres_plans.push(image.getFileEncodeDataURL());
           }
           else { throw "Type de fichier non valide"; }
 

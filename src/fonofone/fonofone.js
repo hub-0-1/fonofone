@@ -496,7 +496,7 @@ export default {
           <img src="${Reload}" class="invert" @click="toggle_ecran('reinitialisation')">
           <img src="${Import}" @click="toggle_ecran('importation')">
           <img src="${Export}" @click="toggle_ecran('exportation')">
-          <img v-if="fonoimage.integration" class="invert" :src="fonoimage.minimiser ? '${Minimiser}' : '${Maximiser}'" @click="toggle_affichage_fonoimage"/>
+          <img v-if="fonoimage.integration" class="invert" :src="fonoimage.minimiser ? '${Maximiser}' : '${Minimiser}'" @click="toggle_affichage_fonoimage"/>
         </menu>
         <section v-show="ecran == 'normal'" class="ecran app-fonofone">
           <header>
