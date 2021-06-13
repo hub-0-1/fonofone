@@ -521,21 +521,22 @@ function distance_euclidienne (point) {
 function proximite_centre_ellipse (coords_oreille, ellipse) {
 
   // Initialisation
-  let centre = { x: ellipse.left + ellipse.width / 2, y: ellipse.top + ellipse.height / 2 };
+  let coords_ellipse = ellipse.aCoords;
+  let centre = { x: (coords_ellipse.tl.x + coords_ellipse.br.x) / 2, y: (coords_ellipse.tl.y + coords_ellipse.br.y) / 2 };
 
   // Enlever la rotation
-  let pointer_sans_rotation = annuler_rotation(ellipse.angle, centre, coords_oreille);
+  let oreille_sans_rotation = annuler_rotation(ellipse.angle, centre, coords_oreille);
 
   // Calculer l'angle entre le centre et le curseur
-  let pointeur_sans_rotation_normalise = { x: pointer_sans_rotation.x - centre.x, y: pointer_sans_rotation.y - centre.y };
-  let theta_pointeur_sans_rotation = theta(pointeur_sans_rotation_normalise.x, pointeur_sans_rotation_normalise.y);
+  let oreille_sans_rotation_normalise = { x: oreille_sans_rotation.x - centre.x, y: oreille_sans_rotation.y - centre.y };
+  let theta_oreille_sans_rotation = theta(oreille_sans_rotation_normalise.x, oreille_sans_rotation_normalise.y);
 
   // Calculer les x et y max pour l'angle donne
-  let coord_max = { x: ellipse.rx * Math.cos(theta_pointeur_sans_rotation), y: ellipse.ry * Math.sin(theta_pointeur_sans_rotation) };
+  let coord_max = { x: ellipse.rx * Math.cos(theta_oreille_sans_rotation), y: ellipse.ry * Math.sin(theta_oreille_sans_rotation) };
   let distance_max = distance_euclidienne(coord_max);
 
   // Calculer la distance entre le centre et les x/y max
-  let distance_pointeur = distance_euclidienne(pointeur_sans_rotation_normalise);
+  let distance_pointeur = distance_euclidienne(oreille_sans_rotation_normalise);
 
   return 1 - Math.min(distance_pointeur / distance_max, 1);
 }
