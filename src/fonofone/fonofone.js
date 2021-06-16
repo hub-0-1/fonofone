@@ -118,6 +118,8 @@ export default {
         modules: this.configuration.modules,
         sources: _.cloneDeep(this.configuration.sources)
       };
+      exp.parametres.jouer_initial = this.mixer.etat.jouer;
+
 
       // Menage dans les sources
       exp.sources = _.filter(exp.sources, (s) => { return (s.actif || !s.local || sources_locales_selectionnees.includes(s.id)) })
@@ -483,11 +485,11 @@ export default {
       this.appliquer_configuration(this.configuration);
       this.mixer.etat.chargement = false;
 
+      // Lancer si necessaire
+      if(this.configuration.parametres.jouer_initial) this.jouer();
+
       // Fonoimage
-      if(this.integration_fonoimage) {
-        this.jouer();
-        this.$emit("mounted", true); // Pour le fonoimage
-      }
+      if(this.integration_fonoimage) this.$emit("mounted", true);
     });
   },
   template: `
