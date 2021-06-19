@@ -169,18 +169,13 @@
       width: 100%;
       flex: 1;
 
-      background-position: center;
-      background-size: cover;
+      background-size: 100% 100%;
 
       .app-fonoimage {
         position: relative;
         flex: 1;
         height: inherit;
         min-width: 0;
-
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: cover;
       }
     }
 
@@ -254,6 +249,10 @@
     }
   }
 
+  .fonofone.flottant {
+    background-color: transparent !important;
+  }
+
   .panneau-fonofone {
     position: absolute;
     left: 100%;
@@ -264,9 +263,6 @@
 
     transition: 1s all;
 
-    .fonofone {
-      background-color: transparent !important;
-    }
 
     .rond-central {
       position: absolute;

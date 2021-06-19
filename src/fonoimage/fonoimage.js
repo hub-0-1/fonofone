@@ -31,6 +31,7 @@ Vue.use(VueI18n);
 
 const largeur_ff_minimise = 250;
 const hauteur_ff_minimise = 400;
+const TOLERANCE_MIN_ZONE = 10;
 
 window.Fonoimage = class Fonoimage {
   constructor (el, archive) {
@@ -85,9 +86,18 @@ window.Fonoimage = class Fonoimage {
           this.arrieres_plans = archive.arrieres_plans;
 
           // Ajouter les zones et les fonofones
+          let largeur = this.canva.width;
+          let hauteur = this.canva.height;
           _.each(archive.zones, (zone) => {
-            let ellipse = zone.ellipse;
-            this.ajouter_zone(ellipse.left, ellipse.top, ellipse.rx, ellipse.ry, ellipse.angle, zone.fonofone);
+            let coords_ellipse = zone.coords_ellipse;
+            this.ajouter_zone(
+              coords_ellipse.left * largeur,
+              coords_ellipse.top * hauteur,
+              coords_ellipse.rx * largeur,
+              coords_ellipse.ry * hauteur,
+              coords_ellipse.angle,
+              zone.fonofone
+            );
           });
 
           // Charger l'arriere-plan
@@ -103,7 +113,7 @@ window.Fonoimage = class Fonoimage {
             fonofone_par_defaut: this.fonofone_par_defaut,
             zones: _.map(this.zones, (zone) => { 
               return { 
-                ellipse: this.get_coords_ellipse(zone.ellipse),
+                coords_ellipse: this.get_coords_relatives_ellipse(zone.ellipse),
                 fonofone: this.get_fonofone(zone).serialiser() 
               } 
             })
@@ -298,8 +308,8 @@ window.Fonoimage = class Fonoimage {
               y: options.absolutePointer.y
             });
 
-            // Si on a pas bougé
-            if(coords[0].x == coords[1].x && coords[0].y == coords[1].y) return;
+            // Si on a pas assez bougé
+            if(Math.abs(coords[0].x - coords[1].x) < TOLERANCE_MIN_ZONE && Math.abs(coords[0].y - coords[1].y) < TOLERANCE_MIN_ZONE) return;
 
             this.ajouter_zone(
               Math.min(coords[0].x, coords[1].x), // x
@@ -382,6 +392,18 @@ window.Fonoimage = class Fonoimage {
           coords.rx = ellipse.rx;
           coords.ry = ellipse.ry;
           return coords; 
+        },
+        get_coords_relatives_ellipse: function (ellipse) {
+          let coords = this.get_coords_ellipse(ellipse);
+          let largeur = this.canva.width;
+          let hauteur = this.canva.height;
+
+          coords.left /= largeur;
+          coords.rx /= largeur;
+          coords.top /= hauteur;
+          coords.ry /= hauteur;
+
+          return coords;
         }
       },
       created: function () {
