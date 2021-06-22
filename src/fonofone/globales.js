@@ -18,7 +18,7 @@ export default {
       hauteur_controlleur: 0.1,
       ratio_controlleur: 0.1,
       border_width: 0.02,
-      duration_min: 0.01
+      duration_min: 0.001
     },
     volume: {
       largeur_module: 1,
