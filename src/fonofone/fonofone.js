@@ -172,7 +172,7 @@ export default {
         }, {deep: true, immediate: true});
       });
     },
-    charger_source: function (source) {
+    charger_source: function (source, reset = false) {
       return new Promise ((resolve, reject) => {
 
         // Desactiver toutes les sources
@@ -186,8 +186,8 @@ export default {
           return this.mixer.charger_blob(blob);
         }).then(() => {
           this.toggle_ecran("normal");
-          this.$refs.selecteur[0].set_plage(0, 1);
           this.update_buffer();
+          if(reset) this.reset_selecteur();
           resolve(source);
         }).catch((e) => {
           reject(e);
@@ -400,10 +400,13 @@ export default {
     // OUTILS
     crop: function () {
       this.mixer.crop();
-      this.$refs.selecteur[0].set_plage(0, 1);
+      this.reset_selecteur();
       this.update_buffer();
 
       this.ajouter_son(new Blob([toWav(this.mixer.audio_buffer)]), this.source_active().id + "_crop");
+    },
+    reset_selecteur: function () {
+      this.$refs.selecteur[0].set_plage(0, 1);
     },
     source_active: function () {
       return _.find(this.configuration.sources, "actif");
@@ -569,7 +572,7 @@ export default {
                     <img src="${FlecheDroite}" alt="fleche de selection" :class="{actif: dossier_importation == dossier}"/>
                   </div>
                   <ul class="sons">
-                    <li class="source" v-show="dossier == dossier_importation" v-for="source in liste_sources" @click="charger_source(source)">
+                    <li class="source" v-show="dossier == dossier_importation" v-for="source in liste_sources" @click="charger_source(source, true)">
                       <input @click.stop v-model="source.id" type="text" :disabled="!source.local"/>
                     </li>
                   </ul>
