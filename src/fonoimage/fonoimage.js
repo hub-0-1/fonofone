@@ -102,6 +102,12 @@ window.Fonoimage = class Fonoimage {
 
           // Charger l'arriere-plan
           this.set_arriere_plan(archive.arriere_plan);
+
+          // Positionner l'oreille
+          this.oreille.set('left', archive.coords_oreille.left * largeur);
+          this.oreille.set('top', archive.coords_oreille.top * hauteur);
+          this.oreille.setCoords();
+          this.canva.renderAll();
         },
         exporter: function () {
           saveAs(new Blob([this.serialiser()]), `archive.fnmg`);
@@ -111,6 +117,7 @@ window.Fonoimage = class Fonoimage {
             arriere_plan: this.arriere_plan,
             arrieres_plans: this.arrieres_plans,
             fonofone_par_defaut: this.fonofone_par_defaut,
+            coords_oreille: this.get_coords_relatives(this.oreille),
             zones: _.map(this.zones, (zone) => { 
               return { 
                 coords_ellipse: this.get_coords_relatives_ellipse(zone.ellipse),
@@ -271,7 +278,7 @@ window.Fonoimage = class Fonoimage {
         },
         moduler_son_zone: function (zone) {
           if(zone.mode == 'mix') {
-            let coords_oreille = { x: this.oreille.left + this.oreille.width / 2, y: this.oreille.top + this.oreille.height / 2};
+            let coords_oreille = { x: this.oreille.left, y: this.oreille.top}; // Centree a son origine
             let coords_zone = { x: zone.left + zone.width / 2, y: zone.top + zone.height / 2};
             let proximite = proximite_centre_ellipse(coords_oreille, zone.ellipse);
             zone.master.gain.setValueAtTime(proximite, this.ctx_audio.currentTime);
@@ -319,9 +326,8 @@ window.Fonoimage = class Fonoimage {
             );
           });
 
-          // Afficher le shadow
+          // TODO Enlever : Afficher le shadow
           this.canva.on('mouse:move', (options) => {
-            //this.canva.renderAll();
             shadow_style.width = (options.e.clientX - init_event.clientX) + "px";
             shadow_style.height = (options.e.clientY - init_event.clientY) + "px";
           });
@@ -393,6 +399,18 @@ window.Fonoimage = class Fonoimage {
           coords.ry = ellipse.ry;
           return coords; 
         },
+        get_coords_relatives: function (obj) {
+          let coords = obj.getBoundingRect();
+          let largeur = this.canva.width;
+          let hauteur = this.canva.height;
+
+          coords.left /= largeur;
+          coords.width /= largeur;
+          coords.top /= hauteur;
+          coords.height /= hauteur;
+
+          return coords;
+        },
         get_coords_relatives_ellipse: function (ellipse) {
           let coords = this.get_coords_ellipse(ellipse);
           let largeur = this.canva.width;
@@ -459,8 +477,8 @@ window.Fonoimage = class Fonoimage {
         // Afficher le micro
         new Fabric.Image.fromURL(Oreille, (oreille) => {
           this.oreille = oreille;
-          //oreille.originX = "center";
-          //oreille.originY = "center";
+          oreille.originX = "center";
+          oreille.originY = "center";
           oreille.set('left', this.canva.width / 2);
           oreille.set('top', this.canva.height / 2);
           oreille.setCoords();
