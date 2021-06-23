@@ -227,6 +227,12 @@ export default {
       this.configuration.parametres.inverse = !this.configuration.parametres.inverse;
       this.mixer.set_sens(this.configuration.parametres.inverse);
       this.update_buffer();
+
+      // Inverstion selection
+      let selection = this.configuration.modules.selecteur.valeur;
+      let nouveau_debut_region = 1 - (selection.debut + selection.longueur);
+      let nouvelle_fin_region = 1 - selection.debut;
+      this.$refs.selecteur[0].set_plage(nouveau_debut_region, nouvelle_fin_region - nouveau_debut_region);
     },
     toggle_pause: function () {
       this.mixer.etat.jouer ? this.arreter() : this.jouer();
@@ -587,9 +593,9 @@ export default {
       </div>`
 }
 
-function buffer2base64 (arrayBuffer) {
+/*function buffer2base64 (arrayBuffer) {
   return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)))
-}
+}*/
 
 // https://stackoverflow.com/questions/18650168/convert-blob-to-base64
 function blob2base64 (blob) {
